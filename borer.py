@@ -100,34 +100,35 @@ st.markdown(f"""
         color: {accent_cyan};
     }}
 
-    /* גוף האתר - ממורכז לחלוטין */
+    /* גוף האתר - ממורכז לחלוטין, ללא שטח מת */
     .main-content {{
-        margin-top: 130px;
+        margin-top: 100px;
         text-align: center;
         direction: rtl;
-        padding: 50px 10%;
+        padding: 30px 10%;
         background: {bg_light};
-        min-height: calc(100vh - 130px);
+        min-height: calc(100vh - 100px);
         display: flex;
         flex-direction: column;
         align-items: center;
     }}
 
-    /* כותרת ראשית - ממורכזת */
+    /* כותרת ראשית - בצבע טורקיז */
     .hero-title {{
-        color: {primary_blue};
+        color: {accent_cyan};
         font-size: 3.8rem;
         font-weight: 900;
-        margin: 0 auto 15px auto;
+        margin: 0 auto 10px auto;
         text-align: center;
         width: 100%;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }}
 
     /* כותרת משנה - ממורכזת */
     .hero-subtitle {{
         font-size: 1.35rem;
         color: #64748B;
-        margin: 0 auto 60px auto;
+        margin: 0 auto 40px auto;
         text-align: center;
         width: 100%;
     }}
@@ -151,14 +152,15 @@ st.markdown(f"""
         box-shadow: 0 8px 35px rgba(0,0,0,0.15);
     }}
 
-    /* כותרת בכרטיס - ממורכזת */
+    /* כותרת בכרטיס - ממורכזת ובצבע header */
     .card-title {{
         color: {primary_blue};
-        font-size: 1.9rem;
-        font-weight: 700;
+        font-size: 2rem;
+        font-weight: 800;
         margin-bottom: 15px;
         text-align: center;
         width: 100%;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }}
 
     /* כותרת משנה בכרטיס - ממורכזת */
@@ -193,11 +195,13 @@ st.markdown(f"""
         justify-content: center;
     }}
 
-    /* כפתור מרכזי עם גרדיאנט סגול */
+    /* כפתור מרכזי עם גרדיאנט סגול - ממורכז לגמרי */
     .stButton {{
-        display: flex;
-        justify-content: center;
-        width: 100%;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        text-align: center !important;
     }}
 
     .stButton>button {{
@@ -209,11 +213,11 @@ st.markdown(f"""
         font-size: 1.4rem !important;
         font-weight: 700 !important;
         border: none !important;
-        margin: 60px auto 0 auto !important;
+        margin: 40px auto !important;
         box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4) !important;
         transition: all 0.3s ease !important;
         animation: gradient 3s ease infinite !important;
-        display: block;
+        display: block !important;
     }}
 
     .stButton>button:hover {{
@@ -273,8 +277,6 @@ st.markdown('<div class="main-content">', unsafe_allow_html=True)
 st.markdown('<h1 class="hero-title">Resolve AI</h1>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">תיווך בינה מלאכותית לפתרון סכסוכים מהיר ואובייקטיבי</p>', unsafe_allow_html=True)
 
-st.markdown("<br>", unsafe_allow_html=True)
-
 # כרטיסים - ממורכזים
 col1, space, col2 = st.columns([1, 0.15, 1])
 
@@ -296,10 +298,8 @@ with col2:
     </div>
     """, unsafe_allow_html=True)
 
-st.markdown("<br>", unsafe_allow_html=True)
-
 # כפתור מרכזי עם גרדיאנט
-if st.button("תבצע סגילה אישית"):
+if st.button("בצע בוררות כעת"):
     with st.spinner('מנתח מסמכים...'):
         time.sleep(2)
     st.success("הניתוח הושלם!")
