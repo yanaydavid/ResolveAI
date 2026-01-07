@@ -4,55 +4,76 @@ import time
 # הגדרות דף בסיסיות
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
 
-# ערכת צבעים חדשה - כחול-ירקרק (Teal/Cyan)
-primary_blue = "#1a4d5e"  # כחול כהה
-secondary_blue = "#2a5f73"  # כחול בינוני
-accent_cyan = "#00d4ff"  # ציאן בהיר
-bg_light = "#f0f4f8"  # רקע בהיר
-card_bg = "#ffffff"  # רקע כרטיסים
+# ערכת צבעים מדויקת לפי התמונה
+primary_blue = "#1a4d5e"  # כחול כהה ל-header
+secondary_blue = "#2a5f73"  # כחול בינוני לגרדיאנט
+accent_cyan = "#00d4ff"  # ציאן בהיר ל-AI
+bg_light = "#e8ecf0"  # רקע בהיר אפרפר
+card_bg = "#ffffff"  # לבן לכרטיסים
 
-# CSS מעוצב חדש
+# CSS מעוצב ומותאם לעברית
 st.markdown(f"""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap');
 
     * {{
         font-family: 'Heebo', sans-serif;
+        box-sizing: border-box;
     }}
 
-    header {{visibility: hidden;}}
-    .block-container {{padding: 0px !important;}}
+    /* הסתרת אלמנטים של Streamlit */
+    header, [data-testid="stHeader"], footer {{
+        visibility: hidden !important;
+        height: 0 !important;
+        display: none !important;
+    }}
 
-    /* Header מעוצב */
+    .block-container {{
+        padding: 0px !important;
+        max-width: 100% !important;
+    }}
+
+    [data-testid="stAppViewContainer"] {{
+        background: {bg_light} !important;
+    }}
+
+    /* מניעת מלבנים לבנים בתצוגות שונות */
+    .main, [data-testid="stApp"], body {{
+        background-color: {bg_light} !important;
+    }}
+
+    /* Header מעוצב בכחול כהה */
     .custom-header {{
         background: linear-gradient(135deg, {primary_blue} 0%, {secondary_blue} 100%);
-        height: 80px;
+        height: 85px;
         display: flex;
         align-items: center;
-        padding: 0 50px;
+        padding: 0 60px;
         justify-content: space-between;
-        width: 100%;
+        width: 100vw;
         position: fixed;
         top: 0;
-        z-index: 999;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        left: 0;
+        z-index: 9999;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     }}
 
     .logo-section {{
         display: flex;
         align-items: center;
         gap: 15px;
+        direction: ltr;
     }}
 
     .logo-img {{
-        height: 50px;
-        width: 50px;
+        height: 55px;
+        width: 55px;
         border-radius: 50%;
     }}
 
     .logo-text {{
         color: white;
-        font-size: 1.8rem;
+        font-size: 1.9rem;
         font-weight: 700;
     }}
 
@@ -62,16 +83,16 @@ st.markdown(f"""
 
     .nav-menu {{
         display: flex;
-        gap: 30px;
+        gap: 35px;
         direction: rtl;
     }}
 
     .nav-item {{
         color: white;
         text-decoration: none;
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         font-weight: 500;
-        transition: color 0.3s;
+        transition: color 0.3s ease;
         cursor: pointer;
     }}
 
@@ -79,94 +100,125 @@ st.markdown(f"""
         color: {accent_cyan};
     }}
 
+    /* גוף האתר - ממורכז לחלוטין */
     .main-content {{
-        margin-top: 120px;
+        margin-top: 130px;
         text-align: center;
         direction: rtl;
-        padding: 40px 10%;
+        padding: 50px 10%;
         background: {bg_light};
-        min-height: calc(100vh - 120px);
+        min-height: calc(100vh - 130px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }}
 
+    /* כותרת ראשית - ממורכזת */
     .hero-title {{
         color: {primary_blue};
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 15px;
+        font-size: 3.8rem;
+        font-weight: 900;
+        margin: 0 auto 15px auto;
+        text-align: center;
+        width: 100%;
     }}
 
+    /* כותרת משנה - ממורכזת */
     .hero-subtitle {{
-        font-size: 1.3rem;
+        font-size: 1.35rem;
         color: #64748B;
-        margin-bottom: 50px;
+        margin: 0 auto 60px auto;
+        text-align: center;
+        width: 100%;
     }}
 
     /* כרטיסים מעוצבים */
     .card {{
         background: {card_bg};
         border-radius: 20px;
-        padding: 40px 30px;
+        padding: 45px 35px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        transition: transform 0.3s, box-shadow 0.3s;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
         height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
+        text-align: center;
     }}
 
     .card:hover {{
         transform: translateY(-5px);
-        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        box-shadow: 0 8px 35px rgba(0,0,0,0.15);
     }}
 
+    /* כותרת בכרטיס - ממורכזת */
     .card-title {{
         color: {primary_blue};
-        font-size: 1.8rem;
+        font-size: 1.9rem;
         font-weight: 700;
         margin-bottom: 15px;
+        text-align: center;
+        width: 100%;
     }}
 
+    /* כותרת משנה בכרטיס - ממורכזת */
     .card-subtitle {{
         color: #94a3b8;
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         margin-bottom: 30px;
+        text-align: center;
+        width: 100%;
     }}
 
     .card-button {{
         background: {primary_blue};
         color: white;
-        padding: 12px 40px;
+        padding: 13px 45px;
         border-radius: 10px;
         border: none;
         font-size: 1.1rem;
         font-weight: 600;
         cursor: pointer;
-        transition: background 0.3s;
+        transition: background 0.3s ease, transform 0.2s ease;
     }}
 
     .card-button:hover {{
         background: {secondary_blue};
+        transform: scale(1.05);
     }}
 
-    /* כפתור מרכזי עם גרדיאנט */
+    /* מירכוז עמודות Streamlit */
+    [data-testid="column"] {{
+        display: flex;
+        justify-content: center;
+    }}
+
+    /* כפתור מרכזי עם גרדיאנט סגול */
+    .stButton {{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }}
+
     .stButton>button {{
         background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%) !important;
         background-size: 200% 200% !important;
         color: white !important;
         border-radius: 50px !important;
-        padding: 18px 80px !important;
-        font-size: 1.3rem !important;
+        padding: 20px 90px !important;
+        font-size: 1.4rem !important;
         font-weight: 700 !important;
         border: none !important;
-        margin-top: 50px;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
-        transition: all 0.3s !important;
+        margin: 60px auto 0 auto !important;
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4) !important;
+        transition: all 0.3s ease !important;
         animation: gradient 3s ease infinite !important;
+        display: block;
     }}
 
     .stButton>button:hover {{
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6) !important;
     }}
 
     @keyframes gradient {{
@@ -175,9 +227,28 @@ st.markdown(f"""
         100% {{background-position: 0% 50%;}}
     }}
 
-    /* הסתרת אלמנטים של Streamlit */
+    /* הסתרת אלמנטי העלאה של Streamlit */
     .stFileUploader {{
         display: none;
+    }}
+
+    /* התאמה למסכים קטנים */
+    @media (max-width: 768px) {{
+        .custom-header {{
+            padding: 0 20px;
+        }}
+
+        .hero-title {{
+            font-size: 2.5rem;
+        }}
+
+        .nav-menu {{
+            gap: 15px;
+        }}
+
+        .nav-item {{
+            font-size: 0.95rem;
+        }}
     }}
     </style>
 
@@ -198,17 +269,17 @@ st.markdown(f"""
 # גוף האתר
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
-# כותרת ראשית
+# כותרת ראשית וכותרת משנה - ממורכזות
 st.markdown('<h1 class="hero-title">Resolve AI</h1>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">תיווך בינה מלאכותית לפתרון סכסוכים מהיר ואובייקטיבי</p>', unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# כרטיסים
-col1, space, col2 = st.columns([1, 0.1, 1])
+# כרטיסים - ממורכזים
+col1, space, col2 = st.columns([1, 0.15, 1])
 
 with col1:
-    st.markdown(f"""
+    st.markdown("""
     <div class="card">
         <h2 class="card-title">צד תובע</h2>
         <p class="card-subtitle">הגש תביעה משפטית</p>
@@ -217,7 +288,7 @@ with col1:
     """, unsafe_allow_html=True)
 
 with col2:
-    st.markdown(f"""
+    st.markdown("""
     <div class="card">
         <h2 class="card-title">צד נתבע</h2>
         <p class="card-subtitle">הגש הגנה משפטית</p>
@@ -225,9 +296,9 @@ with col2:
     </div>
     """, unsafe_allow_html=True)
 
-st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
-# כפתור מרכזי
+# כפתור מרכזי עם גרדיאנט
 if st.button("תבצע סגילה אישית"):
     with st.spinner('מנתח מסמכים...'):
         time.sleep(2)
