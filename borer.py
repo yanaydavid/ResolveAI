@@ -4,130 +4,156 @@ import time
 # הגדרות דף בסיסיות
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
 
-# הצבעים המדויקים מהסקיצה שלך
-deep_blue = "#0A2647" 
-bg_color = "#F8FAFC"
-
-# הזרקת ה-CSS לתיקון המירכוז, ה-Header והלוגו
-st.markdown(f"""
+# CSS מתקדם למירכוז, הגדלת לוגו ומניעת "הריבוע הלבן"
+st.markdown("""
     <style>
-    /* הסתרת אלמנטים מובנים של Streamlit שיוצרים רווחים */
-    header, [data-testid="stHeader"] {{visibility: hidden !important; height: 0px !important;}}
-    .block-container {{padding: 0px !important; max-width: 100% !important;}}
+    /* הסתרת Header מובנה של Streamlit */
+    header, [data-testid="stHeader"] {visibility: hidden !important; height: 0px !important;}
+    .block-container {padding: 0px !important; max-width: 100% !important;}
     
-    /* ה-Header הכחול - נמתח מקצה לקצה */
-    .custom-header {{
-        background-color: {deep_blue};
+    /* ה-Header הכחול - מתיחה מלאה */
+    .custom-header {
+        background-color: #0A2647;
         width: 100%;
-        height: 80px;
+        height: 100px; /* הגדלתי מעט את גובה ה-Header */
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 50px;
+        padding: 0 60px;
         position: fixed;
         top: 0;
         z-index: 9999;
         box-sizing: border-box;
-    }}
+    }
 
-    /* מירכוז מוחלט של גוף האתר */
-    .main-wrapper {{
-        margin-top: 100px;
+    /* לוגו מוגדל עם הגנה מפני רקע לבן */
+    .header-logo-img {
+        height: 75px; /* הגדלת הלוגו באופן משמעותי */
+        width: auto;
+        mix-blend-mode: lighten; /* מעלים רקע לבן/כהה ומשלב אותו בכחול */
+    }
+
+    /* מירכוז גוף האתר */
+    .main-content {
+        margin-top: 140px;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
         width: 100%;
         direction: rtl;
-    }}
+    }
 
-    .hero-container {{
-        max-width: 800px;
-        margin: 0 auto;
-    }}
+    .hero-title {
+        color: #0A2647;
+        font-size: 4rem !important;
+        font-weight: 900 !important;
+        margin-bottom: 0px !important;
+        text-align: center;
+        width: 100%;
+    }
 
-    .hero-title {{
-        color: {deep_blue};
-        font-size: 3.8rem !important;
-        font-weight: 800 !important;
-        margin-bottom: 5px !important;
-    }}
-
-    .hero-subtitle {{
+    .hero-subtitle {
         color: #64748B;
-        font-size: 1.5rem !important;
-        margin-bottom: 40px !important;
-    }}
+        font-size: 1.6rem !important;
+        margin-top: 10px !important;
+        margin-bottom: 50px !important;
+        text-align: center;
+        width: 100%;
+    }
 
-    /* עיצוב כפתור ההפעלה - גרדיאנט טורקיז/סגול */
-    .stButton>button {{
+    /* מירכוז כותרות מעל אזורי העלאה */
+    .upload-container {
+        text-align: center;
+        width: 100%;
+    }
+    
+    .upload-label {
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: #0A2647;
+        margin-bottom: 5px;
+        display: block;
+    }
+    
+    .upload-sublabel {
+        color: #64748B;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    /* מירכוז כפתור ההפעלה */
+    .stButton {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
+    .stButton>button {
         background: linear-gradient(90deg, #6366F1 0%, #34D399 100%) !important;
         color: white !important;
         border: none !important;
-        padding: 16px 80px !important;
+        padding: 18px 90px !important;
         border-radius: 50px !important;
-        font-size: 1.4rem !important;
+        font-size: 1.5rem !important;
         font-weight: bold !important;
-        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3) !important;
-        transition: 0.3s;
-    }}
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4) !important;
+    }
 
-    /* מירכוז העמודות של העלאת הקבצים */
-    [data-testid="stHorizontalBlock"] {{
+    /* הבטחת מירכוז העמודות של Streamlit */
+    [data-testid="stHorizontalBlock"] {
         justify-content: center !important;
-        gap: 20px !important;
-    }}
-
-    /* הסרת מסגרות מיותרות מהלוגו */
-    .header-logo-img {{
-        height: 55px;
-        width: auto;
-    }}
+        align-items: flex-start !important;
+        gap: 50px !important;
+    }
     </style>
 
     <div class="custom-header">
-        <div style="color: white; display: flex; gap: 25px; font-weight: 500;">
+        <div style="color: white; display: flex; gap: 30px; font-weight: 500; font-size: 1.1rem;">
             <span>אודות</span>
             <span>צור קשר</span>
             <span>בורר</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <span style="color: white; font-size: 1.8rem; font-weight: bold;">Resolve AI</span>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span style="color: white; font-size: 2.2rem; font-weight: 900;">Resolve AI</span>
             <img src="https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png" class="header-logo-img">
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# גוף האתר - הכל בתוך wrapper למירכוז
-st.markdown('<div class="main-wrapper">', unsafe_allow_html=True)
-st.markdown('<div class="hero-container">', unsafe_allow_html=True)
+# גוף האתר
+st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
+# כותרות ממורכזות
 st.markdown('<h1 class="hero-title">Resolve AI</h1>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">פתרון סכסוכים חכם ומהיר מבוסס בינה מלאכותית</p>', unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True) # סגירת hero-container
-
-# יצירת העמודות
+# אזור העלאת מסמכים בשתי עמודות ממורכזות
 col1, space, col2 = st.columns([1, 0.1, 1])
 
 with col1:
-    st.markdown("### 📝 צד א' - תובע")
-    file1 = st.file_uploader("גרור לכאן כתב תביעה", key="tov_file")
+    st.markdown('<div class="upload-container">', unsafe_allow_html=True)
+    st.markdown('<span class="upload-label">📝 צד א\' - תובע</span>', unsafe_allow_html=True)
+    st.markdown('<span class="upload-sublabel">גרור לכאן כתב תביעה</span>', unsafe_allow_html=True)
+    st.file_uploader("", key="up_tovea", label_visibility="collapsed")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
-    st.markdown("### 🛡️ צד ב' - נתבע")
-    file2 = st.file_uploader("גרור לכאן כתב הגנה", key="nit_file")
+    st.markdown('<div class="upload-container">', unsafe_allow_html=True)
+    st.markdown('<span class="upload-label">🛡️ צד ב\' - נתבע</span>', unsafe_allow_html=True)
+    st.markdown('<span class="upload-sublabel">גרור לכאן כתב הגנה</span>', unsafe_allow_html=True)
+    st.file_uploader("", key="up_nitba", label_visibility="collapsed")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<br><br>", unsafe_allow_html=True)
+# רווח קטן לפני הכפתור
+st.markdown("<br>", unsafe_allow_html=True)
 
-# כפתור הפעלה
+# כפתור הפעלה ממורכז
 if st.button("קבל הכרעת בורר עכשיו"):
-    if file1 and file2:
-        with st.spinner('מנתח את המסמכים המשפטיים...'):
-            time.sleep(3)
-        st.success("הניתוח הושלם!")
-        st.balloons()
-    else:
-        st.warning("אנא העלה את שני המסמכים כדי שנוכל לבצע השוואה.")
+    with st.spinner('מעבד נתונים משפטיים...'):
+        time.sleep(2)
+    st.success("הניתוח הסתיים! ניתן לצפות בהכרעה.")
+    st.balloons()
 
-st.markdown('</div>', unsafe_allow_html=True) # סגירת main-wrapper
+st.markdown('</div>', unsafe_allow_html=True)
