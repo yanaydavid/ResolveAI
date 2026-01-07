@@ -1,114 +1,117 @@
 import streamlit as st
 import time
 
-# הגדרות דף
+# הגדרות דף בסיסיות
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
 
-# הצבעים שביקשת
-color_blue = "#2563EB"    # כחול עמוק
-color_grey = "#6B7280"    # אפור כסוף
-color_turquoise = "#34D399" # טורקיז/ירוק בהיר
+# הצבעים המדויקים מהעיצוב שבחרת
+primary_blue = "#1E3A8A"  # כחול עמוק ל-Header
+bg_color = "#F8FAFC"      # רקע אפור בהיר מאוד
+accent_green = "#34D399"  # טורקיז לכפתורים
 
-# עיצוב CSS מותאם אישית (אפשרות 1 - הייטק מינימליסטי)
+# קוד CSS להטמעת העיצוב המדויק
 st.markdown(f"""
     <style>
-    /* הסתרת כותרות ברירת מחדל */
+    /* הסתרת אלמנטים של המערכת */
     header {{visibility: hidden;}}
-    .block-container {{padding-top: 0px;}}
-
-    /* פס עליון */
-    .nav-bar {{
-        background-color: {color_blue};
-        padding: 10px 50px;
+    .block-container {{padding: 0px !important;}}
+    
+    /* ה-Header הכחול */
+    .custom-header {{
+        background-color: {primary_blue};
+        height: 80px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        color: white;
-        height: 70px;
+        padding: 0 40px;
+        justify-content: space-between;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        z-index: 999;
+    }}
+    
+    /* עיבוד לוגו שיהיה שקוף */
+    .logo-img {{
+        height: 50px;
+        filter: brightness(0) invert(1); /* הופך את הלוגו ללבן נקי ושקוף */
+    }}
+
+    /* מרכז הדף */
+    .main-content {{
+        margin-top: 120px;
+        text-align: center;
+        direction: rtl;
+        padding: 0 15%;
+    }}
+
+    .main-title {{
+        color: {primary_blue};
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }}
+
+    .sub-title {{
+        color: #64748B;
+        font-size: 1.4rem;
         margin-bottom: 50px;
     }}
-    
-    /* גוף האתר */
-    .main-body {{
-        direction: rtl;
-        text-align: center;
-        font-family: 'Assistant', sans-serif;
-    }}
-    
-    .title-text {{
-        color: {color_blue};
-        font-weight: 800;
-        font-size: 3rem;
-        margin-bottom: 5px;
-    }}
-    
-    .subtitle-text {{
-        color: {color_grey};
-        font-size: 1.2rem;
-        margin-bottom: 40px;
-    }}
 
-    /* כרטיסי העלאה */
-    .stFileUploader {{
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        padding: 10px;
-        background-color: white;
-    }}
-
-    /* כפתור טורקיז */
-    .stButton>button {{
-        background-color: {color_turquoise} !important;
-        color: #1f2937 !important;
-        font-weight: bold !important;
-        border: none !important;
-        padding: 15px 50px !important;
-        border-radius: 8px !important;
-        font-size: 1.1rem !important;
+    /* תיבות העלאה מעוצבות */
+    .upload-box {{
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid #E2E8F0;
         transition: 0.3s;
     }}
     
-    .stButton>button:hover {{
-        opacity: 0.9;
-        transform: scale(1.02);
+    /* כפתור הפעולה */
+    .stButton>button {{
+        background: {accent_green} !important;
+        color: #064E3B !important;
+        border-radius: 50px !important;
+        padding: 15px 60px !important;
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        border: none !important;
+        margin-top: 40px;
+        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.3);
     }}
     </style>
-    
-    <div class="nav-bar">
-        <div style="display: flex; gap: 20px;">
-            <span>אודות</span>
-            <span>צור קשר</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <span style="font-weight: bold; font-size: 1.2rem;">Resolve AI</span>
-            <img src="https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png" width="40">
-        </div>
+
+    <div class="custom-header">
+        <div style="color: white; font-size: 1.5rem; font-weight: bold;">Resolve AI</div>
+        <img src="https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png" class="logo-img">
     </div>
     """, unsafe_allow_html=True)
 
-# תוכן האתר
-st.markdown('<div class="main-body">', unsafe_allow_html=True)
-st.markdown('<h1 class="title-text">Resolve AI</h1>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle-text">פתרון סכסוכים חכם ומהיר מבוסס בינה מלאכותית</p>', unsafe_allow_html=True)
+# גוף האתר
+st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
-# אזור העלאת קבצים
+st.markdown('<h1 class="main-title">Resolve AI</h1>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">פתרון סכסוכים חכם ומהיר מבוסס בינה מלאכותית</p>', unsafe_allow_html=True)
+
+# פריסת תיבות העלאה
 col1, space, col2 = st.columns([1, 0.1, 1])
 
 with col1:
-    st.markdown(f"<h3 style='color: {color_blue};'>📝 צד א' - תובע</h3>", unsafe_allow_html=True)
-    st.file_uploader("העלה כתב תביעה", key="up1")
+    st.markdown('<div class="upload-box">', unsafe_allow_html=True)
+    st.markdown("### 📝 צד א' - תובע")
+    st.file_uploader("גרור לכאן כתב תביעה", key="t1")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
-    st.markdown(f"<h3 style='color: {color_blue};'>🛡️ צד ב' - נתבע</h3>", unsafe_allow_html=True)
-    st.file_uploader("העלה כתב הגנה", key="up2")
+    st.markdown('<div class="upload-box">', unsafe_allow_html=True)
+    st.markdown("### 🛡️ צד ב' - נתבע")
+    st.file_uploader("גרור לכאן כתב הגנה", key="n1")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<br><br>", unsafe_allow_html=True)
-
-# כפתור הפעלה
-if st.button("התחל ניתוח ובוררות"):
-    with st.spinner('מנתח מסמכים...'):
-        time.sleep(2)
-    st.balloons()
-    st.success("הניתוח הסתיים! ניתן לצפות בטיוטת פסק הבורר.")
+# כפתור מרכזי
+if st.button("קבל הכרעת בורר עכשיו"):
+    with st.spinner('מנתח מסמכים משפטיים...'):
+        time.sleep(3)
+    st.success("הניתוח הושלם! ניתן לצפות בתוצאות.")
 
 st.markdown('</div>', unsafe_allow_html=True)
