@@ -45,7 +45,7 @@ st.markdown(f"""
     /* Header מעוצב בכחול כהה */
     .custom-header {{
         background: linear-gradient(135deg, {primary_blue} 0%, {secondary_blue} 100%);
-        height: 85px;
+        height: 95px;
         display: flex;
         align-items: center;
         padding: 0 60px;
@@ -66,8 +66,8 @@ st.markdown(f"""
     }}
 
     .logo-img {{
-        height: 55px;
-        width: 55px;
+        height: 70px;
+        width: 70px;
         border-radius: 50%;
     }}
 
@@ -83,51 +83,128 @@ st.markdown(f"""
 
     .nav-menu {{
         display: flex;
-        gap: 35px;
+        gap: 20px;
         direction: rtl;
     }}
 
-    .nav-item {{
+    .about-button {{
+        background: rgba(255,255,255,0.1);
         color: white;
-        text-decoration: none;
+        border: 2px solid {accent_cyan};
+        padding: 10px 30px;
+        border-radius: 25px;
         font-size: 1.15rem;
-        font-weight: 500;
-        transition: color 0.3s ease;
+        font-weight: 600;
         cursor: pointer;
+        transition: all 0.3s ease;
     }}
 
-    .nav-item:hover {{
+    .about-button:hover {{
+        background: {accent_cyan};
+        color: {primary_blue};
+        transform: scale(1.05);
+    }}
+
+    /* חלון אודות */
+    .about-modal {{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 50px;
+        border-radius: 20px;
+        box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+        max-width: 700px;
+        width: 90%;
+        z-index: 10000;
+        direction: rtl;
+        text-align: right;
+        max-height: 80vh;
+        overflow-y: auto;
+    }}
+
+    .about-overlay {{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.6);
+        z-index: 9999;
+    }}
+
+    .about-close {{
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: {accent_cyan};
+        color: white;
+        border: none;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        font-size: 1.3rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }}
+
+    .about-close:hover {{
+        background: {primary_blue};
+        transform: rotate(90deg);
+    }}
+
+    .about-title {{
+        color: {primary_blue};
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 30px;
+        text-align: center;
+    }}
+
+    .about-subtitle {{
         color: {accent_cyan};
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 25px 0 15px 0;
     }}
 
-    /* גוף האתר - ממורכז לחלוטין */
+    .about-text {{
+        color: #334155;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 15px;
+    }}
+
+    /* גוף האתר - ממורכז לחלוטין, ללא שטח מת */
     .main-content {{
-        margin-top: 130px;
+        margin-top: 110px;
         text-align: center;
         direction: rtl;
-        padding: 50px 10%;
+        padding: 30px 10%;
         background: {bg_light};
-        min-height: calc(100vh - 130px);
+        min-height: calc(100vh - 110px);
         display: flex;
         flex-direction: column;
         align-items: center;
     }}
 
-    /* כותרת ראשית - ממורכזת */
+    /* כותרת ראשית - בצבע טורקיז */
     .hero-title {{
-        color: {primary_blue};
+        color: {accent_cyan};
         font-size: 3.8rem;
         font-weight: 900;
-        margin: 0 auto 15px auto;
+        margin: 0 auto 10px auto;
         text-align: center;
         width: 100%;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }}
 
     /* כותרת משנה - ממורכזת */
     .hero-subtitle {{
         font-size: 1.35rem;
         color: #64748B;
-        margin: 0 auto 60px auto;
+        margin: 0 auto 40px auto;
         text-align: center;
         width: 100%;
     }}
@@ -151,14 +228,15 @@ st.markdown(f"""
         box-shadow: 0 8px 35px rgba(0,0,0,0.15);
     }}
 
-    /* כותרת בכרטיס - ממורכזת */
+    /* כותרת בכרטיס - ממורכזת ובצבע header */
     .card-title {{
         color: {primary_blue};
-        font-size: 1.9rem;
-        font-weight: 700;
+        font-size: 2rem;
+        font-weight: 800;
         margin-bottom: 15px;
         text-align: center;
         width: 100%;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }}
 
     /* כותרת משנה בכרטיס - ממורכזת */
@@ -193,11 +271,13 @@ st.markdown(f"""
         justify-content: center;
     }}
 
-    /* כפתור מרכזי עם גרדיאנט סגול */
+    /* כפתור מרכזי עם גרדיאנט סגול - ממורכז לגמרי */
     .stButton {{
-        display: flex;
-        justify-content: center;
-        width: 100%;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        text-align: center !important;
     }}
 
     .stButton>button {{
@@ -209,11 +289,11 @@ st.markdown(f"""
         font-size: 1.4rem !important;
         font-weight: 700 !important;
         border: none !important;
-        margin: 60px auto 0 auto !important;
+        margin: 40px auto !important;
         box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4) !important;
         transition: all 0.3s ease !important;
         animation: gradient 3s ease infinite !important;
-        display: block;
+        display: block !important;
     }}
 
     .stButton>button:hover {{
@@ -258,10 +338,51 @@ st.markdown(f"""
             <div class="logo-text">Resolve <span class="logo-ai">AI</span></div>
         </div>
         <div class="nav-menu">
-            <div class="nav-item">אתר</div>
-            <div class="nav-item">עשה</div>
-            <div class="nav-item">כניסה</div>
-            <div class="nav-item">בורר</div>
+            <button class="about-button" onclick="document.getElementById('aboutModal').style.display='block'">אודות</button>
+        </div>
+    </div>
+
+    <!-- חלון אודות -->
+    <div id="aboutModal" style="display:none;">
+        <div class="about-overlay" onclick="document.getElementById('aboutModal').style.display='none'"></div>
+        <div class="about-modal">
+            <button class="about-close" onclick="document.getElementById('aboutModal').style.display='none'">×</button>
+
+            <h1 class="about-title">Resolve AI - בוררות מבוססת בינה מלאכותית</h1>
+
+            <h2 class="about-subtitle">מהפכה דיגיטלית בעולם יישוב הסכסוכים</h2>
+            <p class="about-text">
+                Resolve AI מציעה פתרון חדשני ומתקדם ליישוב סכסוכים משפטיים באמצעות טכנולוגיית בינה מלאכותית מתקדמת.
+                המערכת שלנו נועדה לספק החלטות בוררות מקצועיות, אובייקטיביות ומהירות, תוך חיסכון משמעותי בזמן ובעלויות.
+            </p>
+
+            <h2 class="about-subtitle">היתרונות המשמעותיים</h2>
+            <p class="about-text">
+                <strong>חיסכון כלכלי משמעותי:</strong> במקום לשלם אלפי שקלים לעורכי דין ובעלי מקצוע משפטיים, תקבלו החלטת בוררות מקצועית בשבריר מהעלות המקובלת.
+            </p>
+            <p class="about-text">
+                <strong>מהירות וזמינות:</strong> תהליך הבוררות המסורתי עלול להימשך חודשים ואף שנים. עם Resolve AI, תקבלו החלטה מנומקת תוך דקות בודדות, בכל שעה ומכל מקום.
+            </p>
+            <p class="about-text">
+                <strong>אובייקטיביות מלאה:</strong> הבינה המלאכותית שלנו מנתחת את המקרה ללא משוא פנים, ללא דעות קדומות וללא השפעות חיצוניות, תוך הסתמכות על פסיקה משפטית עדכנית ועקרונות משפט מבוססים.
+            </p>
+
+            <h2 class="about-subtitle">איך זה עובד?</h2>
+            <p class="about-text">
+                1. <strong>העלאת מסמכים:</strong> הצד התובע מעלה את כתב התביעה, והצד הנתבע מעלה את כתב ההגנה.<br>
+                2. <strong>ניתוח חכם:</strong> המערכת שלנו מנתחת את שני הצדדים, בוחנת את הטיעונים, בוחנת תקדימים משפטיים רלוונטיים ואת החקיקה הרלוונטית.<br>
+                3. <strong>החלטת בוררות:</strong> תקבלו החלטה מפורטת ומנומקת המבוססת על עקרונות משפטיים מוכחים, עם הפניות לפסיקה ולחקיקה.
+            </p>
+
+            <h2 class="about-subtitle">למי זה מתאים?</h2>
+            <p class="about-text">
+                המערכת שלנו מתאימה לסכסוכים אזרחיים, מסחריים, צרכניים ועוד. בין אם מדובר בסכסוך בין שכנים, בין עסקים,
+                או בין צרכן לספק - Resolve AI כאן כדי לספק לכם פתרון מהיר, זול ואפקטיבי.
+            </p>
+
+            <p class="about-text" style="text-align:center; margin-top:30px; font-weight:600; color:#00d4ff;">
+                הצטרפו למהפכה הדיגיטלית ביישוב סכסוכים - פשוט, מהיר וחסכוני.
+            </p>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -272,8 +393,6 @@ st.markdown('<div class="main-content">', unsafe_allow_html=True)
 # כותרת ראשית וכותרת משנה - ממורכזות
 st.markdown('<h1 class="hero-title">Resolve AI</h1>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">תיווך בינה מלאכותית לפתרון סכסוכים מהיר ואובייקטיבי</p>', unsafe_allow_html=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
 
 # כרטיסים - ממורכזים
 col1, space, col2 = st.columns([1, 0.15, 1])
@@ -296,10 +415,8 @@ with col2:
     </div>
     """, unsafe_allow_html=True)
 
-st.markdown("<br>", unsafe_allow_html=True)
-
 # כפתור מרכזי עם גרדיאנט
-if st.button("תבצע סגילה אישית"):
+if st.button("בצע בוררות כעת"):
     with st.spinner('מנתח מסמכים...'):
         time.sleep(2)
     st.success("הניתוח הושלם!")
