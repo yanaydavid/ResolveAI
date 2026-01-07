@@ -1,117 +1,176 @@
 import streamlit as st
 import time
 
-# הגדרות דף - חייב להיות ראשון
+# 1. הגדרות דף - ניקוי שוליים מקסימלי
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
 
-# עיצוב ה-Header והאלמנטים לפי התמונה שבחרת
-st.markdown("""
+# הצבעים המדויקים מהסקיצה
+deep_blue = "#0A2647" # כחול כהה עמוק
+soft_bg = "#F0F4F8"   # רקע אפור-תכלת רך מאוד
+accent_color = "#34D399" # טורקיז
+
+st.markdown(f"""
     <style>
-    header {visibility: hidden;}
-    .block-container {padding: 0px !important;}
+    /* ביטול כל המרווחים הלבנים של Streamlit */
+    [data-testid="stHeader"] {{display: none;}}
+    .block-container {{
+        padding: 0px !important;
+        margin: 0px !important;
+        max-width: 100% !important;
+    }}
     
-    /* ה-Header הכחול העמוק מהתמונה */
-    .custom-header {
-        background-color: #0A2647;
-        height: 80px;
+    /* ה-Header הכחול - נצמד למעלה ללא רווחים */
+    .full-header {{
+        background-color: {deep_blue};
+        width: 100%;
+        height: 75px;
         display: flex;
         align-items: center;
-        padding: 0 50px;
         justify-content: space-between;
-        width: 100%;
-        position: sticky;
+        padding: 0 50px;
+        position: fixed;
         top: 0;
-        z-index: 999;
-    }
-    
-    .logo-container {
+        left: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }}
+
+    .nav-items {{
+        display: flex;
+        gap: 25px;
+        color: white;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: 500;
+        direction: rtl;
+    }}
+
+    .logo-section {{
         display: flex;
         align-items: center;
         gap: 15px;
-        color: white;
-        font-family: sans-serif;
-    }
+    }}
 
-    .main-body {
-        text-align: center;
-        padding-top: 60px;
-        background-color: #F8FAFC;
+    /* טיפול בלוגו שייראה שקוף ולבן על הרקע הכהה */
+    .logo-img {{
+        height: 45px;
+        mix-blend-mode: screen; /* גורם לרקע שחור/לבן להיעלם ולהשתלב */
+        filter: brightness(0) invert(1); /* הופך ללבן נקי */
+    }}
+
+    /* תוכן מרכזי */
+    .main-wrapper {{
+        background-color: {soft_bg};
         min-height: 100vh;
+        width: 100%;
+        padding-top: 120px; /* רווח מה-Header */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         direction: rtl;
-    }
+    }}
 
-    .hero-title {
-        color: #0A2647;
-        font-size: 3.5rem;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
+    .hero-section {{
+        text-align: center;
+        margin-bottom: 40px;
+    }}
 
-    .hero-subtitle {
-        color: #64748B;
-        font-size: 1.4rem;
-        margin-bottom: 50px;
-    }
+    .hero-title {{
+        color: {deep_blue};
+        font-size: 3.8rem;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -1px;
+    }}
 
-    /* כרטיסי העלאת קבצים */
-    .upload-card {
+    .hero-subtitle {{
+        color: #475569;
+        font-size: 1.5rem;
+        margin-top: 10px;
+    }}
+
+    /* כרטיסי העלאה */
+    .card-container {{
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+        width: 80%;
+        margin-top: 20px;
+    }}
+
+    .upload-card {{
         background: white;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        border-top: 5px solid #0A2647;
-    }
-    
-    /* כפתור הפעולה הסגול/טורקיז מהתמונה */
-    .stButton>button {
-        background: linear-gradient(90deg, #6366F1, #34D399) !important;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        flex: 1;
+        text-align: center;
+        border: 1px solid #E2E8F0;
+    }}
+
+    /* כפתור הפעלה סופי */
+    .stButton>button {{
+        background: linear-gradient(135deg, #6366F1 0%, {accent_color} 100%) !important;
         color: white !important;
         border: none !important;
-        padding: 15px 80px !important;
+        padding: 18px 80px !important;
         border-radius: 50px !important;
-        font-size: 1.3rem !important;
+        font-size: 1.4rem !important;
         font-weight: bold !important;
-        box-shadow: 0 10px 15px rgba(99, 102, 241, 0.3) !important;
-    }
+        margin-top: 50px !important;
+        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2) !important;
+        transition: all 0.3s ease;
+    }}
+    
+    .stButton>button:hover {{
+        transform: translateY(-3px);
+        box-shadow: 0 15px 25px rgba(99, 102, 241, 0.3) !important;
+    }}
     </style>
 
-    <div class="custom-header">
-        <div style="display: flex; gap: 30px; color: white; font-weight: 500;">
-            <span>צור קשר</span>
+    <div class="full-header">
+        <div class="nav-items">
             <span>אודות</span>
+            <span>שירותים</span>
+            <span>צור קשר</span>
         </div>
-        <div class="logo-container">
-            <span style="font-size: 1.8rem; font-weight: bold;">Resolve AI</span>
-            <img src="https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png" style="height: 50px; filter: brightness(0) invert(1);">
+        <div class="logo-section">
+            <span style="color: white; font-size: 1.8rem; font-weight: bold;">Resolve AI</span>
+            <img src="https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png" class="logo-img">
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# גוף האתר
-st.markdown('<div class="main-body">', unsafe_allow_html=True)
-st.markdown('<h1 class="hero-title">Resolve AI</h1>', unsafe_allow_html=True)
-st.markdown('<p class="hero-subtitle">פתרון סכסוכים חכם ומהיר מבוסס בינה מלאכותית</p>', unsafe_allow_html=True)
+# מבנה גוף הדף
+st.markdown('<div class="main-wrapper">', unsafe_allow_html=True)
 
-# עמודות
-col1, space, col2 = st.columns([1, 0.2, 1])
+with st.container():
+    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+    st.markdown('<h1 class="hero-title">Resolve AI</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">פתרון סכסוכים חכם ומהיר מבוסס בינה מלאכותית</p>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# יצירת העמודות להעלאת קבצים
+col1, col2 = st.columns(2)
 
 with col1:
     st.markdown('<div class="upload-card">', unsafe_allow_html=True)
-    st.markdown("### 📝 צד א' - תובע")
-    st.file_uploader("העלה כתב תביעה", key="p1")
+    st.markdown(f"<h2 style='color: {deep_blue};'>📝 צד א' - תובע</h2>", unsafe_allow_html=True)
+    st.file_uploader("גרור או בחר כתב תביעה", key="up_tovea")
     st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
     st.markdown('<div class="upload-card">', unsafe_allow_html=True)
-    st.markdown("### 🛡️ צד ב' - נתבע")
-    st.file_uploader("העלה כתב הגנה", key="d1")
+    st.markdown(f"<h2 style='color: {deep_blue};'>🛡️ צד ב' - נתבע</h2>", unsafe_allow_html=True)
+    st.file_uploader("גרור או בחר כתב הגנה", key="up_nitba")
     st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<br><br>", unsafe_allow_html=True)
-
-if st.button("קבל הכרעת בורר עכשיו"):
-    with st.spinner('מנתח מסמכים...'):
-        time.sleep(2)
-    st.success("הניתוח הושלם!")
+# כפתור ההפעלה
+st.markdown('<div style="display: flex; justify-content: center; width: 100%;">', unsafe_allow_html=True)
+if st.button("התחל תהליך בוררות חכם"):
+    with st.spinner('הבינה המלאכותית מנתחת את המסמכים...'):
+        time.sleep(3)
+    st.balloons()
+    st.success("הניתוח הושלם! ניתן להוריד את פסק הבורר.")
+st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
