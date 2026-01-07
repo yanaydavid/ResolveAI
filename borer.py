@@ -1,122 +1,130 @@
 import streamlit as st
 import time
 
-# הגדרות דף - חייב להיות ראשון
+# הגדרות דף
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
 
-# הזרקת CSS אגרסיבי לביטול השוליים והפס הלבן
+# עיצוב CSS סופי ומדויק
 st.markdown("""
     <style>
-    /* הסתרת ה-Header המובנה של Streamlit */
-    header, [data-testid="stHeader"] {
-        display: none !important;
-    }
-    
-    /* ביטול שוליים עליונים של התוכן */
-    .main .block-container {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
+    /* הסתרת Header מובנה */
+    [data-testid="stHeader"] {display: none !important;}
+    .block-container {padding: 0 !important;}
 
-    /* הפס הכחול העמוק - נצמד לראש הדף באבסולוטיות */
-    .custom-navbar {
+    /* ה-Header הכחול - מתיחה מלאה */
+    .nav-bar {
         background-color: #0A2647;
-        width: 100%;
+        width: 100vw;
         height: 80px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 50px;
-        z-index: 9999;
+        padding: 0 60px;
+        position: relative;
         box-sizing: border-box;
     }
-    
-    /* לוגו שקוף ולבן */
-    .navbar-logo {
-        height: 50px;
-        filter: brightness(0) invert(1);
-        mix-blend-mode: screen;
+
+    /* תיקון הלוגו: שימוש ב-mask להסרת הרקע הלבן לגמרי */
+    .logo-frame {
+        height: 55px;
+        width: 55px;
+        background-color: white;
+        mask: url(https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png) no-repeat center;
+        mask-size: contain;
+        -webkit-mask: url(https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png) no-repeat center;
+        -webkit-mask-size: contain;
     }
 
-    .navbar-text {
-        color: white;
-        font-size: 1.8rem;
-        font-weight: bold;
-        font-family: sans-serif;
-    }
-
-    /* גוף האתר - מורד למטה כדי לא להיבלע תחת ה-Navbar */
-    .main-content {
-        margin-top: 100px;
+    .main-container {
         text-align: center;
+        padding: 60px 10%;
+        background-color: #F8FAFC;
+        min-height: 100vh;
         direction: rtl;
-        font-family: 'Assistant', sans-serif;
     }
 
     .hero-title {
         color: #0A2647;
         font-size: 4rem;
         font-weight: 900;
-        margin-bottom: 0;
+        margin: 0;
+        display: block;
+        width: 100%;
     }
 
     .hero-subtitle {
         color: #64748B;
         font-size: 1.5rem;
-        margin-top: 0;
-        margin-bottom: 50px;
+        margin-bottom: 40px;
+        display: block;
+        width: 100%;
     }
 
     /* עיצוב כפתור הטורקיז */
-    div.stButton > button {
+    .stButton > button {
         background: linear-gradient(90deg, #1E3A8A, #34D399) !important;
         color: white !important;
         border-radius: 50px !important;
         padding: 15px 80px !important;
-        font-size: 1.3rem !important;
+        font-size: 1.4rem !important;
+        font-weight: bold !important;
         border: none !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+        box-shadow: 0 10px 20px rgba(52, 211, 153, 0.2) !important;
     }
+    
+    /* מירכוז כותרות בתוך עמודות */
+    h3 { text-align: center !important; color: #0A2647; }
     </style>
-
-    <div class="custom-navbar">
-        <div style="color: rgba(255,255,255,0.8); display: flex; gap: 20px; font-weight: 500;">
+    
+    <div class="nav-bar">
+        <div style="color: white; font-weight: 500; display: flex; gap: 20px;">
             <span>אודות</span>
             <span>צור קשר</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <span class="navbar-text">Resolve AI</span>
-            <img src="https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png" class="navbar-logo">
+            <span style="color: white; font-size: 1.8rem; font-weight: bold;">Resolve AI</span>
+            <div class="logo-frame"></div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# תוכן האתר
-st.markdown('<div class="main-content">', unsafe_allow_html=True)
+# גוף האתר
+st.markdown('<div class="main-container">', unsafe_allow_html=True)
 
 st.markdown('<h1 class="hero-title">Resolve AI</h1>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">פתרון סכסוכים חכם ומהיר מבוסס בינה מלאכותית</p>', unsafe_allow_html=True)
 
-# אזור העלאת קבצים
+# עמודות להעלאת קבצים
 col1, space, col2 = st.columns([1, 0.1, 1])
 
 with col1:
     st.markdown("### 📝 צד א' - תובע")
-    st.file_uploader("גרור לכאן כתב תביעה", key="p1")
+    file1 = st.file_uploader("העלה כתב תביעה", key="t1")
 
 with col2:
     st.markdown("### 🛡️ צד ב' - נתבע")
-    st.file_uploader("גרור לכאן כתב הגנה", key="d1")
+    file2 = st.file_uploader("העלה כתב הגנה", key="n1")
 
-st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
+# לוגיקה אמיתית (בסיסית) להפעלת התהליך
 if st.button("התחל תהליך בוררות"):
-    with st.spinner('מנתח מסמכים...'):
-        time.sleep(2)
-    st.success("הניתוח הושלם!")
+    if file1 and file2:
+        with st.spinner('הבינה המלאכותית מנתחת את המסמכים ומשווה טענות...'):
+            # כאן יבוא בעתיד החיבור ל-LLM
+            time.sleep(4)
+        
+        st.success("הניתוח הושלם!")
+        
+        # הדמיית תוצאה
+        st.markdown("---")
+        st.subheader("טיוטת פסק בורר (הדמיה)")
+        st.info(f"""
+        **מסקנה ראשונית:** לאחר ניתוח כתב התביעה ({file1.name}) וכתב ההגנה ({file2.name}), 
+        נמצא כי ישנה סתירה מהותית בסעיף האחריות החוזית. 
+        **המלצה:** פשרה בגובה 65% מהסכום הנתבע.
+        """)
+    else:
+        st.error("אנא וודא שהעלית מסמכים משני הצדדים לפני הלחיצה.")
 
 st.markdown('</div>', unsafe_allow_html=True)
