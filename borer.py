@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 
-# הגדרות דף - Resolve AI Platform
+# Resolve AI - AI-Powered Arbitration Platform
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
 
 # אתחול session state לכפתור אודות
