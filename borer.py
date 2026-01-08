@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 
-# הגדרות דף בסיסיות
+# הגדרות דף - Resolve AI Platform
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
 
 # אתחול session state לכפתור אודות
@@ -293,31 +293,27 @@ st.markdown(f"""
     }}
 
     /* כפתור אודות בצד ימין ב-header */
-    div[data-testid="column"]:has(.about-btn-container) {{
-        position: fixed !important;
-        top: 27px !important;
-        right: 60px !important;
-        z-index: 10000 !important;
-        width: auto !important;
+    .about-button {{
+        position: absolute;
+        top: 50%;
+        right: 60px;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.1);
+        border: 2px solid {accent_cyan};
+        padding: 10px 30px;
+        border-radius: 25px;
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Heebo', sans-serif;
     }}
 
-    .about-btn-container .stButton>button {{
-        background: rgba(255,255,255,0.1) !important;
-        border: 2px solid {accent_cyan} !important;
-        padding: 10px 30px !important;
-        border-radius: 25px !important;
-        font-size: 1.15rem !important;
-        font-weight: 600 !important;
-        margin: 0 !important;
-        animation: none !important;
-        box-shadow: none !important;
-    }}
-
-    .about-btn-container .stButton>button:hover {{
-        background: {accent_cyan} !important;
-        color: {primary_blue} !important;
-        transform: scale(1.05) !important;
-        box-shadow: none !important;
+    .about-button:hover {{
+        background: {accent_cyan};
+        color: {primary_blue};
+        transform: translateY(-50%) scale(1.05);
     }}
 
     /* התאמה למסכים קטנים */
@@ -330,8 +326,8 @@ st.markdown(f"""
             font-size: 2.5rem;
         }}
 
-        div[data-testid="column"]:has(.about-btn-container) {{
-            right: 20px !important;
+        .about-button {{
+            right: 20px;
         }}
     }}
     </style>
@@ -341,16 +337,14 @@ st.markdown(f"""
             <img src="https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png" class="logo-img">
             <div class="logo-text">Resolve <span class="logo-ai">AI</span></div>
         </div>
+        <button class="about-button" onclick="window.showAbout = true; window.location.href='?show_about=true'">אודות</button>
     </div>
     """, unsafe_allow_html=True)
 
-# כפתור אודות בעמודה מיוחדת (יוצב ב-header ע"י CSS)
-col_about = st.columns([1])[0]
-with col_about:
-    st.markdown('<div class="about-btn-container">', unsafe_allow_html=True)
-    if st.button("אודות"):
-        st.session_state.show_about = True
-    st.markdown('</div>', unsafe_allow_html=True)
+# בדיקה אם נלחץ על כפתור אודות דרך URL query param
+query_params = st.query_params
+if query_params.get("show_about") == "true":
+    st.session_state.show_about = True
 
 # הצגת חלון אודות
 if st.session_state.show_about:
@@ -395,10 +389,28 @@ if st.session_state.show_about:
     </div>
     """, unsafe_allow_html=True)
 
-    # כפתור סגירה
-    if st.button("✕ סגור", key="close_about"):
-        st.session_state.show_about = False
-        st.rerun()
+    # כפתור סגירה עם קישור
+    st.markdown("""
+    <a href="?" style="
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: #00d4ff;
+        color: white;
+        border: none;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        font-size: 1.3rem;
+        cursor: pointer;
+        z-index: 10001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    ">✕</a>
+    """, unsafe_allow_html=True)
 
 # גוף האתר
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
