@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 
-# הגדרות דף בסיסיות
+# הגדרות דף בסיסיות - Resolve AI
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
 
 # ערכת צבעים מדויקת לפי התמונה
