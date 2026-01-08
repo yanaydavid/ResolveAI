@@ -345,6 +345,8 @@ st.markdown(f"""
 query_params = st.query_params
 if query_params.get("show_about") == "true":
     st.session_state.show_about = True
+else:
+    st.session_state.show_about = False
 
 # הצגת חלון אודות
 if st.session_state.show_about:
