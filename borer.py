@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 
-# הגדרות דף בסיסיות - Resolve AI
+# הגדרות דף בסיסיות
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
 
 # אתחול session state לכפתור אודות
@@ -158,12 +158,12 @@ st.markdown(f"""
 
     /* גוף האתר - ממורכז לחלוטין, ללא שטח מת */
     .main-content {{
-        margin-top: 105px;
+        margin-top: 100px;
         text-align: center;
         direction: rtl;
-        padding: 20px 10%;
+        padding: 15px 10%;
         background: {bg_light};
-        min-height: calc(100vh - 105px);
+        min-height: calc(100vh - 100px);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -292,11 +292,11 @@ st.markdown(f"""
         display: none;
     }}
 
-    /* כפתור אודות בהeader */
+    /* כפתור אודות בצד ימין ב-header */
     div[data-testid="column"]:has(.about-btn-container) {{
         position: fixed !important;
         top: 27px !important;
-        left: 60px !important;
+        right: 60px !important;
         z-index: 10000 !important;
         width: auto !important;
     }}
@@ -310,6 +310,7 @@ st.markdown(f"""
         font-weight: 600 !important;
         margin: 0 !important;
         animation: none !important;
+        box-shadow: none !important;
     }}
 
     .about-btn-container .stButton>button:hover {{
@@ -330,7 +331,7 @@ st.markdown(f"""
         }}
 
         div[data-testid="column"]:has(.about-btn-container) {{
-            left: 20px !important;
+            right: 20px !important;
         }}
     }}
     </style>
