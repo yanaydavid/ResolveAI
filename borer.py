@@ -1,8 +1,12 @@
 import streamlit as st
 import time
 
-# הגדרות דף בסיסיות
+# הגדרות דף בסיסיות - Resolve AI
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
+
+# אתחול session state לכפתור אודות
+if 'show_about' not in st.session_state:
+    st.session_state.show_about = False
 
 # ערכת צבעים מדויקת לפי התמונה
 primary_blue = "#1a4d5e"  # כחול כהה ל-header
@@ -79,30 +83,6 @@ st.markdown(f"""
 
     .logo-ai {{
         color: {accent_cyan};
-    }}
-
-    .nav-menu {{
-        display: flex;
-        gap: 20px;
-        direction: rtl;
-    }}
-
-    .about-button {{
-        background: rgba(255,255,255,0.1);
-        color: white;
-        border: 2px solid {accent_cyan};
-        padding: 10px 30px;
-        border-radius: 25px;
-        font-size: 1.15rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }}
-
-    .about-button:hover {{
-        background: {accent_cyan};
-        color: {primary_blue};
-        transform: scale(1.05);
     }}
 
     /* חלון אודות */
@@ -312,6 +292,33 @@ st.markdown(f"""
         display: none;
     }}
 
+    /* כפתור אודות בהeader */
+    div[data-testid="column"]:has(.about-btn-container) {{
+        position: fixed !important;
+        top: 27px !important;
+        left: 60px !important;
+        z-index: 10000 !important;
+        width: auto !important;
+    }}
+
+    .about-btn-container .stButton>button {{
+        background: rgba(255,255,255,0.1) !important;
+        border: 2px solid {accent_cyan} !important;
+        padding: 10px 30px !important;
+        border-radius: 25px !important;
+        font-size: 1.15rem !important;
+        font-weight: 600 !important;
+        margin: 0 !important;
+        animation: none !important;
+    }}
+
+    .about-btn-container .stButton>button:hover {{
+        background: {accent_cyan} !important;
+        color: {primary_blue} !important;
+        transform: scale(1.05) !important;
+        box-shadow: none !important;
+    }}
+
     /* התאמה למסכים קטנים */
     @media (max-width: 768px) {{
         .custom-header {{
@@ -322,12 +329,8 @@ st.markdown(f"""
             font-size: 2.5rem;
         }}
 
-        .nav-menu {{
-            gap: 15px;
-        }}
-
-        .nav-item {{
-            font-size: 0.95rem;
+        div[data-testid="column"]:has(.about-btn-container) {{
+            left: 20px !important;
         }}
     }}
     </style>
@@ -337,55 +340,64 @@ st.markdown(f"""
             <img src="https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png" class="logo-img">
             <div class="logo-text">Resolve <span class="logo-ai">AI</span></div>
         </div>
-        <div class="nav-menu">
-            <button class="about-button" onclick="document.getElementById('aboutModal').style.display='block'">אודות</button>
-        </div>
-    </div>
-
-    <!-- חלון אודות -->
-    <div id="aboutModal" style="display:none;">
-        <div class="about-overlay" onclick="document.getElementById('aboutModal').style.display='none'"></div>
-        <div class="about-modal">
-            <button class="about-close" onclick="document.getElementById('aboutModal').style.display='none'">×</button>
-
-            <h1 class="about-title">Resolve AI - בוררות מבוססת בינה מלאכותית</h1>
-
-            <h2 class="about-subtitle">מהפכה דיגיטלית בעולם יישוב הסכסוכים</h2>
-            <p class="about-text">
-                Resolve AI מציעה פתרון חדשני ומתקדם ליישוב סכסוכים משפטיים באמצעות טכנולוגיית בינה מלאכותית מתקדמת.
-                המערכת שלנו נועדה לספק החלטות בוררות מקצועיות, אובייקטיביות ומהירות, תוך חיסכון משמעותי בזמן ובעלויות.
-            </p>
-
-            <h2 class="about-subtitle">היתרונות המשמעותיים</h2>
-            <p class="about-text">
-                <strong>חיסכון כלכלי משמעותי:</strong> במקום לשלם אלפי שקלים לעורכי דין ובעלי מקצוע משפטיים, תקבלו החלטת בוררות מקצועית בשבריר מהעלות המקובלת.
-            </p>
-            <p class="about-text">
-                <strong>מהירות וזמינות:</strong> תהליך הבוררות המסורתי עלול להימשך חודשים ואף שנים. עם Resolve AI, תקבלו החלטה מנומקת תוך דקות בודדות, בכל שעה ומכל מקום.
-            </p>
-            <p class="about-text">
-                <strong>אובייקטיביות מלאה:</strong> הבינה המלאכותית שלנו מנתחת את המקרה ללא משוא פנים, ללא דעות קדומות וללא השפעות חיצוניות, תוך הסתמכות על פסיקה משפטית עדכנית ועקרונות משפט מבוססים.
-            </p>
-
-            <h2 class="about-subtitle">איך זה עובד?</h2>
-            <p class="about-text">
-                1. <strong>העלאת מסמכים:</strong> הצד התובע מעלה את כתב התביעה, והצד הנתבע מעלה את כתב ההגנה.<br>
-                2. <strong>ניתוח חכם:</strong> המערכת שלנו מנתחת את שני הצדדים, בוחנת את הטיעונים, בוחנת תקדימים משפטיים רלוונטיים ואת החקיקה הרלוונטית.<br>
-                3. <strong>החלטת בוררות:</strong> תקבלו החלטה מפורטת ומנומקת המבוססת על עקרונות משפטיים מוכחים, עם הפניות לפסיקה ולחקיקה.
-            </p>
-
-            <h2 class="about-subtitle">למי זה מתאים?</h2>
-            <p class="about-text">
-                המערכת שלנו מתאימה לסכסוכים אזרחיים, מסחריים, צרכניים ועוד. בין אם מדובר בסכסוך בין שכנים, בין עסקים,
-                או בין צרכן לספק - Resolve AI כאן כדי לספק לכם פתרון מהיר, זול ואפקטיבי.
-            </p>
-
-            <p class="about-text" style="text-align:center; margin-top:30px; font-weight:600; color:#00d4ff;">
-                הצטרפו למהפכה הדיגיטלית ביישוב סכסוכים - פשוט, מהיר וחסכוני.
-            </p>
-        </div>
     </div>
     """, unsafe_allow_html=True)
+
+# כפתור אודות בעמודה מיוחדת (יוצב ב-header ע"י CSS)
+col_about = st.columns([1])[0]
+with col_about:
+    st.markdown('<div class="about-btn-container">', unsafe_allow_html=True)
+    if st.button("אודות"):
+        st.session_state.show_about = True
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# הצגת חלון אודות
+if st.session_state.show_about:
+    st.markdown("""
+    <div class="about-overlay"></div>
+    <div class="about-modal">
+        <h1 class="about-title">Resolve AI - בוררות מבוססת בינה מלאכותית</h1>
+
+        <h2 class="about-subtitle">מהפכה דיגיטלית בעולם יישוב הסכסוכים</h2>
+        <p class="about-text">
+            Resolve AI מציעה פתרון חדשני ומתקדם ליישוב סכסוכים משפטיים באמצעות טכנולוגיית בינה מלאכותית מתקדמת.
+            המערכת שלנו נועדה לספק החלטות בוררות מקצועיות, אובייקטיביות ומהירות, תוך חיסכון משמעותי בזמן ובעלויות.
+        </p>
+
+        <h2 class="about-subtitle">היתרונות המשמעותיים</h2>
+        <p class="about-text">
+            <strong>חיסכון כלכלי משמעותי:</strong> במקום לשלם אלפי שקלים לעורכי דין ובעלי מקצוע משפטיים, תקבלו החלטת בוררות מקצועית בשבריר מהעלות המקובלת.
+        </p>
+        <p class="about-text">
+            <strong>מהירות וזמינות:</strong> תהליך הבוררות המסורתי עלול להימשך חודשים ואף שנים. עם Resolve AI, תקבלו החלטה מנומקת תוך דקות בודדות, בכל שעה ומכל מקום.
+        </p>
+        <p class="about-text">
+            <strong>אובייקטיביות מלאה:</strong> הבינה המלאכותית שלנו מנתחת את המקרה ללא משוא פנים, ללא דעות קדומות וללא השפעות חיצוניות, תוך הסתמכות על פסיקה משפטית עדכנית ועקרונות משפט מבוססים.
+        </p>
+
+        <h2 class="about-subtitle">איך זה עובד?</h2>
+        <p class="about-text">
+            1. <strong>העלאת מסמכים:</strong> הצד התובע מעלה את כתב התביעה, והצד הנתבע מעלה את כתב ההגנה.<br>
+            2. <strong>ניתוח חכם:</strong> המערכת שלנו מנתחת את שני הצדדים, בוחנת את הטיעונים, בוחנת תקדימים משפטיים רלוונטיים ואת החקיקה הרלוונטית.<br>
+            3. <strong>החלטת בוררות:</strong> תקבלו החלטה מפורטת ומנומקת המבוססת על עקרונות משפטיים מוכחים, עם הפניות לפסיקה ולחקיקה.
+        </p>
+
+        <h2 class="about-subtitle">למי זה מתאים?</h2>
+        <p class="about-text">
+            המערכת שלנו מתאימה לסכסוכים אזרחיים, מסחריים, צרכניים ועוד. בין אם מדובר בסכסוך בין שכנים, בין עסקים,
+            או בין צרכן לספק - Resolve AI כאן כדי לספק לכם פתרון מהיר, זול ואפקטיבי.
+        </p>
+
+        <p class="about-text" style="text-align:center; margin-top:30px; font-weight:600; color:#00d4ff;">
+            הצטרפו למהפכה הדיגיטלית ביישוב סכסוכים - פשוט, מהיר וחסכוני.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # כפתור סגירה
+    if st.button("✕ סגור", key="close_about"):
+        st.session_state.show_about = False
+        st.rerun()
 
 # גוף האתר
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
