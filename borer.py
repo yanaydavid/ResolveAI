@@ -178,12 +178,12 @@ st.markdown(f"""
 
     /* גוף האתר - ממורכז לחלוטין, ללא שטח מת */
     .main-content {{
-        margin-top: 110px;
+        margin-top: 105px;
         text-align: center;
         direction: rtl;
-        padding: 30px 10%;
+        padding: 20px 10%;
         background: {bg_light};
-        min-height: calc(100vh - 110px);
+        min-height: calc(100vh - 105px);
         display: flex;
         flex-direction: column;
         align-items: center;
