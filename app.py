@@ -719,16 +719,43 @@ if 'arbitration_case' in st.session_state and st.session_state.arbitration_case:
 
     st.markdown('<br><br>', unsafe_allow_html=True)
 
+    # Mediation Proposal (if exists)
+    if 'mediation_proposal' in analysis:
+        mediation = analysis['mediation_proposal']
+        st.markdown(f"""
+            <div style='background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); padding: 25px; border-radius: 20px; color: white; margin: 30px 0;'>
+                <h3 style='font-size: 1.8rem; margin-bottom: 15px; text-align: center;'>🤝 הצעת פשרה</h3>
+                <p style='font-size: 1.2rem; line-height: 1.8; background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; text-align: right; direction: rtl;'>
+                    <b>ההצעה:</b><br/>
+                    {mediation['proposal']}<br/><br/>
+                    <b>נימוק:</b><br/>
+                    {mediation['rationale']}
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+
     # Final Decision
-    decision = analysis['final_decision']
+    decision = analysis['final_verdict']
+    reasoning = analysis['reasoning']
+
+    # Build reasoning text
+    reasoning_text = f"<b>סיכום:</b> {reasoning['summary']}<br/><br/>"
+
+    if 'detailed_analysis' in reasoning:
+        reasoning_text += "<b>ניתוח מפורט:</b><br/>"
+        for i, point in enumerate(reasoning['detailed_analysis'], 1):
+            reasoning_text += f"{i}. {point}<br/>"
+
+    if 'legal_basis' in reasoning:
+        reasoning_text += f"<br/><b>בסיס משפטי:</b> {reasoning['legal_basis']}"
 
     st.markdown(f"""
         <div style='background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; border-radius: 20px; color: white; margin: 30px 0;'>
             <h3 style='font-size: 2rem; margin-bottom: 15px; text-align: center;'>📜 ההחלטה הסופית</h3>
-            <p style='font-size: 1.3rem; text-align: center; margin-bottom: 20px;'><b>{decision['ruling']}</b></p>
+            <p style='font-size: 1.3rem; text-align: center; margin-bottom: 20px;'><b>{decision['verdict']}</b></p>
             <p style='font-size: 1.1rem; line-height: 1.8; background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; text-align: right; direction: rtl;'>
                 <b>נימוקים:</b><br/>
-                {decision['reasoning']}
+                {reasoning_text}
             </p>
         </div>
     """, unsafe_allow_html=True)
