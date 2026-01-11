@@ -258,7 +258,7 @@ st.markdown("""
 st.markdown('<div class="card">', unsafe_allow_html=True)
 
 st.markdown("""
-    <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px;'>
+    <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
         📄 העלאת כתב תביעה
     </h3>
 """, unsafe_allow_html=True)
@@ -557,7 +557,7 @@ if not st.session_state.show_delivery:  # Don't show if claimant is in delivery 
         # Mandatory arbitration agreement
         st.markdown("""
             <div style='background: #FEF3C7; padding: 20px; border-radius: 12px; border-right: 4px solid #F59E0B; margin: 25px 0;'>
-                <h4 style='color: #92400E; font-size: 1.2rem; margin-bottom: 10px;'>⚖️ הסכמה לבוררות דיגיטלית</h4>
+                <h4 style='color: #92400E; font-size: 1.2rem; margin-bottom: 10px; text-align: center;'>⚖️ הסכמה לבוררות דיגיטלית</h4>
             </div>
         """, unsafe_allow_html=True)
 
@@ -572,7 +572,7 @@ if not st.session_state.show_delivery:  # Don't show if claimant is in delivery 
         # Defense file upload
         st.markdown('<br>', unsafe_allow_html=True)
         st.markdown("""
-            <h4 style='color: #0A2647; font-size: 1.5rem; margin-bottom: 15px;'>
+            <h4 style='color: #0A2647; font-size: 1.5rem; margin-bottom: 15px; text-align: center;'>
                 📄 העלאת כתב הגנה
             </h4>
         """, unsafe_allow_html=True)
@@ -735,7 +735,7 @@ if 'arbitration_case' in st.session_state and st.session_state.arbitration_case:
 
     # Financial Summary
     st.markdown("""
-        <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px;'>
+        <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
             💰 סיכום כספי
         </h3>
     """, unsafe_allow_html=True)
