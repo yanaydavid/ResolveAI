@@ -23,6 +23,10 @@ def init_database():
             claimant_name TEXT NOT NULL,
             defendant_details TEXT,
             claim_file_path TEXT NOT NULL,
+            defendant_name TEXT,
+            defendant_id_number TEXT,
+            defendant_agreed_arbitration INTEGER DEFAULT 0,
+            defense_file_path TEXT,
             status TEXT DEFAULT 'Pending',
             mailing_cost REAL DEFAULT 0.0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -100,6 +104,25 @@ def get_all_cases():
 
     conn.close()
     return [dict(case) for case in cases]
+
+def update_defendant_info(case_id, defendant_name, defendant_id_number, defense_file_path):
+    """Update defendant information and defense file"""
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE cases
+        SET defendant_name = ?,
+            defendant_id_number = ?,
+            defendant_agreed_arbitration = 1,
+            defense_file_path = ?,
+            status = 'In Progress',
+            updated_at = CURRENT_TIMESTAMP
+        WHERE case_id = ?
+    """, (defendant_name, defendant_id_number, defense_file_path, case_id))
+
+    conn.commit()
+    conn.close()
 
 # Initialize database when module is imported
 init_database()
