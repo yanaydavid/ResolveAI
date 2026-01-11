@@ -1,10 +1,16 @@
 import streamlit as st
 import os
-from database import create_case, get_case
+from database import create_case, get_case, update_case_status
 
 # Create uploads directory if it doesn't exist
 if not os.path.exists("uploads"):
     os.makedirs("uploads")
+
+# Initialize session state
+if 'case_id' not in st.session_state:
+    st.session_state.case_id = None
+if 'show_delivery' not in st.session_state:
+    st.session_state.show_delivery = False
 
 # Page configuration
 st.set_page_config(
@@ -266,43 +272,141 @@ uploaded_file = st.file_uploader(
     help="העלה את כתב התביעה שלך בפורמט PDF"
 )
 
-# Submit button
-if st.button("🚀 הגש תביעה"):
-    if not claimant_name:
-        st.error("⚠️ נא להזין את שם התובע")
-    elif not uploaded_file:
-        st.error("⚠️ נא להעלות קובץ כתב תביעה")
-    else:
-        # Save the uploaded file
-        file_path = os.path.join("uploads", f"{claimant_name}_{uploaded_file.name}")
-        with open(file_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
+# Check if we should show delivery screen
+if not st.session_state.show_delivery:
+    # Submit button
+    if st.button("🚀 הגש תביעה"):
+        if not claimant_name:
+            st.error("⚠️ נא להזין את שם התובע")
+        elif not uploaded_file:
+            st.error("⚠️ נא להעלות קובץ כתב תביעה")
+        else:
+            # Save the uploaded file
+            file_path = os.path.join("uploads", f"{claimant_name}_{uploaded_file.name}")
+            with open(file_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
 
-        # Create case in database
-        case_id = create_case(
-            claimant_name=claimant_name,
-            claim_file_path=file_path
-        )
+            # Create case in database with mailing cost
+            case_id = create_case(
+                claimant_name=claimant_name,
+                claim_file_path=file_path,
+                mailing_cost=35.0
+            )
 
-        # Show success message with Case ID
-        st.success(f"""
-            ✅ התביעה התקבלה בהצלחה!
-
-            **מספר תיק שלך: {case_id}**
-
-            שמור את מספר התיק לצורך מעקב אחר הטיפול בתביעתך.
-        """)
-
-        st.balloons()
-
-        # Display case info
-        st.info(f"""
-            📋 **פרטי התיק:**
-            - מספר תיק: **{case_id}**
-            - שם התובע: {claimant_name}
-            - קובץ: {uploaded_file.name}
-            - סטטוס: ממתין לעיבוד
-        """)
+            # Save to session state and show delivery screen
+            st.session_state.case_id = case_id
+            st.session_state.claimant_name = claimant_name
+            st.session_state.show_delivery = True
+            st.rerun()
 
 st.markdown('</div>', unsafe_allow_html=True)
+
+# Delivery & Payment Section
+if st.session_state.show_delivery and st.session_state.case_id:
+    st.markdown("""
+        <div class="card">
+            <h2 style='color: #0A2647; font-size: 2.5rem; margin-bottom: 10px; text-align: center;'>
+                📬 סיכום ומשלוח
+            </h2>
+            <p style='font-size: 1.2rem; color: #64748B; text-align: center; margin-bottom: 30px;'>
+                התיק נוצר בהצלחה! עכשיו נשלח את התביעה לנתבע
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+
+    # Case ID Display
+    st.markdown(f"""
+        <div style='background: linear-gradient(135deg, #7C3AED, #6366F1); padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 30px;'>
+            <h3 style='color: white; font-size: 1.3rem; margin-bottom: 10px;'>מספר תיק שלך</h3>
+            <h1 style='color: white; font-size: 3.5rem; font-weight: 900; margin: 0;'>{st.session_state.case_id}</h1>
+            <p style='color: rgba(255,255,255,0.9); margin-top: 10px; font-size: 1.1rem;'>שמור מספר זה למעקב אחר התיק</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Delivery Information
+    st.markdown("""
+        <div style='background: #FEF3C7; padding: 20px; border-radius: 12px; border-right: 4px solid #F59E0B; margin-bottom: 25px;'>
+            <h4 style='color: #92400E; font-size: 1.4rem; margin-bottom: 10px;'>⚠️ שלב חובה: משלוח התביעה לנתבע</h4>
+            <p style='color: #78350F; font-size: 1.1rem; line-height: 1.7;'>
+                כדי להמשיך בהליך הבוררות, <b>יש לשלוח את התביעה בדואר רשום לנתבע</b>.
+                <br>זהו תהליך משפטי חובה המבטיח שהנתבע קיבל את כתב התביעה באופן רשמי.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Delivery Option
+    st.markdown("""
+        <div style='background: white; padding: 25px; border-radius: 15px; border: 2px solid #7C3AED; margin-bottom: 25px;'>
+            <div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;'>
+                <div>
+                    <h4 style='color: #0A2647; font-size: 1.5rem; margin: 0;'>📮 דואר רשום באמצעות Resolve AI</h4>
+                    <p style='color: #64748B; font-size: 1.1rem; margin-top: 8px;'>
+                        אנחנו נדאג לשלוח את התביעה בדואר רשום ישירות לנתבע
+                    </p>
+                </div>
+                <div style='text-align: left;'>
+                    <div style='font-size: 2.5rem; font-weight: 800; color: #7C3AED;'>35 ₪</div>
+                </div>
+            </div>
+            <div style='background: #F1F5F9; padding: 15px; border-radius: 10px;'>
+                <p style='color: #475569; font-size: 1rem; margin: 0;'>
+                    💡 <b>חשוב לדעת:</b> עלות זו תתווסף אוטומטית להוצאות המשפט בפסק הדין הסופי,
+                    ותוחזר לך במקרה של ניצחון בתיק.
+                </p>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Summary
+    st.markdown("""
+        <div style='background: #F8FAFC; padding: 20px; border-radius: 12px; margin-bottom: 25px;'>
+            <h4 style='color: #0A2647; font-size: 1.3rem; margin-bottom: 15px;'>💰 סיכום עלויות</h4>
+            <div style='display: flex; justify-content: space-between; font-size: 1.2rem; color: #475569; margin-bottom: 10px;'>
+                <span>דמי משלוח בדואר רשום</span>
+                <span style='font-weight: 600;'>35 ₪</span>
+            </div>
+            <hr style='border: none; border-top: 2px solid #E2E8F0; margin: 15px 0;'>
+            <div style='display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: 700; color: #0A2647;'>
+                <span>סה"כ לתשלום</span>
+                <span style='color: #7C3AED;'>35 ₪</span>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Confirm & Pay Button
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("✅ אשר ושלם", use_container_width=True):
+            # Update case status to 'Sent'
+            update_case_status(st.session_state.case_id, "Sent")
+
+            st.success("""
+                ✅ התשלום אושר והתביעה נשלחת!
+
+                התיק עודכן לסטטוס "נשלח".
+                נעדכן אותך כשהנתבע יקבל את התביעה.
+            """)
+            st.balloons()
+
+            # Show final summary
+            st.info(f"""
+                📋 **סיכום סופי:**
+                - מספר תיק: **{st.session_state.case_id}**
+                - שם התובע: {st.session_state.claimant_name}
+                - סטטוס: נשלח בדואר רשום
+                - עלות משלוח: 35 ₪ (תתווסף להוצאות המשפט)
+
+                תוכל לעקוב אחר התיק באמצעות מספר התיק שלך.
+            """)
+
+            # Clear session state after confirmation
+            if st.button("🏠 חזור לדף הבית"):
+                st.session_state.case_id = None
+                st.session_state.show_delivery = False
+                st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
 st.markdown('</div>', unsafe_allow_html=True)
