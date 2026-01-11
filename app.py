@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from database import create_case, get_case, update_case_status
+from database import create_case, get_case, update_case_status, update_defendant_info
 
 # Create uploads directory if it doesn't exist
 if not os.path.exists("uploads"):
@@ -11,6 +11,10 @@ if 'case_id' not in st.session_state:
     st.session_state.case_id = None
 if 'show_delivery' not in st.session_state:
     st.session_state.show_delivery = False
+if 'respondent_case_id' not in st.session_state:
+    st.session_state.respondent_case_id = None
+if 'show_respondent_form' not in st.session_state:
+    st.session_state.show_respondent_form = False
 
 # Page configuration
 st.set_page_config(
@@ -408,5 +412,229 @@ if st.session_state.show_delivery and st.session_state.case_id:
                 st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
+
+# Respondent Portal Section
+if not st.session_state.show_delivery:  # Don't show if claimant is in delivery flow
+    st.markdown('<br><br>', unsafe_allow_html=True)
+
+    st.markdown("""
+        <div class="card">
+            <h2 style='color: #0A2647; font-size: 2.5rem; margin-bottom: 10px; text-align: center;'>
+                🛡️ פורטל נתבעים
+            </h2>
+            <p style='font-size: 1.2rem; color: #64748B; text-align: center; margin-bottom: 30px;'>
+                קיבלת הודעה על תביעה? הזן את מספר התיק והגש את כתב ההגנה שלך
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Case ID Search
+    if not st.session_state.respondent_case_id:
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+
+        st.markdown("""
+            <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+                🔍 חיפוש תיק
+            </h3>
+        """, unsafe_allow_html=True)
+
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            search_case_id = st.text_input(
+                "מספר תיק (5 ספרות)",
+                placeholder="הכנס מספר תיק...",
+                max_chars=5,
+                help="הכנס את מספר התיק שקיבלת בדואר"
+            )
+
+            if st.button("🔎 חפש תיק", use_container_width=True):
+                if not search_case_id:
+                    st.error("⚠️ נא להזין מספר תיק")
+                elif len(search_case_id) != 5 or not search_case_id.isdigit():
+                    st.error("⚠️ מספר תיק חייב להיות בן 5 ספרות")
+                else:
+                    case = get_case(search_case_id)
+                    if not case:
+                        st.error("❌ מספר תיק לא נמצא במערכת. נא לבדוק שוב את המספר.")
+                    else:
+                        st.session_state.respondent_case_id = search_case_id
+                        st.rerun()
+
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # Show Case Summary if case ID found
+    if st.session_state.respondent_case_id and not st.session_state.show_respondent_form:
+        case = get_case(st.session_state.respondent_case_id)
+
+        if case:
+            st.markdown("""
+                <div class="card">
+                    <h3 style='color: #0A2647; font-size: 2rem; margin-bottom: 20px; text-align: center;'>
+                        📋 סיכום תיק
+                    </h3>
+                </div>
+            """, unsafe_allow_html=True)
+
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+
+            # Case ID Display
+            st.markdown(f"""
+                <div style='background: linear-gradient(135deg, #0A2647, #144272); padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 25px;'>
+                    <h3 style='color: white; font-size: 1.3rem; margin-bottom: 10px;'>מספר תיק</h3>
+                    <h1 style='color: white; font-size: 3rem; font-weight: 900; margin: 0;'>{case['case_id']}</h1>
+                </div>
+            """, unsafe_allow_html=True)
+
+            # Case Details
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"""
+                    <div style='background: #F8FAFC; padding: 20px; border-radius: 12px; margin-bottom: 15px;'>
+                        <h4 style='color: #64748B; font-size: 1rem; margin-bottom: 8px;'>שם התובע</h4>
+                        <p style='color: #0A2647; font-size: 1.4rem; font-weight: 700; margin: 0;'>{case['claimant_name']}</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+            with col2:
+                st.markdown(f"""
+                    <div style='background: #F8FAFC; padding: 20px; border-radius: 12px; margin-bottom: 15px;'>
+                        <h4 style='color: #64748B; font-size: 1rem; margin-bottom: 8px;'>תאריך הגשה</h4>
+                        <p style='color: #0A2647; font-size: 1.4rem; font-weight: 700; margin: 0;'>{case['created_at'][:10]}</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+            # Status
+            status_color = {'Pending': '#F59E0B', 'Sent': '#3B82F6', 'In Progress': '#10B981'}.get(case['status'], '#64748B')
+            status_text = {'Pending': 'ממתין', 'Sent': 'נשלח', 'In Progress': 'בטיפול'}.get(case['status'], case['status'])
+
+            st.markdown(f"""
+                <div style='background: #F8FAFC; padding: 20px; border-radius: 12px; margin-bottom: 25px; text-align: center;'>
+                    <h4 style='color: #64748B; font-size: 1rem; margin-bottom: 8px;'>סטטוס התיק</h4>
+                    <p style='color: {status_color}; font-size: 1.4rem; font-weight: 700; margin: 0;'>{status_text}</p>
+                </div>
+            """, unsafe_allow_html=True)
+
+            # Defense button
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col2:
+                if st.button("📝 הגש כתב הגנה", use_container_width=True):
+                    st.session_state.show_respondent_form = True
+                    st.rerun()
+
+                if st.button("🔙 חזור לחיפוש", use_container_width=True):
+                    st.session_state.respondent_case_id = None
+                    st.rerun()
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+    # Respondent Registration Form
+    if st.session_state.show_respondent_form and st.session_state.respondent_case_id:
+        st.markdown("""
+            <div class="card">
+                <h3 style='color: #0A2647; font-size: 2rem; margin-bottom: 20px; text-align: center;'>
+                    ✍️ טופס הגשת הגנה
+                </h3>
+            </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+
+        # Defendant registration form
+        defendant_name = st.text_input(
+            "שם מלא",
+            placeholder="הכנס את שמך המלא...",
+            help="הכנס את שמך המלא כפי שמופיע בת.ז"
+        )
+
+        defendant_id = st.text_input(
+            "מספר תעודת זהות",
+            placeholder="9 ספרות...",
+            max_chars=9,
+            help="הכנס את מספר ת.ז שלך (9 ספרות)"
+        )
+
+        # Mandatory arbitration agreement
+        st.markdown("""
+            <div style='background: #FEF3C7; padding: 20px; border-radius: 12px; border-right: 4px solid #F59E0B; margin: 25px 0;'>
+                <h4 style='color: #92400E; font-size: 1.2rem; margin-bottom: 10px;'>⚖️ הסכמה לבוררות דיגיטלית</h4>
+            </div>
+        """, unsafe_allow_html=True)
+
+        agreed_arbitration = st.checkbox(
+            "אני מסכים/ה לנהל את המחלוקת בבוררות דיגיטלית לפי חוק הבוררות",
+            help="הסכמה זו נדרשת על מנת להמשיך בהליך"
+        )
+
+        if agreed_arbitration:
+            st.success("✅ הסכמתך לבוררות דיגיטלית נרשמה")
+
+        # Defense file upload
+        st.markdown('<br>', unsafe_allow_html=True)
+        st.markdown("""
+            <h4 style='color: #0A2647; font-size: 1.5rem; margin-bottom: 15px;'>
+                📄 העלאת כתב הגנה
+            </h4>
+        """, unsafe_allow_html=True)
+
+        defense_file = st.file_uploader(
+            "העלה כתב הגנה (PDF)",
+            type=["pdf"],
+            help="העלה את כתב ההגנה שלך בפורמט PDF"
+        )
+
+        # Submit defense
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            if st.button("✅ הגש כתב הגנה", use_container_width=True):
+                if not defendant_name:
+                    st.error("⚠️ נא להזין שם מלא")
+                elif not defendant_id:
+                    st.error("⚠️ נא להזין מספר תעודת זהות")
+                elif len(defendant_id) != 9 or not defendant_id.isdigit():
+                    st.error("⚠️ מספר תעודת זהות חייב להיות בן 9 ספרות")
+                elif not agreed_arbitration:
+                    st.error("⚠️ חובה לאשר הסכמה לבוררות דיגיטלית")
+                elif not defense_file:
+                    st.error("⚠️ נא להעלות קובץ כתב הגנה")
+                else:
+                    # Save defense file
+                    defense_path = os.path.join("uploads", f"{defendant_name}_defense_{defense_file.name}")
+                    with open(defense_path, "wb") as f:
+                        f.write(defense_file.getbuffer())
+
+                    # Update database
+                    update_defendant_info(
+                        st.session_state.respondent_case_id,
+                        defendant_name,
+                        defendant_id,
+                        defense_path
+                    )
+
+                    st.success("""
+                        ✅ כתב ההגנה התקבל בהצלחה!
+
+                        התיק עודכן לסטטוס "בטיפול".
+                        שני הצדדים יקבלו עדכון כשהבורר יפרסם את החלטתו.
+                    """)
+                    st.balloons()
+
+                    # Show summary
+                    st.info(f"""
+                        📋 **סיכום:**
+                        - מספר תיק: **{st.session_state.respondent_case_id}**
+                        - שם הנתבע: {defendant_name}
+                        - סטטוס: בטיפול
+                        - כתב הגנה: נקלט במערכת
+
+                        ניתן לעקוב אחר התיק באמצעות מספר התיק.
+                    """)
+
+                    # Reset button
+                    if st.button("🏠 חזור לדף הבית"):
+                        st.session_state.respondent_case_id = None
+                        st.session_state.show_respondent_form = False
+                        st.rerun()
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
