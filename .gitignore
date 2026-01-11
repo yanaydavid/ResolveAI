@@ -8,6 +8,14 @@ __pycache__/
 # Streamlit
 .streamlit/
 
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads
+uploads/
+
 # IDE
 .vscode/
 .idea/

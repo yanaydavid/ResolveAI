@@ -1,4 +1,10 @@
 import streamlit as st
+import os
+from database import create_case, get_case
+
+# Create uploads directory if it doesn't exist
+if not os.path.exists("uploads"):
+    os.makedirs("uploads")
 
 # Page configuration
 st.set_page_config(
@@ -225,22 +231,78 @@ st.markdown("""
 # Main Content
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
+# Claimant Portal
 st.markdown("""
     <div class="card">
-        <h2 style='color: #0A2647; font-size: 2rem; margin-bottom: 20px;'>
-            ברוכים הבאים לעידן החדש של בוררות דיגיטלית
+        <h2 style='color: #0A2647; font-size: 2.5rem; margin-bottom: 10px; text-align: center;'>
+            🏛️ פורטל תובעים
         </h2>
-        <p style='font-size: 1.2rem; color: #64748B; line-height: 1.8;'>
-            Resolve AI משלבת טכנולוגיית בינה מלאכותית מתקדמת עם מומחיות משפטית
-            כדי לספק פתרונות בוררות מהירים, אובייקטיביים ומקצועיים.
+        <p style='font-size: 1.2rem; color: #64748B; text-align: center; margin-bottom: 30px;'>
+            הגש את כתב התביעה שלך ותקבל מספר תיק ייחודי
         </p>
     </div>
 """, unsafe_allow_html=True)
 
-# Add a demo button
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    if st.button("התחל בוררות חדשה 🚀"):
-        st.success("מערכת הבוררות תיפתח בקרוב!")
+# File Upload Section
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
+st.markdown("""
+    <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px;'>
+        📄 העלאת כתב תביעה
+    </h3>
+""", unsafe_allow_html=True)
+
+# Input for claimant name
+claimant_name = st.text_input(
+    "שם התובע המלא",
+    placeholder="הכנס את שמך המלא...",
+    help="הכנס את השם המלא של התובע"
+)
+
+# File uploader
+uploaded_file = st.file_uploader(
+    "העלה כתב תביעה (PDF)",
+    type=["pdf"],
+    help="העלה את כתב התביעה שלך בפורמט PDF"
+)
+
+# Submit button
+if st.button("🚀 הגש תביעה"):
+    if not claimant_name:
+        st.error("⚠️ נא להזין את שם התובע")
+    elif not uploaded_file:
+        st.error("⚠️ נא להעלות קובץ כתב תביעה")
+    else:
+        # Save the uploaded file
+        file_path = os.path.join("uploads", f"{claimant_name}_{uploaded_file.name}")
+        with open(file_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+
+        # Create case in database
+        case_id = create_case(
+            claimant_name=claimant_name,
+            claim_file_path=file_path
+        )
+
+        # Show success message with Case ID
+        st.success(f"""
+            ✅ התביעה התקבלה בהצלחה!
+
+            **מספר תיק שלך: {case_id}**
+
+            שמור את מספר התיק לצורך מעקב אחר הטיפול בתביעתך.
+        """)
+
+        st.balloons()
+
+        # Display case info
+        st.info(f"""
+            📋 **פרטי התיק:**
+            - מספר תיק: **{case_id}**
+            - שם התובע: {claimant_name}
+            - קובץ: {uploaded_file.name}
+            - סטטוס: ממתין לעיבוד
+        """)
+
+st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
