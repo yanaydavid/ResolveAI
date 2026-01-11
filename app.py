@@ -232,7 +232,7 @@ st.markdown("""
 st.markdown("""
     <div class="hero-section">
         <h1 class="hero-title">Resolve AI</h1>
-        <p class="hero-subtitle">
+        <p class="hero-subtitle" style="text-align: center;">
             פתרון בוררות דיגיטלי מבוסס בינה מלאכותית -
             מהפכה בעולם יישוב סכסוכים משפטיים
         </p>
@@ -726,7 +726,7 @@ if 'arbitration_case' in st.session_state and st.session_state.arbitration_case:
         <div style='background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; border-radius: 20px; color: white; margin: 30px 0;'>
             <h3 style='font-size: 2rem; margin-bottom: 15px; text-align: center;'>📜 ההחלטה הסופית</h3>
             <p style='font-size: 1.3rem; text-align: center; margin-bottom: 20px;'><b>{decision['ruling']}</b></p>
-            <p style='font-size: 1.1rem; line-height: 1.8; background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;'>
+            <p style='font-size: 1.1rem; line-height: 1.8; background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; text-align: right; direction: rtl;'>
                 <b>נימוקים:</b><br/>
                 {decision['reasoning']}
             </p>
