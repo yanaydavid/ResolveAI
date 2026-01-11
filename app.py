@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 from database import create_case, get_case, update_case_status, update_defendant_info
+from ai_engine import analyze_case_mock, generate_arbitral_award_pdf, get_analysis_summary_table
 
 # Create uploads directory if it doesn't exist
 if not os.path.exists("uploads"):
@@ -636,5 +637,165 @@ if not st.session_state.show_delivery:  # Don't show if claimant is in delivery 
                         st.rerun()
 
         st.markdown('</div>', unsafe_allow_html=True)
+
+# AI Arbitration Analysis Section (for cases with both claim and defense)
+st.markdown('<br><br>', unsafe_allow_html=True)
+
+st.markdown("""
+    <div class="card">
+        <h2 style='color: #0A2647; font-size: 2.5rem; margin-bottom: 10px; text-align: center;'>
+            🤖 בוררות AI - צפייה בתוצאות
+        </h2>
+        <p style='font-size: 1.2rem; color: #64748B; text-align: center; margin-bottom: 30px;'>
+            לצפייה בניתוח ופסק הבוררות, הזן את מספר התיק
+        </p>
+    </div>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="card">', unsafe_allow_html=True)
+
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    arbitration_case_id = st.text_input(
+        "מספר תיק לבוררות (5 ספרות)",
+        placeholder="הכנס מספר תיק...",
+        max_chars=5,
+        key="arb_search",
+        help="הכנס את מספר התיק לצפייה בתוצאות הבוררות"
+    )
+
+    if st.button("🔍 צפה בבוררות", use_container_width=True):
+        if not arbitration_case_id:
+            st.error("⚠️ נא להזין מספר תיק")
+        elif len(arbitration_case_id) != 5 or not arbitration_case_id.isdigit():
+            st.error("⚠️ מספר תיק חייב להיות בן 5 ספרות")
+        else:
+            case = get_case(arbitration_case_id)
+            if not case:
+                st.error("❌ מספר תיק לא נמצא במערכת")
+            elif not case['defense_file_path']:
+                st.warning("⏳ התיק עדיין לא מוכן לבוררות - ממתינים לכתב הגנה מהנתבע")
+            else:
+                st.session_state.arbitration_case = case
+                st.rerun()
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Display Arbitration Results
+if 'arbitration_case' in st.session_state and st.session_state.arbitration_case:
+    case = st.session_state.arbitration_case
+
+    st.markdown("""
+        <div class="card">
+            <h2 style='color: #0A2647; font-size: 2.5rem; margin-bottom: 10px; text-align: center;'>
+                ⚖️ תוצאות הבוררות
+            </h2>
+            <p style='font-size: 1.1rem; color: #64748B; text-align: center; margin-bottom: 10px;'>
+                תיק מספר: <b>{}</b>
+            </p>
+        </div>
+    """.format(case['case_id']), unsafe_allow_html=True)
+
+    # Run AI Analysis
+    with st.spinner('🤖 המערכת מנתחת את המסמכים באמצעות בינה מלאכותית...'):
+        analysis = analyze_case_mock(
+            case['claim_file_path'],
+            case['defense_file_path'],
+            case['claimant_name'],
+            case['defendant_name']
+        )
+
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+
+    # Analysis Summary
+    st.markdown("""
+        <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px;'>
+            📊 ניתוח נקודות המחלוקת
+        </h3>
+    """, unsafe_allow_html=True)
+
+    # Display table
+    st.markdown(get_analysis_summary_table(analysis), unsafe_allow_html=True)
+
+    st.markdown('<br><br>', unsafe_allow_html=True)
+
+    # Final Decision
+    decision = analysis['final_decision']
+
+    st.markdown(f"""
+        <div style='background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; border-radius: 20px; color: white; margin: 30px 0;'>
+            <h3 style='font-size: 2rem; margin-bottom: 15px; text-align: center;'>📜 ההחלטה הסופית</h3>
+            <p style='font-size: 1.3rem; text-align: center; margin-bottom: 20px;'><b>{decision['ruling']}</b></p>
+            <p style='font-size: 1.1rem; line-height: 1.8; background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;'>
+                <b>נימוקים:</b><br/>
+                {decision['reasoning']}
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Financial Summary
+    st.markdown("""
+        <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px;'>
+            💰 סיכום כספי
+        </h3>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("סכום הפיצוי", f"{decision['amount_awarded']:,.0f} ₪", delta=None)
+    with col2:
+        st.metric("הוצאות משפט", f"{decision['legal_expenses']:.0f} ₪", delta="כולל דמי משלוח")
+    with col3:
+        st.metric("סה״כ לתשלום", f"{decision['total_payment']:,.0f} ₪", delta=f"תוך {decision['payment_deadline_days']} ימים")
+
+    st.markdown('<br>', unsafe_allow_html=True)
+
+    # Generate PDF Button
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("📥 הורד פסק בוררות (PDF)", use_container_width=True):
+            # Generate PDF
+            pdf_path = f"uploads/arbitral_award_{case['case_id']}.pdf"
+
+            case_data = {
+                'case_id': case['case_id'],
+                'claimant_name': case['claimant_name'],
+                'defendant_name': case['defendant_name']
+            }
+
+            generate_arbitral_award_pdf(case_data, analysis, pdf_path)
+
+            # Read the PDF file
+            with open(pdf_path, "rb") as pdf_file:
+                pdf_bytes = pdf_file.read()
+
+            st.download_button(
+                label="💾 שמור פסק בוררות",
+                data=pdf_bytes,
+                file_name=f"arbitral_award_{case['case_id']}.pdf",
+                mime="application/pdf",
+                use_container_width=True
+            )
+
+            st.success("""
+                ✅ פסק הבוררות נוצר בהצלחה!
+
+                המסמך כולל:
+                - ניתוח מלא של כל נקודות המחלוקת
+                - ההחלטה הסופית והנימוקים
+                - סיכום כספי מפורט
+                - אזור חתימות לשני הצדדים
+            """)
+
+    st.markdown('<br>', unsafe_allow_html=True)
+
+    # Clear button
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("🔙 חזור לדף הבית", use_container_width=True):
+            del st.session_state.arbitration_case
+            st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
