@@ -1,5 +1,12 @@
 import streamlit as st
 import time
+import os
+from ai_engine import analyze_case, generate_arbitral_award_pdf, get_analysis_summary_html
+from database import save_case, get_case
+
+# Create uploads directory if it doesn't exist
+if not os.path.exists("uploads"):
+    os.makedirs("uploads")
 
 # הגדרות דף
 st.set_page_config(page_title="Resolve AI", page_icon="⚖️", layout="wide")
@@ -9,6 +16,12 @@ if 'show_about' not in st.session_state:
     st.session_state.show_about = False
 if 'show_result' not in st.session_state:
     st.session_state.show_result = False
+if 'analysis_data' not in st.session_state:
+    st.session_state.analysis_data = None
+if 'case_id' not in st.session_state:
+    st.session_state.case_id = None
+if 'pdf_path' not in st.session_state:
+    st.session_state.pdf_path = None
 
 # ערכת צבעים מודרנית
 primary_blue = "#1a4d5e"
@@ -401,13 +414,53 @@ if st.button("🚀 בצע בוררות כעת"):
     if file_a and file_b and side_a_name and side_b_name:
         with st.status("🔍 מנתח מסמכים משפטיים באמצעות AI...", expanded=True) as status:
             st.write(f"📄 סורק את הטענות של {side_a_name}...")
-            time.sleep(1.5)
+            time.sleep(1)
+
+            # Save uploaded files
+            claimant_file_path = os.path.join("uploads", f"{side_a_name}_claim_{file_a.name}")
+            defendant_file_path = os.path.join("uploads", f"{side_b_name}_defense_{file_b.name}")
+
+            with open(claimant_file_path, "wb") as f:
+                f.write(file_a.getbuffer())
+            with open(defendant_file_path, "wb") as f:
+                f.write(file_b.getbuffer())
+
             st.write(f"📋 מצליב נתונים מול כתב ההגנה של {side_b_name}...")
-            time.sleep(1.5)
+            time.sleep(1)
+
+            # Generate analysis
+            analysis = analyze_case(side_a_name, side_b_name)
+            st.session_state.analysis_data = analysis
+            st.session_state.case_id = analysis['case_metadata']['case_id']
+
             st.write("⚖️ מנתח תקדימים משפטיים רלוונטיים...")
-            time.sleep(1)
-            st.write("✅ יוצר החלטת בוררות מקצועית...")
-            time.sleep(1)
+            time.sleep(0.8)
+            st.write("✅ יוצר פסק בוררות מקצועי...")
+            time.sleep(0.8)
+
+            # Generate PDF
+            pdf_filename = f"arbitral_award_{st.session_state.case_id}.pdf"
+            pdf_path = os.path.join("uploads", pdf_filename)
+
+            case_data = {
+                'case_id': st.session_state.case_id,
+                'claimant': side_a_name,
+                'defendant': side_b_name
+            }
+
+            generate_arbitral_award_pdf(case_data, analysis, pdf_path)
+            st.session_state.pdf_path = pdf_path
+
+            # Save to database
+            save_case(
+                st.session_state.case_id,
+                side_a_name,
+                side_b_name,
+                claimant_file_path,
+                defendant_file_path,
+                pdf_path
+            )
+
             status.update(label="✨ הניתוח הסתיים בהצלחה!", state="complete", expanded=False)
 
         st.session_state.show_result = True
@@ -415,53 +468,59 @@ if st.button("🚀 בצע בוררות כעת"):
         st.error("⚠️ נא למלא את כל השדות ולהעלות את המסמכים הנדרשים.")
 
 # הצגת תוצאות
-if st.session_state.show_result:
+if st.session_state.show_result and st.session_state.analysis_data:
+    # Display Case ID prominently
     st.markdown(f"""
-    <div class="result-card">
-        <h2 class="result-title">🎯 החלטת Resolve AI</h2>
-
-        <div class="result-section">
-            <div class="result-label">📌 נושא הסכסוך</div>
-            <div class="result-text">אי-עמידה בלוחות זמנים של חוזה שירות בין הצדדים.</div>
-        </div>
-
-        <div class="result-section">
-            <div class="result-label">🔍 ממצאים עיקריים</div>
-            <div class="result-text">
-                לאחר ניתוח מעמיק של המסמכים, נמצא כי <span class="highlight">{side_b_name}</span> חרג מהמועד
-                המוסכם ב-<span class="highlight">14 ימי עסקים</span> ללא מתן הודעה מראש כנדרש.
-                <br><br>
-                הראיות שהוצגו על ידי <span class="highlight">{side_a_name}</span> מצביעות על נזק כלכלי ישיר
-                הנובע מהעיכוב, כולל הפסד הכנסות והוצאות נוספות.
-            </div>
-        </div>
-
-        <div class="result-section">
-            <div class="result-label">⚖️ ההחלטה הסופית</div>
-            <div class="result-text">
-                בהתאם לסעיף 14 לחוזה ולאור הנזק שנגרם, נקבע כי <span class="highlight">{side_b_name}</span>
-                ישלם פיצוי בסך <span class="highlight" style="font-size: 1.3em;">1,500 ₪</span>
-                לטובת <span class="highlight">{side_a_name}</span>.
-                <br><br>
-                <b>תשלום יבוצע תוך 14 ימי עסקים מיום קבלת החלטה זו.</b>
-            </div>
-        </div>
-
-        <div class="result-section" style="border-right: 4px solid #10b981; background: #f0fdf4;">
-            <div class="result-label" style="color: #10b981;">✅ המלצות נוספות</div>
-            <div class="result-text">
-                • מומלץ לשני הצדדים לעדכן את החוזה ולהוסיף סעיפי קנסות ברורים יותר<br>
-                • יש להקפיד על תקשורת בכתב בכל שינוי במועדים<br>
-                • מומלץ להגדיר מנגנון התראות מוקדם למניעת סכסוכים עתידיים
-            </div>
-        </div>
+    <div style='background: linear-gradient(135deg, {accent_purple} 0%, #764ba2 100%);
+                padding: 30px; border-radius: 20px; text-align: center; color: white; margin: 30px 0;
+                box-shadow: 0 10px 40px rgba(102,126,234,0.4);'>
+        <h3 style='font-size: 1.3rem; margin-bottom: 10px; opacity: 0.9;'>Case Number / Mispar Tik</h3>
+        <h1 style='font-size: 3.5rem; font-weight: 900; margin: 0; letter-spacing: 3px;'>{st.session_state.case_id}</h1>
+        <p style='margin-top: 15px; font-size: 1.1rem; opacity: 0.9;'>Save this number for your records / Shmor mispar ze lemaavar</p>
     </div>
     """, unsafe_allow_html=True)
 
+    # Display analysis results
+    st.markdown(get_analysis_summary_html(st.session_state.analysis_data), unsafe_allow_html=True)
+
+    # PDF Download Button
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.session_state.pdf_path and os.path.exists(st.session_state.pdf_path):
+            with open(st.session_state.pdf_path, "rb") as pdf_file:
+                pdf_bytes = pdf_file.read()
+
+            st.download_button(
+                label="📥 הורד פסק בוררות (PDF) / Download Arbitral Award",
+                data=pdf_bytes,
+                file_name=f"arbitral_award_{st.session_state.case_id}.pdf",
+                mime="application/pdf",
+                use_container_width=True
+            )
+
+            st.success("""
+                ✅ הפסק נוצר בהצלחה!
+
+                המסמך כולל:
+                • מספר תיק (Case ID)
+                • טבלת ניתוח מחלוקות (Dispute Table)
+                • החלטה סופית (Final Decision)
+                • סיכום כספי כולל 35 ₪ דמי משלוח (Financial Summary + 35 ILS mailing costs)
+            """)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
     # כפתור לניתוח חדש
-    if st.button("📝 בצע ניתוח חדש"):
-        st.session_state.show_result = False
-        st.rerun()
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("📝 בצע ניתוח חדש / New Analysis", use_container_width=True):
+            st.session_state.show_result = False
+            st.session_state.analysis_data = None
+            st.session_state.case_id = None
+            st.session_state.pdf_path = None
+            st.rerun()
 
 # פוטר
 st.markdown("""
