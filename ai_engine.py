@@ -470,7 +470,7 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
 def get_analysis_summary_html(analysis):
     """
-    Convert analysis to formatted HTML for UI display
+    Convert analysis to formatted HTML for UI display with proper RTL and styling
 
     Args:
         analysis: The analysis dictionary
@@ -479,97 +479,111 @@ def get_analysis_summary_html(analysis):
         str: HTML formatted analysis summary
     """
 
+    # Build dispute table with dark blue header and zebra stripes
     html = """
-    <div style='background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-                padding: 40px; border-radius: 20px; margin: 30px 0;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.1);'>
-        <h2 style='color: #1a4d5e; text-align: center; font-size: 2rem; margin-bottom: 30px;'>
-            📊 Analysis Results / Totzuot Nituah
-        </h2>
-
-        <div style='background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px;
-                    border-right: 4px solid #00d4ff;'>
-            <h3 style='color: #00d4ff; font-size: 1.4rem; margin-bottom: 15px;'>
-                📋 Dispute Points / Neqodot Mahloqut
-            </h3>
+    <div style='margin: 30px 0;'>
+        <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+            📊 ניתוח נקודות המחלוקת
+        </h3>
+        <table style='width: 100%; border-collapse: collapse; direction: rtl; box-shadow: 0 10px 40px rgba(0,0,0,0.1);'>
+            <thead>
+                <tr style='background: #0A2647; color: white;'>
+                    <th style='padding: 15px; text-align: right; border: 1px solid #ddd; font-size: 1.1rem;'>נושא</th>
+                    <th style='padding: 15px; text-align: right; border: 1px solid #ddd; font-size: 1.1rem;'>גרסת התובע</th>
+                    <th style='padding: 15px; text-align: right; border: 1px solid #ddd; font-size: 1.1rem;'>גרסת הנתבע</th>
+                    <th style='padding: 15px; text-align: right; border: 1px solid #ddd; font-size: 1.1rem;'>ניתוח AI</th>
+                </tr>
+            </thead>
+            <tbody>
     """
 
-    for i, dispute in enumerate(analysis['dispute_table'], 1):
+    # Add zebra-striped rows
+    for i, dispute in enumerate(analysis['dispute_table']):
+        bg_color = '#f8f9fa' if i % 2 == 0 else 'white'
         html += f"""
-            <div style='background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 15px;'>
-                <h4 style='color: #1a4d5e; font-size: 1.2rem; margin-bottom: 10px;'>
-                    {i}. {dispute['issue']}
-                </h4>
-                <p style='margin: 8px 0; line-height: 1.6;'>
-                    <b style='color: #667eea;'>Claimant:</b> {dispute['claimant_version']}
-                </p>
-                <p style='margin: 8px 0; line-height: 1.6;'>
-                    <b style='color: #f59e0b;'>Defendant:</b> {dispute['defendant_version']}
-                </p>
-                <p style='margin: 8px 0; padding: 12px; background: #e8f5e9; border-radius: 8px; line-height: 1.6;'>
-                    <b style='color: #10b981;'>AI Analysis:</b> {dispute['ai_analysis']}
-                </p>
-            </div>
+            <tr style='background: {bg_color};'>
+                <td style='padding: 12px; border: 1px solid #ddd; vertical-align: top; text-align: right; direction: rtl;'><b>{dispute['issue']}</b></td>
+                <td style='padding: 12px; border: 1px solid #ddd; vertical-align: top; text-align: right; direction: rtl;'>{dispute['claimant_version']}</td>
+                <td style='padding: 12px; border: 1px solid #ddd; vertical-align: top; text-align: right; direction: rtl;'>{dispute['defendant_version']}</td>
+                <td style='padding: 12px; border: 1px solid #ddd; vertical-align: top; background: #e8f5e9; text-align: right; direction: rtl;'>{dispute['ai_analysis']}</td>
+            </tr>
         """
 
     html += """
-        </div>
+            </tbody>
+        </table>
+    </div>
     """
 
-    # Mediation Proposal
+    # Mediation Proposal with RTL
     if 'mediation_proposal' in analysis:
         mediation = analysis['mediation_proposal']
         html += f"""
         <div style='background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-                    padding: 30px; border-radius: 15px; color: white; margin-bottom: 20px;'>
-            <h3 style='font-size: 1.6rem; margin-bottom: 15px; text-align: center;'>
-                🤝 Mediation Proposal / Hatzaat Psara
-            </h3>
-            <div style='background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;'>
-                <p style='margin-bottom: 15px; line-height: 1.8;'>
-                    <b>Proposal:</b><br/>{mediation['proposal']}
+                    padding: 30px; border-radius: 20px; color: white; margin: 30px 0;
+                    box-shadow: 0 10px 40px rgba(251,191,36,0.4);'>
+            <h3 style='font-size: 1.8rem; margin-bottom: 15px; text-align: center;'>🤝 הצעת פשרה</h3>
+            <div style='background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; text-align: right; direction: rtl;'>
+                <p style='margin-bottom: 15px; line-height: 1.8; font-size: 1.1rem;'>
+                    <b>ההצעה:</b><br/>{mediation['proposal']}
                 </p>
-                <p style='line-height: 1.8;'>
-                    <b>Rationale:</b><br/>{mediation['rationale']}
+                <p style='line-height: 1.8; font-size: 1.1rem;'>
+                    <b>נימוק:</b><br/>{mediation['rationale']}
                 </p>
             </div>
         </div>
         """
 
-    # Final Verdict
+    # Final Verdict - Green card with centered header and RTL reasoning
     decision = analysis['final_verdict']
+    reasoning = analysis.get('reasoning', {})
+
+    # Build reasoning text
+    reasoning_html = ""
+    if reasoning:
+        reasoning_html = f"<b>סיכום:</b> {reasoning.get('summary', '')}<br/><br/>"
+
+        if 'detailed_analysis' in reasoning:
+            reasoning_html += "<b>ניתוח מפורט:</b><br/>"
+            for i, point in enumerate(reasoning['detailed_analysis'], 1):
+                reasoning_html += f"{i}. {point}<br/>"
+
+        if 'legal_basis' in reasoning:
+            reasoning_html += f"<br/><b>בסיס משפטי:</b> {reasoning['legal_basis']}"
+
     html += f"""
         <div style='background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-                    padding: 30px; border-radius: 15px; color: white; margin-bottom: 20px;'>
-            <h3 style='font-size: 1.6rem; margin-bottom: 15px; text-align: center;'>
-                ⚖️ Final Decision / Hahahlata Hasofit
-            </h3>
-            <p style='font-size: 1.3rem; text-align: center; margin-bottom: 20px;'>
-                <b>{decision['verdict']}</b>
-            </p>
+                    padding: 30px; border-radius: 20px; color: white; margin: 30px 0;
+                    box-shadow: 0 10px 40px rgba(16,185,129,0.4);'>
+            <h3 style='font-size: 2rem; margin-bottom: 15px; text-align: center;'>📜 ההחלטה הסופית</h3>
+            <p style='font-size: 1.3rem; text-align: center; margin-bottom: 20px;'><b>{decision['verdict']}</b></p>
+
+            <div style='background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; text-align: right; direction: rtl; margin-bottom: 20px;'>
+                <p style='line-height: 1.8; font-size: 1.1rem;'>
+                    <b>נימוקים:</b><br/><br/>
+                    {reasoning_html}
+                </p>
+            </div>
+
             <div style='background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;'>
-                <div style='display: flex; justify-content: space-between; margin-bottom: 10px;'>
-                    <span>Compensation / Pitzui:</span>
-                    <span style='font-size: 1.2rem; font-weight: bold;'>{decision['amount_awarded']:,.0f} ILS</span>
+                <div style='display: flex; justify-content: space-between; margin-bottom: 10px; direction: rtl;'>
+                    <span style='font-size: 1.1rem;'>סכום הפיצוי:</span>
+                    <span style='font-size: 1.2rem; font-weight: bold;'>{decision['amount_awarded']:,.0f} ₪</span>
                 </div>
-                <div style='display: flex; justify-content: space-between; margin-bottom: 10px;'>
-                    <span>Legal Expenses (Mail) / Hotzuot Mishpat:</span>
-                    <span style='font-size: 1.2rem; font-weight: bold;'>{decision['legal_expenses']:.0f} ILS</span>
+                <div style='display: flex; justify-content: space-between; margin-bottom: 10px; direction: rtl;'>
+                    <span style='font-size: 1.1rem;'>הוצאות משפט (דמי משלוח):</span>
+                    <span style='font-size: 1.2rem; font-weight: bold;'>{decision['legal_expenses']:.0f} ₪</span>
                 </div>
                 <hr style='border: none; border-top: 2px solid rgba(255,255,255,0.3); margin: 15px 0;'>
-                <div style='display: flex; justify-content: space-between;'>
-                    <span style='font-size: 1.2rem;'><b>Total Payment / Sakh Hakol:</b></span>
-                    <span style='font-size: 1.5rem; font-weight: bold;'>{decision['total_payment']:,.0f} ILS</span>
+                <div style='display: flex; justify-content: space-between; direction: rtl;'>
+                    <span style='font-size: 1.2rem;'><b>סה״כ לתשלום:</b></span>
+                    <span style='font-size: 1.5rem; font-weight: bold;'>{decision['total_payment']:,.0f} ₪</span>
                 </div>
                 <p style='text-align: center; margin-top: 15px; font-size: 0.95rem;'>
-                    Payment within {decision['payment_deadline_days']} days / Tashlum tokh {decision['payment_deadline_days']} yamim
+                    תשלום תוך {decision['payment_deadline_days']} ימים
                 </p>
             </div>
         </div>
-    """
-
-    html += """
-    </div>
     """
 
     return html
