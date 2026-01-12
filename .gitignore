@@ -1,25 +1,30 @@
-# Python
+# Python cache
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
 
-# Streamlit
-.streamlit/
+# Virtual environments
+venv/
+env/
+ENV/
 
-# Database
+# Database files
 *.db
-*.sqlite
-*.sqlite3
+*.sqlite*
 
-# Uploads
+# Uploads directory
 uploads/
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
+
+# Streamlit
+.streamlit/
