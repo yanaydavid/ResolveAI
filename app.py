@@ -498,9 +498,9 @@ if st.session_state.show_result and st.session_state.analysis_data:
     <div style='background: linear-gradient(135deg, {accent_purple} 0%, #764ba2 100%);
                 padding: 30px; border-radius: 20px; text-align: center; color: white; margin: 30px 0;
                 box-shadow: 0 10px 40px rgba(102,126,234,0.4);'>
-        <h3 style='font-size: 1.3rem; margin-bottom: 10px; opacity: 0.9;'>Case Number / Mispar Tik</h3>
+        <h3 style='font-size: 1.3rem; margin-bottom: 10px; opacity: 0.9;'>מספר תיק</h3>
         <h1 style='font-size: 3.5rem; font-weight: 900; margin: 0; letter-spacing: 3px;'>{st.session_state.case_id}</h1>
-        <p style='margin-top: 15px; font-size: 1.1rem; opacity: 0.9;'>Save this number for your records / Shmor mispar ze lemaavar</p>
+        <p style='margin-top: 15px; font-size: 1.1rem; opacity: 0.9;'>שמור מספר זה לעקוב אחרי התיק</p>
     </div>
     """, unsafe_allow_html=True)
 
