@@ -1,128 +1,135 @@
+"""
+Database module for Resolve AI - Simple case management
+"""
 import sqlite3
-import random
-import string
 from datetime import datetime
+import os
 
-DATABASE_NAME = "resolve_ai.db"
-
-def get_connection():
-    """Create a database connection"""
-    conn = sqlite3.connect(DATABASE_NAME, check_same_thread=False)
-    conn.row_factory = sqlite3.Row
-    return conn
+DB_PATH = "resolve_ai.db"
 
 def init_database():
-    """Initialize the database and create tables"""
-    conn = get_connection()
+    """Initialize the database and create tables if they don't exist"""
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Create cases table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS cases (
             case_id TEXT PRIMARY KEY,
             claimant_name TEXT NOT NULL,
-            defendant_details TEXT,
-            claim_file_path TEXT NOT NULL,
-            defendant_name TEXT,
-            defendant_id_number TEXT,
-            defendant_agreed_arbitration INTEGER DEFAULT 0,
-            defense_file_path TEXT,
-            status TEXT DEFAULT 'Pending',
-            mailing_cost REAL DEFAULT 0.0,
+            defendant_name TEXT NOT NULL,
+            claimant_file_path TEXT,
+            defendant_file_path TEXT,
+            status TEXT DEFAULT 'Completed',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            pdf_path TEXT
         )
     """)
 
     conn.commit()
     conn.close()
 
-def generate_case_id():
-    """Generate a unique 5-digit case ID"""
-    conn = get_connection()
+def save_case(case_id, claimant_name, defendant_name, claimant_file=None, defendant_file=None, pdf_path=None):
+    """
+    Save a case to the database
+
+    Args:
+        case_id: Unique case identifier
+        claimant_name: Name of the claimant
+        defendant_name: Name of the defendant
+        claimant_file: Path to claimant's file (optional)
+        defendant_file: Path to defendant's file (optional)
+        pdf_path: Path to generated PDF (optional)
+
+    Returns:
+        bool: True if successful
+    """
+    init_database()
+
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    while True:
-        # Generate random 5-digit number
-        case_id = ''.join(random.choices(string.digits, k=5))
+    try:
+        cursor.execute("""
+            INSERT INTO cases (case_id, claimant_name, defendant_name, claimant_file_path, defendant_file_path, pdf_path)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (case_id, claimant_name, defendant_name, claimant_file, defendant_file, pdf_path))
 
-        # Check if it already exists
-        cursor.execute("SELECT case_id FROM cases WHERE case_id = ?", (case_id,))
-        if not cursor.fetchone():
-            conn.close()
-            return case_id
-
-def create_case(claimant_name, claim_file_path, defendant_details="", mailing_cost=0.0):
-    """Create a new case and return the case_id"""
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    case_id = generate_case_id()
-
-    cursor.execute("""
-        INSERT INTO cases (case_id, claimant_name, defendant_details, claim_file_path, mailing_cost)
-        VALUES (?, ?, ?, ?, ?)
-    """, (case_id, claimant_name, defendant_details, claim_file_path, mailing_cost))
-
-    conn.commit()
-    conn.close()
-
-    return case_id
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error saving case: {e}")
+        return False
+    finally:
+        conn.close()
 
 def get_case(case_id):
-    """Get case details by case_id"""
-    conn = get_connection()
-    cursor = conn.cursor()
+    """
+    Retrieve a case from the database
 
-    cursor.execute("SELECT * FROM cases WHERE case_id = ?", (case_id,))
-    case = cursor.fetchone()
+    Args:
+        case_id: Unique case identifier
 
-    conn.close()
-    return dict(case) if case else None
+    Returns:
+        dict: Case data or None if not found
+    """
+    init_database()
 
-def update_case_status(case_id, status):
-    """Update the status of a case"""
-    conn = get_connection()
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute("""
-        UPDATE cases
-        SET status = ?, updated_at = CURRENT_TIMESTAMP
+        SELECT case_id, claimant_name, defendant_name, claimant_file_path,
+               defendant_file_path, status, created_at, pdf_path
+        FROM cases
         WHERE case_id = ?
-    """, (status, case_id))
+    """, (case_id,))
 
-    conn.commit()
+    row = cursor.fetchone()
     conn.close()
+
+    if row:
+        return {
+            'case_id': row[0],
+            'claimant_name': row[1],
+            'defendant_name': row[2],
+            'claimant_file_path': row[3],
+            'defendant_file_path': row[4],
+            'status': row[5],
+            'created_at': row[6],
+            'pdf_path': row[7]
+        }
+
+    return None
 
 def get_all_cases():
-    """Get all cases"""
-    conn = get_connection()
-    cursor = conn.cursor()
+    """
+    Retrieve all cases from the database
 
-    cursor.execute("SELECT * FROM cases ORDER BY created_at DESC")
-    cases = cursor.fetchall()
+    Returns:
+        list: List of case dictionaries
+    """
+    init_database()
 
-    conn.close()
-    return [dict(case) for case in cases]
-
-def update_defendant_info(case_id, defendant_name, defendant_id_number, defense_file_path):
-    """Update defendant information and defense file"""
-    conn = get_connection()
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute("""
-        UPDATE cases
-        SET defendant_name = ?,
-            defendant_id_number = ?,
-            defendant_agreed_arbitration = 1,
-            defense_file_path = ?,
-            status = 'In Progress',
-            updated_at = CURRENT_TIMESTAMP
-        WHERE case_id = ?
-    """, (defendant_name, defendant_id_number, defense_file_path, case_id))
+        SELECT case_id, claimant_name, defendant_name, status, created_at
+        FROM cases
+        ORDER BY created_at DESC
+    """)
 
-    conn.commit()
+    rows = cursor.fetchall()
     conn.close()
 
-# Initialize database when module is imported
-init_database()
+    cases = []
+    for row in rows:
+        cases.append({
+            'case_id': row[0],
+            'claimant_name': row[1],
+            'defendant_name': row[2],
+            'status': row[3],
+            'created_at': row[4]
+        })
+
+    return cases
