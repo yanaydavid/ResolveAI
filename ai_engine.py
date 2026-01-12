@@ -1,5 +1,6 @@
 """
 AI Engine for Resolve AI - PDF Generation with Hebrew Support
+Supports both PDF and Word (.docx) document processing
 """
 import json
 from datetime import datetime
@@ -13,6 +14,22 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 import os
 import random
+
+# PDF text extraction (optional, only if PyPDF2 is available)
+try:
+    import PyPDF2
+    PDF_SUPPORT = True
+except ImportError:
+    PDF_SUPPORT = False
+    print("Warning: PyPDF2 not available. PDF text extraction disabled.")
+
+# Word document text extraction
+try:
+    from docx import Document
+    DOCX_SUPPORT = True
+except ImportError:
+    DOCX_SUPPORT = False
+    print("Warning: python-docx not available. Word document text extraction disabled.")
 
 # Try to register Hebrew font
 HEBREW_FONT = 'Helvetica'
@@ -31,6 +48,90 @@ try:
             break
 except Exception as e:
     print(f"Could not register Hebrew font: {e}. Using fallback.")
+
+def extract_text_from_pdf(file_path):
+    """
+    Extract text content from a PDF file
+
+    Args:
+        file_path: Path to the PDF file
+
+    Returns:
+        str: Extracted text content
+    """
+    if not PDF_SUPPORT:
+        return "[PDF text extraction not available - PyPDF2 not installed]"
+
+    try:
+        text = ""
+        with open(file_path, 'rb') as file:
+            pdf_reader = PyPDF2.PdfReader(file)
+            for page in pdf_reader.pages:
+                text += page.extract_text() + "\n"
+        return text.strip()
+    except Exception as e:
+        print(f"Error extracting text from PDF {file_path}: {e}")
+        return f"[Error extracting PDF text: {str(e)}]"
+
+def extract_text_from_docx(file_path):
+    """
+    Extract text content from a Word (.docx) file
+
+    Args:
+        file_path: Path to the DOCX file
+
+    Returns:
+        str: Extracted text content
+    """
+    if not DOCX_SUPPORT:
+        return "[Word text extraction not available - python-docx not installed]"
+
+    try:
+        doc = Document(file_path)
+        text = []
+
+        # Extract text from all paragraphs
+        for paragraph in doc.paragraphs:
+            if paragraph.text.strip():
+                text.append(paragraph.text)
+
+        # Extract text from tables
+        for table in doc.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    if cell.text.strip():
+                        text.append(cell.text)
+
+        return "\n".join(text)
+    except Exception as e:
+        print(f"Error extracting text from Word document {file_path}: {e}")
+        return f"[Error extracting Word text: {str(e)}]"
+
+def extract_text_from_file(file_path):
+    """
+    Extract text from a file (PDF or DOCX) based on file extension
+
+    Args:
+        file_path: Path to the file
+
+    Returns:
+        str: Extracted text content
+    """
+    if not file_path or not os.path.exists(file_path):
+        return "[File not found]"
+
+    # Determine file type by extension
+    _, ext = os.path.splitext(file_path.lower())
+
+    if ext == '.pdf':
+        return extract_text_from_pdf(file_path)
+    elif ext in ['.docx', '.doc']:
+        if ext == '.doc':
+            print(f"Warning: .doc files are not supported, only .docx. File: {file_path}")
+            return "[.doc format not supported - please use .docx format]"
+        return extract_text_from_docx(file_path)
+    else:
+        return f"[Unsupported file format: {ext}]"
 
 def generate_case_id():
     """Generate a unique 5-digit case ID"""

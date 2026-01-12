@@ -389,7 +389,7 @@ with col1:
     """, unsafe_allow_html=True)
 
     side_a_name = st.text_input("שם התובע", key="name_a", placeholder="הכנס שם מלא...", label_visibility="collapsed")
-    file_a = st.file_uploader("העלה כתב תביעה (PDF)", type="pdf", key="file_a", label_visibility="collapsed")
+    file_a = st.file_uploader("העלה כתב תביעה (PDF או Word בלבד)", type=["pdf", "docx"], key="file_a", label_visibility="collapsed")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -405,7 +405,7 @@ with col2:
     """, unsafe_allow_html=True)
 
     side_b_name = st.text_input("שם הנתבע", key="name_b", placeholder="הכנס שם מלא...", label_visibility="collapsed")
-    file_b = st.file_uploader("העלה כתב הגנה (PDF)", type="pdf", key="file_b", label_visibility="collapsed")
+    file_b = st.file_uploader("העלה כתב הגנה (PDF או Word בלבד)", type=["pdf", "docx"], key="file_b", label_visibility="collapsed")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
