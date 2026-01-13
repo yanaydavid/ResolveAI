@@ -180,6 +180,30 @@ st.markdown("""
         border-radius: 10px !important;
     }
 
+    /* RTL File Uploader - Browse button on right */
+    [data-testid="stFileUploaderDropzone"] {{
+        flex-direction: row-reverse !important;
+        text-align: right !important;
+    }}
+
+    [data-testid="stFileUploaderDropzone"] section {{
+        display: flex;
+        flex-direction: row-reverse !important;
+        align-items: center;
+        gap: 15px;
+    }}
+
+    [data-testid="stFileUploaderDropzone"] button {{
+        order: -1;
+        margin-right: 0 !important;
+        margin-left: auto !important;
+    }}
+
+    .stFileUploader label {{
+        text-align: right !important;
+        direction: rtl !important;
+    }}
+
     /* Mobile Responsive */
     @media (max-width: 768px) {
         .custom-header {
