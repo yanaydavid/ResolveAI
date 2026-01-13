@@ -484,10 +484,11 @@ if st.session_state.portal_mode == 'claimant':
                     # Note: SMS and Email will be sent here once we have API keys
                     # For now, just show success message
 
-                    st.session_state.case_id = case_id
-                    st.session_state.claimant_email = claimant_email
-                    st.session_state.claimant_phone = claimant_phone
-                    st.session_state.defendant_phone = defendant_phone
+                    # Save case ID for display
+                    st.session_state.submitted_case_id = case_id
+                    st.session_state.submitted_claimant_email = st.session_state.claimant_email
+                    st.session_state.submitted_claimant_phone = st.session_state.claimant_phone
+                    st.session_state.submitted_defendant_phone = st.session_state.defendant_phone
 
                     status.update(label="✅ התביעה נקלטה בהצלחה!", state="complete", expanded=False)
 
@@ -495,7 +496,7 @@ if st.session_state.portal_mode == 'claimant':
                 st.rerun()
 
 # Display results - Case submitted successfully
-if st.session_state.show_result and st.session_state.case_id:
+if st.session_state.show_result and st.session_state.get('submitted_case_id'):
     # Display Case ID prominently
     st.markdown(f"""
     <div style='background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -503,7 +504,7 @@ if st.session_state.show_result and st.session_state.case_id:
                 box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);'>
         <h2 style='font-size: 2.5rem; margin-bottom: 20px;'>✅ התביעה הוגשה בהצלחה!</h2>
         <h3 style='font-size: 1.3rem; margin-bottom: 10px; opacity: 0.9;'>מספר תיק</h3>
-        <h1 style='font-size: 3.5rem; font-weight: 900; margin: 0; letter-spacing: 3px;'>{st.session_state.case_id}</h1>
+        <h1 style='font-size: 3.5rem; font-weight: 900; margin: 0; letter-spacing: 3px;'>{st.session_state.submitted_case_id}</h1>
         <p style='margin-top: 15px; font-size: 1.1rem; opacity: 0.9;'>שמור מספר זה לעקוב אחרי התיק</p>
     </div>
     """, unsafe_allow_html=True)
@@ -529,10 +530,10 @@ if st.session_state.show_result and st.session_state.case_id:
                 </p>
             </div>
         """, unsafe_allow_html=True)
-        if 'claimant_email' in st.session_state:
-            st.info(f"📧 {st.session_state.claimant_email}")
-        if 'claimant_phone' in st.session_state:
-            st.info(f"📱 {st.session_state.claimant_phone}")
+        if 'submitted_claimant_email' in st.session_state:
+            st.info(f"📧 {st.session_state.submitted_claimant_email}")
+        if 'submitted_claimant_phone' in st.session_state:
+            st.info(f"📱 {st.session_state.submitted_claimant_phone}")
 
     with col2:
         st.markdown("""
@@ -544,8 +545,8 @@ if st.session_state.show_result and st.session_state.case_id:
                 </p>
             </div>
         """, unsafe_allow_html=True)
-        if 'defendant_phone' in st.session_state:
-            st.info(f"📱 {st.session_state.defendant_phone}")
+        if 'submitted_defendant_phone' in st.session_state:
+            st.info(f"📱 {st.session_state.submitted_defendant_phone}")
 
     # Next steps
     st.markdown("""
@@ -579,7 +580,7 @@ if st.session_state.show_result and st.session_state.case_id:
             st.download_button(
                 label="📥 הורד פסק בוררות (PDF)",
                 data=pdf_bytes,
-                file_name=f"arbitral_award_{st.session_state.case_id}.pdf",
+                file_name=f"arbitral_award_{st.session_state.get('submitted_case_id', 'case')}.pdf",
                 mime="application/pdf",
                 use_container_width=True
             )
@@ -602,7 +603,10 @@ if st.session_state.show_result and st.session_state.case_id:
         if st.button("🔙 חזור לדף הבית", use_container_width=True):
             st.session_state.show_result = False
             st.session_state.analysis_data = None
-            st.session_state.case_id = None
+            st.session_state.submitted_case_id = None
+            st.session_state.submitted_claimant_email = None
+            st.session_state.submitted_claimant_phone = None
+            st.session_state.submitted_defendant_phone = None
             st.session_state.pdf_path = None
             st.rerun()
 
