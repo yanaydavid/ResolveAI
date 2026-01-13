@@ -811,6 +811,7 @@ elif st.session_state.portal_mode == 'defendant':
                         st.session_state.analysis_data = analysis
                         st.session_state.case_id = case['case_id']
                         st.session_state.pdf_path = pdf_path
+                        st.session_state.submitted_case_id = case['case_id']
 
                         status.update(label="✅ ניתוח הושלם!", state="complete", expanded=False)
 
