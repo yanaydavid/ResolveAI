@@ -142,11 +142,26 @@ st.markdown("""
         box-shadow: 0 10px 40px rgba(0,0,0,0.08);
         margin-bottom: 30px;
         transition: all 0.3s ease;
+        color: #0A2647;
     }
 
     .card:hover {
         transform: translateY(-5px);
         box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+    }
+
+    .card p {
+        color: #0A2647;
+    }
+
+    /* Expander text color */
+    .streamlit-expanderHeader {
+        color: #0A2647 !important;
+    }
+
+    /* Checkbox text color */
+    .stCheckbox label {
+        color: #0A2647 !important;
     }
 
     /* Buttons */
@@ -554,12 +569,12 @@ if st.session_state.show_result and st.session_state.get('submitted_case_id'):
             <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
                 📋 השלבים הבאים
             </h3>
-            <div style='text-align: right; direction: rtl; line-height: 2;'>
-                <p><b>1️⃣ הנתבע יקבל הודעה</b> - SMS עם קישור לצפייה בתביעה</p>
-                <p><b>2️⃣ הנתבע ירשם למערכת</b> - יצטרך למלא פרטים אישיים</p>
-                <p><b>3️⃣ הנתבע יגיש כתב הגנה</b> - יעלה את התשובה שלו לתביעה</p>
-                <p><b>4️⃣ ניתוח AI</b> - המערכת תנתח את שני המסמכים</p>
-                <p><b>5️⃣ פסק בוררות</b> - תקבל החלטה מנומקת</p>
+            <div style='text-align: right; direction: rtl; line-height: 2; color: #0A2647;'>
+                <p style='color: #0A2647;'><b>1️⃣ הנתבע יקבל הודעה</b> - SMS עם קישור לצפייה בתביעה</p>
+                <p style='color: #0A2647;'><b>2️⃣ הנתבע ירשם למערכת</b> - יצטרך למלא פרטים אישיים</p>
+                <p style='color: #0A2647;'><b>3️⃣ הנתבע יגיש כתב הגנה</b> - יעלה את התשובה שלו לתביעה</p>
+                <p style='color: #0A2647;'><b>4️⃣ ניתוח AI</b> - המערכת תנתח את שני המסמכים</p>
+                <p style='color: #0A2647;'><b>5️⃣ פסק בוררות</b> - תקבל החלטה מנומקת</p>
             </div>
         </div>
     """, unsafe_allow_html=True)

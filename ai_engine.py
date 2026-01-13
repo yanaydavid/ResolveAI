@@ -158,32 +158,32 @@ def analyze_case(claimant_name, defendant_name):
 
         "dispute_table": [
             {
-                "issue": "Delay in delivery - Ai aemidah bemoadi aspaqa",
-                "claimant_version": "Hanitba hithaiv lesapeq et hamutarim tokh 30 yom velo amad bekha, ma shegaram lenezek calkali shel 5,000 shekel",
-                "defendant_version": "Hateakhavut navaa mikoah alion (magefat corona) velakhen ain ahariut, kmefurat basaif 15 lahoze",
-                "ai_analysis": "Nimtza ki akhen haita iteakhavut shel 14 ymei asakim. Im zat, taanat koah haalion mequbelet raq beofen helqi. Mumlatz pitzui shel 2,500 shekel hamesaqef ahariut helqit."
+                "issue": "עיכוב במועד האספקה",
+                "claimant_version": "הנתבע התחייב לספק את המוצרים תוך 30 יום ולא עמד בכך, מה שגרם לנזק כלכלי של 5,000 שקל",
+                "defendant_version": "העיכוב נבע מכוח עליון (מגפת קורונה) ולכן אין אחריות, כמפורט בסעיף 15 לחוזה",
+                "ai_analysis": "נמצא כי אכן היה עיכוב של 14 ימי עסקים. עם זאת, טענת כוח עליון מתקבלת רק באופן חלקי. מומלץ פיצוי של 2,500 שקל המשקף אחריות חלקית."
             },
             {
-                "issue": "Quality of delivered products - Aikhut hamutarim shesupqu",
-                "claimant_version": "Hamutarim shesupqu haiu pgumim velo amdu btaqan hamusakm baheskem",
-                "defendant_version": "Hamutarim amdu bekhol hataqanim hamusaqmim vehbediqot hamtzurpot maasherot zat",
-                "ai_analysis": "Lefi mismakhi habediqa hametzurpim, hamutarim amdu btaqan. Taanat hatovea nidheit bneqoda zo."
+                "issue": "איכות המוצרים שסופקו",
+                "claimant_version": "המוצרים שסופקו היו פגומים ולא עמדו בתקן המוסכם בהסכם",
+                "defendant_version": "המוצרים עמדו בכל התקנים המוסכמים והבדיקות המצורפות מאשרות זאת",
+                "ai_analysis": "לפי מסמכי הבדיקה המצורפים, המוצרים עמדו בתקן. טענת התובע נדחית בנקודה זו."
             },
             {
-                "issue": "Additional expenses - Hotzaot nosfot shenigrmu latovea",
-                "claimant_version": "Nealatzti lirqosh mutarim halufim balut shel 3,000 shekel eqev haaikhub",
-                "defendant_version": "Harekhisha hanosefet lo haita hekhrahit venaasa beyotzmat hatovea lelo tiaum",
-                "ai_analysis": "Heleq mehaotzaot (1,500 shekel) niraot sevirot vehekhrahiot benasibut hainian. Yesh lehakir bhen."
+                "issue": "הוצאות נוספות שנגרמו לתובע",
+                "claimant_version": "נאלצתי לרכוש מוצרים חלופיים בעלות של 3,000 שקל עקב העיכוב",
+                "defendant_version": "הרכישה הנוספת לא הייתה הכרחית ונעשתה ביוזמת התובע ללא תיאום",
+                "ai_analysis": "חלק מההוצאות (1,500 שקל) נראות סבירות והכרחיות בנסיבות העניין. יש להכיר בהן."
             }
         ],
 
         "mediation_proposal": {
-            "proposal": "Mediation proposal: Hanitba yeshalem 3,500 shekel (bimqom 4,000 shekel) uvtmura hatovea yaskym levater al kol tbiuot nosfot velhadesh et hitqashrut asakit leshana nosefet bitnuaim mutavim",
-            "rationale": "Pshra zo shomeret al hayehasim haiskiyim ben hatzadim, hosekhet hotzaot mishpat nosfot, vemaapsheret hamshekh shituf peula poreh"
+            "proposal": "הנתבע ישלם 3,500 שקל (במקום 4,000 שקל) ובתמורה התובע יסכים לוותר על כל תביעות נוספות ולחדש את ההתקשרות העסקית לשנה נוספת בתנאים מותאמים",
+            "rationale": "פשרה זו שומרת על היחסים העסקיים בין הצדדים, חוסכת הוצאות משפט נוספות, ומאפשרת המשך שיתוף פעולה פורה"
         },
 
         "final_verdict": {
-            "verdict": "Hatebia mitqabelet behelqa",
+            "verdict": "התביעה מתקבלת בחלקה",
             "amount_awarded": 4000.0,
             "legal_expenses": 35.0,
             "total_payment": 4035.0,
@@ -191,19 +191,19 @@ def analyze_case(claimant_name, defendant_name):
         },
 
         "reasoning": {
-            "summary": "Behitbasesut al haraut vehatiunim, nimtza ki hanitba aharai beofen helqi laneqezim shengrmu",
+            "summary": "בהתבסס על הראיות והטיעונים, נמצא כי הנתבע אחראי באופן חלקי לנזקים שנגרמו",
             "detailed_analysis": [
-                "Regarding the delay in deadlines: Found that there was a breach of contract, but the force majeure claim is partially accepted. The 14-day delay is beyond reasonable even during crisis period.",
-                "Regarding product quality: Evidence indicates products met standards. Claim rejected.",
-                "Regarding additional expenses: Some expenses (1,500 shekel) were necessary and reasonable in the circumstances.",
-                "Total compensation (4,000 shekel) reflects proportional liability of defendant and is appropriate given circumstances."
+                "לגבי העיכוב במועדים: נמצא כי הייתה הפרת חוזה, אך טענת כוח עליון מתקבלת באופן חלקי. העיכוב של 14 יום הוא מעבר לסביר גם בתקופת משבר.",
+                "לגבי איכות המוצרים: הראיות מצביעות על כך שהמוצרים עמדו בתקנים. התביעה נדחית בנקודה זו.",
+                "לגבי הוצאות נוספות: חלק מההוצאות (1,500 שקל) היו הכרחיות וסבירות בנסיבות העניין.",
+                "הפיצוי הכולל (4,000 שקל) משקף אחריות יחסית של הנתבע והוא הולם את הנסיבות."
             ],
-            "legal_basis": "Hahahlata nitna al pi Hoq Hahotzim (heleq clali), Hashla'g-1973, veHoq Haborerut, Hashtsa'h-1968"
+            "legal_basis": "ההחלטה ניתנה על פי חוק החוזים (חלק כללי), התשל\"ג-1973, וחוק הבוררות, התשכ\"ח-1968"
         },
 
         "legal_expenses": {
             "registered_mail": 35.0,
-            "explanation": "Demi hamishloah bedoar rashum (35 shekel) yuhzru latovea keheleq mehotzaot hamishpat, behataama lsaif 76 leHoq Batei Hamishpat [nosah meshulab], Hashtsa'd-1984",
+            "explanation": "דמי המשלוח בדואר רשום (35 שקל) יוחזרו לתובע כחלק מהוצאות המשפט, בהתאם לסעיף 76 לחוק בתי המשפט [נוסח משולב], התשמ\"ד-1984",
             "included_in_total": True
         }
     }
@@ -335,10 +335,10 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     elements.append(Spacer(1, 0.8*cm))
 
     # Disputes Analysis Table
-    elements.append(Paragraph("Analysis of Dispute Points / Nituah Neqodot Hamahloqut", heading_style))
+    elements.append(Paragraph("ניתוח נקודות המחלוקת / Analysis of Dispute Points", heading_style))
 
     table_data = [
-        ['AI Analysis', 'Defendant Version', 'Claimant Version', 'Issue']
+        ['ניתוח AI', 'גרסת הנתבע', 'גרסת התובע', 'נושא']
     ]
 
     for dispute in analysis['dispute_table']:
@@ -372,28 +372,28 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
     # Mediation Proposal
     if 'mediation_proposal' in analysis:
-        elements.append(Paragraph("Mediation Proposal / Hatzaat Psara", heading_style))
+        elements.append(Paragraph("הצעת פשרה / Mediation Proposal", heading_style))
         mediation = analysis['mediation_proposal']
         mediation_text = f"""
-        <b>Proposal / Hahatzaa:</b> {mediation['proposal']}<br/><br/>
-        <b>Rationale / Nimuk:</b> {mediation['rationale']}
+        <b>ההצעה / Proposal:</b> {mediation['proposal']}<br/><br/>
+        <b>נימוק / Rationale:</b> {mediation['rationale']}
         """
         elements.append(Paragraph(mediation_text, normal_style))
         elements.append(Spacer(1, 0.8*cm))
 
     # Final Decision
-    elements.append(Paragraph("Final Decision / Hahahlata Hasofit", heading_style))
+    elements.append(Paragraph("ההחלטה הסופית / Final Decision", heading_style))
     decision = analysis['final_verdict']
     reasoning = analysis['reasoning']
 
     verdict_text = f"""
-    <b>Ruling / Psiqa:</b> {decision['verdict']}<br/><br/>
+    <b>פסיקה / Ruling:</b> {decision['verdict']}<br/><br/>
     """
     elements.append(Paragraph(verdict_text, normal_style))
 
     # Reasoning
-    elements.append(Paragraph("Reasoning / Nimuqim", heading_style))
-    reasoning_summary = f"<b>Summary / Sikum:</b> {reasoning['summary']}<br/><br/>"
+    elements.append(Paragraph("נימוקים / Reasoning", heading_style))
+    reasoning_summary = f"<b>סיכום / Summary:</b> {reasoning['summary']}<br/><br/>"
     elements.append(Paragraph(reasoning_summary, normal_style))
 
     if 'detailed_analysis' in reasoning:
@@ -402,22 +402,22 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
             elements.append(Spacer(1, 0.3*cm))
 
     if 'legal_basis' in reasoning:
-        legal_basis_text = f"<br/><b>Legal Basis / Basis Mishpati:</b> {reasoning['legal_basis']}"
+        legal_basis_text = f"<br/><b>בסיס משפטי / Legal Basis:</b> {reasoning['legal_basis']}"
         elements.append(Paragraph(legal_basis_text, normal_style))
 
     elements.append(Spacer(1, 0.8*cm))
 
     # Financial Summary
-    elements.append(Paragraph("Financial Summary / Sikum Kaspi", heading_style))
+    elements.append(Paragraph("סיכום כספי / Financial Summary", heading_style))
 
     legal_exp = analysis.get('legal_expenses', {})
     legal_exp_amount = legal_exp.get('registered_mail', decision.get('legal_expenses', 35.0))
 
     financial_data = [
-        ['Amount / Sekum', 'Item / Prit'],
-        [f"{decision['amount_awarded']:,.2f} ILS", 'Compensation Amount / Sekum Hapitzui'],
-        [f"{legal_exp_amount:.2f} ILS", 'Registered Mail Fee / Dmei Mishloah Doar Rashum'],
-        [f"{decision['total_payment']:,.2f} ILS", 'Total Payment / Sakh Hakol Letashlum']
+        ['סכום / Amount', 'פריט / Item'],
+        [f"{decision['amount_awarded']:,.2f} ₪", 'סכום הפיצוי / Compensation Amount'],
+        [f"{legal_exp_amount:.2f} ₪", 'דמי משלוח דואר רשום / Registered Mail Fee'],
+        [f"{decision['total_payment']:,.2f} ₪", 'סה"כ לתשלום / Total Payment']
     ]
 
     financial_table = Table(financial_data, colWidths=[6*cm, 8*cm])
@@ -443,11 +443,11 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
     # Payment terms
     payment_text = f"""
-    <b>Payment Deadline / Moad Tashlum:</b> The defendant must pay the full amount within {decision['payment_deadline_days']} days
-    from the date of receiving this arbitral award.
+    <b>מועד תשלום / Payment Deadline:</b> על הנתבע לשלם את מלוא הסכום תוך {decision['payment_deadline_days']} ימים
+    מיום קבלת פסק בוררות זה.
     <br/><br/>
-    Al hanitba leshalem et meloa hasekum tokh {decision['payment_deadline_days']} yamim
-    miyom qabalt pesaq borerot ze.
+    The defendant must pay the full amount within {decision['payment_deadline_days']} days
+    from the date of receiving this arbitral award.
     """
     elements.append(Paragraph(payment_text, normal_style))
     elements.append(Spacer(1, 1.2*cm))
