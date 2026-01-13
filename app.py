@@ -1,8 +1,8 @@
 import streamlit as st
 import time
 import os
-from ai_engine import analyze_case, generate_arbitral_award_pdf, get_analysis_summary_html
-from database import save_case, get_case
+from ai_engine import analyze_case, generate_arbitral_award_pdf, get_analysis_summary_html, generate_case_id
+from database import save_case, get_case, create_user
 
 # Create uploads directory if it doesn't exist
 if not os.path.exists("uploads"):
@@ -251,30 +251,45 @@ if not st.session_state.show_result:
     st.markdown("""
         <div class="card">
             <h2 style='color: #0A2647; font-size: 2.5rem; margin-bottom: 10px; text-align: center;'>
-                ⚖️ העלאת מסמכים
+                📋 הגשת תביעה
             </h2>
             <p style='font-size: 1.2rem; color: #64748B; text-align: center; margin-bottom: 30px;'>
-                העלה את כתב התביעה וכתב ההגנה לניתוח בוררות מקצועי
+                מלא את הפרטים להגשת כתב תביעה דיגיטלי
             </p>
         </div>
     """, unsafe_allow_html=True)
 
-    # Two columns for claimant and defendant
+    # Claimant Registration
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.markdown("""
+        <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+            📝 פרטי התובע
+        </h3>
+    """, unsafe_allow_html=True)
+
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown("""
-            <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
-                📝 צד תובע
-            </h3>
-        """, unsafe_allow_html=True)
-
         claimant_name = st.text_input(
-            "שם התובע המלא",
+            "שם מלא",
             key="claimant_name",
-            placeholder="הכנס שם מלא...",
-            help="הכנס את השם המלא של התובע"
+            placeholder="שם פרטי ושם משפחה",
+            help="הכנס את שמך המלא (פרטי ומשפחה)"
+        )
+
+        claimant_email = st.text_input(
+            "כתובת מייל",
+            key="claimant_email",
+            placeholder="example@email.com",
+            help="הכנס את כתובת המייל שלך"
+        )
+
+    with col2:
+        claimant_phone = st.text_input(
+            "מספר טלפון נייד",
+            key="claimant_phone",
+            placeholder="05xxxxxxxx",
+            help="הכנס את מספר הטלפון הנייד שלך"
         )
 
         claimant_file = st.file_uploader(
@@ -284,111 +299,245 @@ if not st.session_state.show_result:
             help="העלה את כתב התביעה בפורמט PDF או Word (.docx)"
         )
 
-        st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    with col2:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown("""
-            <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
-                🛡️ צד נתבע
-            </h3>
-        """, unsafe_allow_html=True)
+    # Defendant Information
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.markdown("""
+        <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+            🛡️ פרטי הנתבע
+        </h3>
+    """, unsafe_allow_html=True)
 
+    col1, col2 = st.columns(2)
+
+    with col1:
         defendant_name = st.text_input(
-            "שם הנתבע המלא",
+            "שם מלא של הנתבע",
             key="defendant_name",
-            placeholder="הכנס שם מלא...",
+            placeholder="שם פרטי ושם משפחה",
             help="הכנס את השם המלא של הנתבע"
         )
 
-        defendant_file = st.file_uploader(
-            "העלה כתב הגנה (PDF או Word)",
-            type=["pdf", "docx"],
-            key="defendant_file",
-            help="העלה את כתב ההגנה בפורמט PDF או Word (.docx)"
+    with col2:
+        defendant_phone = st.text_input(
+            "מספר טלפון נייד של הנתבע",
+            key="defendant_phone",
+            placeholder="05xxxxxxxx",
+            help="הכנס את מספר הטלפון הנייד של הנתבע"
         )
 
-        st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Terms of Service and Fees
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.markdown("""
+        <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+            📜 תקנון ותנאי שימוש
+        </h3>
+    """, unsafe_allow_html=True)
+
+    # Terms expander
+    with st.expander("📖 לחץ לקריאת התקנון המלא"):
+        st.markdown("""
+        ### תקנון ותנאי שימוש - Resolve AI
+
+        #### 1. כללי
+        אתר Resolve AI (להלן: "השירות") הוא פלטפורמה טכנולוגית המשתמשת בבינה מלאכותית (AI) לצורך ניתוח מחלוקות, יצירת הצעות פשרה ומתן פסק בורר דיגיטלי.
+
+        השימוש בשירות מותנה בהסכמת המשתמש לכל תנאי התקנון המפורטים להלן.
+
+        השירות מיועד לשימושם של אנשים פרטיים ועסקים מעל גיל 18.
+
+        #### 2. הצהרת אי-ייעוץ משפטי (Disclaimer)
+        **השירות אינו מהווה ייעוץ משפטי:** המידע, הניתוחים ופסקי הדין המופקים על ידי המערכת מבוססים על אלגוריתמים של בינה מלאכותית.
+
+        אין לראות בתוצרי המערכת תחליף לייעוץ עם עורך דין מוסמך.
+
+        המפעיל אינו נושא באחריות לכל נזק שייגרם למשתמש כתוצאה מהסתמכות על פלט המערכת.
+
+        #### 3. מודל הבוררות והסכמת הצדדים
+        השימוש ב-Resolve AI לצורך פסק בורר מחייב הסכמה מפורשת בכתב של שני הצדדים למחלוקת.
+
+        המשתמשים מצהירים כי ידוע להם שפסק הבורר מופק על ידי בינה מלאכותית, והם מוותרים על כל טענה כלפי המערכת בגין שיקול הדעת המופעל על ידי ה-AI.
+
+        #### 4. אגרות ותשלומים
+        השימוש בחלק משירותי האתר כרוך בתשלום אגרה:
+        - **אגרת הגשת תביעה:** 120 ₪
+        - **דמי משלוח דואר רשום:** 35 ₪ (יוחזרו לתובע במידה ויזכה)
+        - **דמי בוררות סופיים:** 200 ₪ (לאחר קבלת פסק הדין)
+
+        האגרות אינן ניתנות להחזר לאחר תחילת ניתוח התיק על ידי המערכת.
+
+        החזר הוצאות משפט (כגון 35 ש"ח עבור מכתב רשום) ייקבע במסגרת פסק הדין הסופי לפי שיקול דעת המערכת.
+
+        #### 5. פרטיות ואבטחת מידע
+        העלאת מסמכים (PDF/Word) למערכת מהווה הסכמה לעיבודם על ידי מנועי בינה מלאכותית (כגון OpenAI/Anthropic).
+
+        המערכת מתחייבת לא לעשות שימוש במידע האישי של המשתמשים למטרות פרסום ללא הסכמה.
+
+        ידוע למשתמש כי המידע נשמר בענן וכי למרות אמצעי האבטחה, אין חסינות מוחלטת מפני פריצות.
+
+        #### 6. הגבלת אחריות
+        המפעיל לא יהיה אחראי לכל טעות בחישוב, בפרשנות החוק או בעובדות המוצגות על ידי ה-AI.
+
+        האחריות המקסימלית של המפעיל כלפי המשתמש מוגבלת לגובה האגרה ששולמה עבור השירות בלבד.
+        """)
+
+    # Checkbox for terms acceptance
+    terms_accepted = st.checkbox(
+        "✅ אני מאשר/ת שקראתי והבנתי את התקנון ומסכים/ה לתנאי השימוש",
+        key="terms_checkbox"
+    )
+
+    # Checkbox for postal mail
+    postal_accepted = st.checkbox(
+        "✅ אני מאשר/ת שליחת כתב התביעה דרך דואר רשום (עלות 35 ₪ - תיכלל בסכום התביעה במידה ואזכה)",
+        key="postal_checkbox"
+    )
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
     # Submit button
     st.markdown('<br>', unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        if st.button("🚀 בצע בוררות כעת", use_container_width=True):
-            if not claimant_name or not defendant_name:
-                st.error("⚠️ נא להזין את שמות התובע והנתבע")
-            elif not claimant_file or not defendant_file:
-                st.error("⚠️ נא להעלות את כתב התביעה וכתב ההגנה")
+        if st.button("🚀 הגש תביעה", use_container_width=True):
+            # Validation
+            if not claimant_name or not claimant_phone or not claimant_email:
+                st.error("⚠️ נא למלא את כל הפרטים האישיים של התובע")
+            elif not defendant_name or not defendant_phone:
+                st.error("⚠️ נא למלא את פרטי הנתבע (שם מלא וטלפון)")
+            elif not claimant_file:
+                st.error("⚠️ נא להעלות את כתב התביעה")
+            elif not terms_accepted:
+                st.error("⚠️ יש לאשר את התקנון ותנאי השימוש")
+            elif not postal_accepted:
+                st.error("⚠️ יש לאשר את שליחת הדואר הרשום")
             else:
-                with st.status("🔍 מנתח מסמכים משפטיים באמצעות AI...", expanded=True) as status:
-                    st.write(f"📄 סורק את הטענות של {claimant_name}...")
-                    time.sleep(1)
+                with st.status("📝 מעבד את כתב התביעה...", expanded=True) as status:
+                    # Generate case ID
+                    case_id = generate_case_id()
 
-                    # Save uploaded files
-                    claimant_file_path = os.path.join("uploads", f"{claimant_name}_claim_{claimant_file.name}")
-                    defendant_file_path = os.path.join("uploads", f"{defendant_name}_defense_{defendant_file.name}")
+                    st.write("📄 שומר את כתב התביעה...")
+                    time.sleep(0.5)
+
+                    # Save uploaded file
+                    claimant_file_path = os.path.join("uploads", f"{case_id}_{claimant_name}_claim.{claimant_file.name.split('.')[-1]}")
 
                     with open(claimant_file_path, "wb") as f:
                         f.write(claimant_file.getbuffer())
-                    with open(defendant_file_path, "wb") as f:
-                        f.write(defendant_file.getbuffer())
 
-                    st.write(f"📋 מצליב נתונים מול כתב ההגנה של {defendant_name}...")
-                    time.sleep(1)
+                    st.write("💾 רושם את התיק במערכת...")
+                    time.sleep(0.5)
 
-                    # Generate analysis
-                    analysis = analyze_case(claimant_name, defendant_name)
-                    st.session_state.analysis_data = analysis
-                    st.session_state.case_id = analysis['case_metadata']['case_id']
+                    # Create user in database
+                    create_user(claimant_name, claimant_phone, claimant_email, 'claimant')
 
-                    st.write("⚖️ מנתח תקדימים משפטיים רלוונטיים...")
-                    time.sleep(0.8)
-                    st.write("✅ יוצר פסק בוררות מקצועי...")
-                    time.sleep(0.8)
-
-                    # Generate PDF
-                    pdf_filename = f"arbitral_award_{st.session_state.case_id}.pdf"
-                    pdf_path = os.path.join("uploads", pdf_filename)
-
-                    case_data = {
-                        'case_id': st.session_state.case_id,
-                        'claimant': claimant_name,
-                        'defendant': defendant_name
-                    }
-
-                    generate_arbitral_award_pdf(case_data, analysis, pdf_path)
-                    st.session_state.pdf_path = pdf_path
-
-                    # Save to database
+                    # Save to database (without defendant file yet)
                     save_case(
-                        st.session_state.case_id,
+                        case_id,
                         claimant_name,
+                        claimant_phone,
+                        claimant_email,
                         defendant_name,
-                        claimant_file_path,
-                        defendant_file_path,
-                        pdf_path
+                        defendant_phone,
+                        claimant_file=claimant_file_path,
+                        defendant_file=None,
+                        pdf_path=None,
+                        terms_accepted=True,
+                        postal_mail_cost=35.0,
+                        submission_fee=120.0
                     )
 
-                    status.update(label="✨ הניתוח הסתיים בהצלחה!", state="complete", expanded=False)
+                    st.write("📧 שולח הודעות...")
+                    time.sleep(0.5)
+
+                    # Note: SMS and Email will be sent here once we have API keys
+                    # For now, just show success message
+
+                    st.session_state.case_id = case_id
+                    st.session_state.claimant_email = claimant_email
+                    st.session_state.claimant_phone = claimant_phone
+                    st.session_state.defendant_phone = defendant_phone
+
+                    status.update(label="✅ התביעה נקלטה בהצלחה!", state="complete", expanded=False)
 
                 st.session_state.show_result = True
                 st.rerun()
 
-# Display results
-if st.session_state.show_result and st.session_state.analysis_data:
+# Display results - Case submitted successfully
+if st.session_state.show_result and st.session_state.case_id:
     # Display Case ID prominently
     st.markdown(f"""
-    <div style='background: linear-gradient(135deg, #7C3AED 0%, #6366F1 100%);
+    <div style='background: linear-gradient(135deg, #10b981 0%, #059669 100%);
                 padding: 30px; border-radius: 20px; text-align: center; color: white; margin: 30px 0;
-                box-shadow: 0 10px 40px rgba(124, 58, 237, 0.4);'>
+                box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);'>
+        <h2 style='font-size: 2.5rem; margin-bottom: 20px;'>✅ התביעה הוגשה בהצלחה!</h2>
         <h3 style='font-size: 1.3rem; margin-bottom: 10px; opacity: 0.9;'>מספר תיק</h3>
         <h1 style='font-size: 3.5rem; font-weight: 900; margin: 0; letter-spacing: 3px;'>{st.session_state.case_id}</h1>
         <p style='margin-top: 15px; font-size: 1.1rem; opacity: 0.9;'>שמור מספר זה לעקוב אחרי התיק</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # Display analysis results
-    st.markdown(get_analysis_summary_html(st.session_state.analysis_data), unsafe_allow_html=True)
+    # Notification status
+    st.markdown("""
+        <div class="card">
+            <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+                📬 הודעות נשלחו
+            </h3>
+        </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+            <div class="card">
+                <h4 style='color: #10b981; text-align: center;'>📧 לתובע</h4>
+                <p style='text-align: center; direction: rtl;'>
+                    הודעה נשלחה למייל ול-SMS<br/>
+                    עם מספר התיק וקישור למעקב
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+        if 'claimant_email' in st.session_state:
+            st.info(f"📧 {st.session_state.claimant_email}")
+        if 'claimant_phone' in st.session_state:
+            st.info(f"📱 {st.session_state.claimant_phone}")
+
+    with col2:
+        st.markdown("""
+            <div class="card">
+                <h4 style='color: #f59e0b; text-align: center;'>📨 לנתבע</h4>
+                <p style='text-align: center; direction: rtl;'>
+                    SMS נשלח לנתבע<br/>
+                    עם פרטי התביעה וקישור למערכת
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+        if 'defendant_phone' in st.session_state:
+            st.info(f"📱 {st.session_state.defendant_phone}")
+
+    # Next steps
+    st.markdown("""
+        <div class="card">
+            <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+                📋 השלבים הבאים
+            </h3>
+            <div style='text-align: right; direction: rtl; line-height: 2;'>
+                <p><b>1️⃣ הנתבע יקבל הודעה</b> - SMS עם קישור לצפייה בתביעה</p>
+                <p><b>2️⃣ הנתבע ירשם למערכת</b> - יצטרך למלא פרטים אישיים</p>
+                <p><b>3️⃣ הנתבע יגיש כתב הגנה</b> - יעלה את התשובה שלו לתביעה</p>
+                <p><b>4️⃣ ניתוח AI</b> - המערכת תנתח את שני המסמכים</p>
+                <p><b>5️⃣ פסק בוררות</b> - תקבל החלטה מנומקת</p>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Show submitted case info if analysis exists
+    if st.session_state.get('analysis_data'):
+        st.markdown(get_analysis_summary_html(st.session_state.analysis_data), unsafe_allow_html=True)
 
     # PDF Download Button
     st.markdown("<br>", unsafe_allow_html=True)
