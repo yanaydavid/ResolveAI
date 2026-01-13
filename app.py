@@ -17,6 +17,12 @@ if 'case_id' not in st.session_state:
     st.session_state.case_id = None
 if 'pdf_path' not in st.session_state:
     st.session_state.pdf_path = None
+if 'portal_mode' not in st.session_state:
+    st.session_state.portal_mode = 'claimant'
+if 'defendant_registered' not in st.session_state:
+    st.session_state.defendant_registered = False
+if 'defendant_case_data' not in st.session_state:
+    st.session_state.defendant_case_data = None
 
 # Page configuration
 st.set_page_config(
@@ -243,15 +249,37 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
+# Sidebar Navigation
+with st.sidebar:
+    st.markdown("### 🔀 בחר פורטל")
+    portal_choice = st.radio(
+        "בחר את סוג המשתמש:",
+        ["🏛️ פורטל תובעים", "🛡️ פורטל נתבעים"],
+        key="portal_radio"
+    )
+
+    if portal_choice == "🏛️ פורטל תובעים":
+        st.session_state.portal_mode = 'claimant'
+    else:
+        st.session_state.portal_mode = 'defendant'
+
+    st.markdown("---")
+    st.markdown("### 📞 צור קשר")
+    st.markdown("support@resolveai.com")
+
 # Main Content
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
-# Only show upload form if results are not displayed
-if not st.session_state.show_result:
-    st.markdown("""
-        <div class="card">
-            <h2 style='color: #0A2647; font-size: 2.5rem; margin-bottom: 10px; text-align: center;'>
-                📋 הגשת תביעה
+# =========================
+# CLAIMANT PORTAL
+# =========================
+if st.session_state.portal_mode == 'claimant':
+    # Only show upload form if results are not displayed
+    if not st.session_state.show_result:
+        st.markdown("""
+            <div class="card">
+                <h2 style='color: #0A2647; font-size: 2.5rem; margin-bottom: 10px; text-align: center;'>
+                    📋 הגשת תביעה
             </h2>
             <p style='font-size: 1.2rem; color: #64748B; text-align: center; margin-bottom: 30px;'>
                 מלא את הפרטים להגשת כתב תביעה דיגיטלי
@@ -577,5 +605,216 @@ if st.session_state.show_result and st.session_state.case_id:
             st.session_state.case_id = None
             st.session_state.pdf_path = None
             st.rerun()
+
+# =========================
+# DEFENDANT PORTAL
+# =========================
+elif st.session_state.portal_mode == 'defendant':
+    st.markdown("""
+        <div class="card">
+            <h2 style='color: #0A2647; font-size: 2.5rem; margin-bottom: 10px; text-align: center;'>
+                🛡️ פורטל נתבעים
+            </h2>
+            <p style='font-size: 1.2rem; color: #64748B; text-align: center; margin-bottom: 30px;'>
+                הזן את מספר התיק שקיבלת ב-SMS
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Case ID lookup
+    if not st.session_state.defendant_case_data:
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown("""
+            <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+                🔍 חיפוש תיק
+            </h3>
+        """, unsafe_allow_html=True)
+
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            case_id_input = st.text_input(
+                "מספר תיק",
+                key="case_id_lookup",
+                placeholder="הכנס את מספר התיק שקיבלת ב-SMS",
+                help="מספר תיק בן 10 ספרות"
+            )
+
+            if st.button("🔍 חפש תיק", use_container_width=True):
+                if not case_id_input:
+                    st.error("⚠️ נא להזין מספר תיק")
+                else:
+                    # Search for case
+                    case = get_case(case_id_input)
+                    if case:
+                        st.session_state.defendant_case_data = case
+                        st.success(f"✅ נמצא תיק מספר {case_id_input}")
+                        st.rerun()
+                    else:
+                        st.error("❌ מספר תיק לא נמצא במערכת. אנא בדוק שהמספר נכון.")
+
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # Show case details and allow defendant to respond
+    else:
+        case = st.session_state.defendant_case_data
+
+        # Check if defendant already registered
+        if not st.session_state.defendant_registered:
+            # Defendant registration
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            st.markdown(f"""
+                <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+                    📝 רישום נתבע
+                </h3>
+                <p style='text-align: center; direction: rtl; margin-bottom: 20px;'>
+                    תיק מספר: <b>{case['case_id']}</b><br/>
+                    נגדך הוגשה תביעה על ידי: <b>{case['claimant_name']}</b>
+                </p>
+            """, unsafe_allow_html=True)
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                defendant_name = st.text_input(
+                    "שם מלא",
+                    key="defendant_reg_name",
+                    placeholder="שם פרטי ושם משפחה",
+                    value=case['defendant_name'],
+                    help="הכנס את שמך המלא"
+                )
+
+                defendant_email = st.text_input(
+                    "כתובת מייל",
+                    key="defendant_reg_email",
+                    placeholder="example@email.com",
+                    help="הכנס את כתובת המייל שלך"
+                )
+
+            with col2:
+                defendant_phone = st.text_input(
+                    "מספר טלפון נייד",
+                    key="defendant_reg_phone",
+                    placeholder="05xxxxxxxx",
+                    value=case['defendant_phone'],
+                    help="הכנס את מספר הטלפון הנייד שלך"
+                )
+
+            st.markdown('<br>', unsafe_allow_html=True)
+
+            if st.button("✅ אישור והמשך", use_container_width=True):
+                if not defendant_name or not defendant_email or not defendant_phone:
+                    st.error("⚠️ נא למלא את כל הפרטים")
+                else:
+                    # Register defendant
+                    create_user(defendant_name, defendant_phone, defendant_email, 'defendant')
+                    st.session_state.defendant_registered = True
+                    st.success("✅ נרשמת בהצלחה!")
+                    st.rerun()
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        else:
+            # Show claim and allow defense upload
+            st.markdown(f"""
+                <div class="card">
+                    <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+                        📄 כתב התביעה
+                    </h3>
+                    <p style='text-align: right; direction: rtl;'>
+                        <b>תיק מספר:</b> {case['case_id']}<br/>
+                        <b>תובע:</b> {case['claimant_name']}<br/>
+                        <b>נתבע:</b> {case['defendant_name']}<br/>
+                    </p>
+                </div>
+            """, unsafe_allow_html=True)
+
+            # Download claim file
+            if case['claimant_file_path'] and os.path.exists(case['claimant_file_path']):
+                with open(case['claimant_file_path'], "rb") as file:
+                    st.download_button(
+                        label="📥 הורד כתב תביעה",
+                        data=file.read(),
+                        file_name=f"claim_{case['case_id']}.{case['claimant_file_path'].split('.')[-1]}",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
+
+            st.markdown('<br>', unsafe_allow_html=True)
+
+            # Defense upload
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            st.markdown("""
+                <h3 style='color: #0A2647; font-size: 1.8rem; margin-bottom: 20px; text-align: center;'>
+                    🛡️ הגשת כתב הגנה
+                </h3>
+            """, unsafe_allow_html=True)
+
+            defense_file = st.file_uploader(
+                "העלה כתב הגנה (PDF או Word)",
+                type=["pdf", "docx"],
+                key="defense_file",
+                help="העלה את כתב ההגנה שלך בפורמט PDF או Word (.docx)"
+            )
+
+            if st.button("📤 הגש כתב הגנה", use_container_width=True):
+                if not defense_file:
+                    st.error("⚠️ נא להעלות כתב הגנה")
+                else:
+                    with st.status("📝 מעבד כתב הגנה...", expanded=True) as status:
+                        st.write("📄 שומר את כתב ההגנה...")
+                        time.sleep(0.5)
+
+                        # Save defense file
+                        defense_file_path = os.path.join("uploads", f"{case['case_id']}_{case['defendant_name']}_defense.{defense_file.name.split('.')[-1]}")
+                        with open(defense_file_path, "wb") as f:
+                            f.write(defense_file.getbuffer())
+
+                        st.write("⚖️ מריץ ניתוח AI...")
+                        time.sleep(1)
+
+                        # Run AI analysis
+                        analysis = analyze_case(case['claimant_name'], case['defendant_name'])
+
+                        st.write("📄 יוצר פסק בוררות...")
+                        time.sleep(1)
+
+                        # Generate PDF
+                        pdf_filename = f"arbitral_award_{case['case_id']}.pdf"
+                        pdf_path = os.path.join("uploads", pdf_filename)
+
+                        case_data = {
+                            'case_id': case['case_id'],
+                            'claimant': case['claimant_name'],
+                            'defendant': case['defendant_name']
+                        }
+
+                        generate_arbitral_award_pdf(case_data, analysis, pdf_path)
+
+                        # Update database with defense file and PDF
+                        from database import init_database
+                        init_database()
+                        import sqlite3
+                        conn = sqlite3.connect("resolve_ai.db")
+                        cursor = conn.cursor()
+                        cursor.execute("""
+                            UPDATE cases
+                            SET defendant_file_path = ?, pdf_path = ?, status = 'Completed'
+                            WHERE case_id = ?
+                        """, (defense_file_path, pdf_path, case['case_id']))
+                        conn.commit()
+                        conn.close()
+
+                        st.session_state.analysis_data = analysis
+                        st.session_state.case_id = case['case_id']
+                        st.session_state.pdf_path = pdf_path
+
+                        status.update(label="✅ ניתוח הושלם!", state="complete", expanded=False)
+
+                    st.success("✅ כתב ההגנה התקבל בהצלחה! מעבר לצפייה בפסק הבוררות...")
+                    time.sleep(2)
+                    st.session_state.show_result = True
+                    st.rerun()
+
+            st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
