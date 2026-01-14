@@ -8,7 +8,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT
@@ -272,7 +272,17 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
         wordWrap='RTL'
     )
 
-    # Legal Header - According to Arbitration Law
+    # Add Logo
+    try:
+        logo_url = "https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png"
+        logo = Image(logo_url, width=2*cm, height=2*cm)
+        logo.hAlign = 'CENTER'
+        elements.append(logo)
+        elements.append(Spacer(1, 0.3*cm))
+    except:
+        pass  # If logo can't be loaded, continue without it
+
+    # Legal Header
     legal_header_style = ParagraphStyle(
         'LegalHeader',
         parent=normal_style,
@@ -282,11 +292,9 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
         spaceAfter=15
     )
     elements.append(Paragraph("פסק בורר לפי חוק הבוררות, התשכ\"ח-1968", legal_header_style))
-    elements.append(Paragraph("Arbitral Award pursuant to the Arbitration Law, 5728-1968", legal_header_style))
-    elements.append(Spacer(1, 0.5*cm))
+    elements.append(Spacer(1, 0.3*cm))
 
     # Title
-    elements.append(Paragraph("ARBITRAL AWARD", title_style))
     elements.append(Paragraph("פסק בוררות", title_style))
     elements.append(Spacer(1, 0.8*cm))
 
@@ -296,61 +304,56 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
     # Case Information Box
     case_info = f"""
-    <b>Case Number / מספר תיק:</b> {case_data['case_id']}<br/>
-    <b>Date & Time Issued / תאריך וזמן מתן הפסק:</b> {timestamp_str}<br/>
-    <b>Claimant / התובע:</b> {case_data['claimant']}<br/>
-    <b>Defendant / הנתבע:</b> {case_data['defendant']}<br/>
+    <b>מספר תיק:</b> {case_data['case_id']}<br/>
+    <b>תאריך וזמן מתן הפסק:</b> {timestamp_str}<br/>
+    <b>התובע:</b> {case_data['claimant']}<br/>
+    <b>הנתבע:</b> {case_data['defendant']}<br/>
     """
     elements.append(Paragraph(case_info, normal_style))
     elements.append(Spacer(1, 0.8*cm))
 
     # Introduction
-    elements.append(Paragraph("הקדמה / Introduction", heading_style))
+    elements.append(Paragraph("הקדמה", heading_style))
     intro_text = """
     בהתאם לחוק הבוררות, התשכ"ח-1968, ולאחר בחינה מעמיקה של כתב התביעה וכתב ההגנה,
     וניתוח הראיות באמצעות מערכת Resolve AI, מתפרסם בזו פסק הבוררות הבא.
-    <br/><br/>
-    In accordance with the Arbitration Law, 5728-1968, and after thorough examination of the claim and defense documents,
-    and analysis of evidence using the Resolve AI system, the following arbitral award is hereby published.
     """
     elements.append(Paragraph(intro_text, normal_style))
     elements.append(Spacer(1, 0.5*cm))
 
     # Objectivity Declaration
-    elements.append(Paragraph("הצהרת אובייקטיביות / Declaration of Objectivity", heading_style))
+    elements.append(Paragraph("הצהרת אובייקטיביות", heading_style))
     objectivity_text = """
     <b>ההכרעה התקבלה על ידי אלגוריתם בינה מלאכותית המבוסס על ניתוח עובדתי של המסמכים שהוגשו בלבד,
     ללא מגע יד אדם וללא ניגוד עניינים.</b>
     <br/><br/>
-    This decision was made by an artificial intelligence algorithm based solely on factual analysis of the submitted documents,
-    without human intervention and without any conflict of interest.
-    <br/><br/>
     המערכת מבצעת ניתוח אוטומטי ואובייקטיבי של הטיעונים והראיות שהוצגו על ידי שני הצדדים,
     ומפיקה החלטה מבוססת על עקרונות משפטיים מקובלים וצדק טבעי.
-    <br/><br/>
-    The system performs automatic and objective analysis of the arguments and evidence presented by both parties,
-    and produces a decision based on accepted legal principles and natural justice.
     """
     elements.append(Paragraph(objectivity_text, normal_style))
     elements.append(Spacer(1, 0.8*cm))
 
     # Disputes Analysis Table
-    elements.append(Paragraph("ניתוח נקודות המחלוקת / Analysis of Dispute Points", heading_style))
+    elements.append(Paragraph("ניתוח נקודות המחלוקת", heading_style))
 
+    # Wrap text in Paragraphs for proper RTL handling and word wrap
     table_data = [
-        ['ניתוח AI', 'גרסת הנתבע', 'גרסת התובע', 'נושא']
+        [Paragraph('<b>ניתוח AI</b>', normal_style),
+         Paragraph('<b>גרסת הנתבע</b>', normal_style),
+         Paragraph('<b>גרסת התובע</b>', normal_style),
+         Paragraph('<b>נושא</b>', normal_style)]
     ]
 
     for dispute in analysis['dispute_table']:
         table_data.append([
-            dispute['ai_analysis'][:150] + '...' if len(dispute['ai_analysis']) > 150 else dispute['ai_analysis'],
-            dispute['defendant_version'][:150] + '...' if len(dispute['defendant_version']) > 150 else dispute['defendant_version'],
-            dispute['claimant_version'][:150] + '...' if len(dispute['claimant_version']) > 150 else dispute['claimant_version'],
-            dispute['issue']
+            Paragraph(dispute['ai_analysis'], normal_style),
+            Paragraph(dispute['defendant_version'], normal_style),
+            Paragraph(dispute['claimant_version'], normal_style),
+            Paragraph(dispute['issue'], normal_style)
         ])
 
-    # Create table with proper styling
-    dispute_table = Table(table_data, colWidths=[4*cm, 4*cm, 4*cm, 4*cm])
+    # Create table with proper styling and flexible row heights
+    dispute_table = Table(table_data, colWidths=[4*cm, 4*cm, 4*cm, 4*cm], repeatRows=1)
     dispute_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#0A2647')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -372,28 +375,28 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
     # Mediation Proposal
     if 'mediation_proposal' in analysis:
-        elements.append(Paragraph("הצעת פשרה / Mediation Proposal", heading_style))
+        elements.append(Paragraph("הצעת פשרה", heading_style))
         mediation = analysis['mediation_proposal']
         mediation_text = f"""
-        <b>ההצעה / Proposal:</b> {mediation['proposal']}<br/><br/>
-        <b>נימוק / Rationale:</b> {mediation['rationale']}
+        <b>ההצעה:</b> {mediation['proposal']}<br/><br/>
+        <b>נימוק:</b> {mediation['rationale']}
         """
         elements.append(Paragraph(mediation_text, normal_style))
         elements.append(Spacer(1, 0.8*cm))
 
     # Final Decision
-    elements.append(Paragraph("ההחלטה הסופית / Final Decision", heading_style))
+    elements.append(Paragraph("ההחלטה הסופית", heading_style))
     decision = analysis['final_verdict']
     reasoning = analysis['reasoning']
 
     verdict_text = f"""
-    <b>פסיקה / Ruling:</b> {decision['verdict']}<br/><br/>
+    <b>פסיקה:</b> {decision['verdict']}<br/><br/>
     """
     elements.append(Paragraph(verdict_text, normal_style))
 
     # Reasoning
-    elements.append(Paragraph("נימוקים / Reasoning", heading_style))
-    reasoning_summary = f"<b>סיכום / Summary:</b> {reasoning['summary']}<br/><br/>"
+    elements.append(Paragraph("נימוקים", heading_style))
+    reasoning_summary = f"<b>סיכום:</b> {reasoning['summary']}<br/><br/>"
     elements.append(Paragraph(reasoning_summary, normal_style))
 
     if 'detailed_analysis' in reasoning:
@@ -402,22 +405,22 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
             elements.append(Spacer(1, 0.3*cm))
 
     if 'legal_basis' in reasoning:
-        legal_basis_text = f"<br/><b>בסיס משפטי / Legal Basis:</b> {reasoning['legal_basis']}"
+        legal_basis_text = f"<br/><b>בסיס משפטי:</b> {reasoning['legal_basis']}"
         elements.append(Paragraph(legal_basis_text, normal_style))
 
     elements.append(Spacer(1, 0.8*cm))
 
     # Financial Summary
-    elements.append(Paragraph("סיכום כספי / Financial Summary", heading_style))
+    elements.append(Paragraph("סיכום כספי", heading_style))
 
     legal_exp = analysis.get('legal_expenses', {})
     legal_exp_amount = legal_exp.get('registered_mail', decision.get('legal_expenses', 35.0))
 
     financial_data = [
-        ['סכום / Amount', 'פריט / Item'],
-        [f"{decision['amount_awarded']:,.2f} ₪", 'סכום הפיצוי / Compensation Amount'],
-        [f"{legal_exp_amount:.2f} ₪", 'דמי משלוח דואר רשום / Registered Mail Fee'],
-        [f"{decision['total_payment']:,.2f} ₪", 'סה"כ לתשלום / Total Payment']
+        [Paragraph('<b>סכום</b>', normal_style), Paragraph('<b>פריט</b>', normal_style)],
+        [Paragraph(f"{decision['amount_awarded']:,.2f} ₪", normal_style), Paragraph('סכום הפיצוי', normal_style)],
+        [Paragraph(f"{legal_exp_amount:.2f} ₪", normal_style), Paragraph('דמי משלוח דואר רשום', normal_style)],
+        [Paragraph(f"{decision['total_payment']:,.2f} ₪", normal_style), Paragraph('סה"כ לתשלום', normal_style)]
     ]
 
     financial_table = Table(financial_data, colWidths=[6*cm, 8*cm])
@@ -443,63 +446,55 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
     # Payment terms
     payment_text = f"""
-    <b>מועד תשלום / Payment Deadline:</b> על הנתבע לשלם את מלוא הסכום תוך {decision['payment_deadline_days']} ימים
+    <b>מועד תשלום:</b> על הנתבע לשלם את מלוא הסכום תוך {decision['payment_deadline_days']} ימים
     מיום קבלת פסק בוררות זה.
-    <br/><br/>
-    The defendant must pay the full amount within {decision['payment_deadline_days']} days
-    from the date of receiving this arbitral award.
     """
     elements.append(Paragraph(payment_text, normal_style))
     elements.append(Spacer(1, 1.2*cm))
 
-    # Authentication Appendix / Judge's Explanatory Page
-    elements.append(Paragraph("נספח אימות - דף הסבר לשופט / Authentication Appendix", heading_style))
+    # Authentication Appendix
+    elements.append(Paragraph("נספח אימות - דף הסבר לשופט", heading_style))
 
     auth_text = f"""
-    <b>שורת אימות טכנולוגית / Technological Authentication:</b><br/>
+    <b>שורת אימות טכנולוגית:</b><br/>
     מסמך זה הופק במערכת Resolve AI לאחר ששני הצדדים אישרו את הסכם הבוררות.
     התובע הגיש את התביעה והנתבע הגיש את כתב ההגנה דרך הפלטפורמה הדיגיטלית.
     <br/><br/>
-    This document was produced in the Resolve AI system after both parties confirmed the arbitration agreement.
-    The claimant submitted the claim and the defendant submitted the defense through the digital platform.
-    <br/><br/>
-    <b>תיעוד הגישה / Access Documentation:</b><br/>
+    <b>תיעוד הגישה:</b><br/>
     הנתבע נכנס למערכת באמצעות קוד גישה ייחודי (מספר תיק: {case_data['case_id']}) שנשלח אליו ב-SMS,
     ואישר את השתתפותו בהליך הבוררות הדיגיטלי.
     <br/><br/>
-    The defendant accessed the system using a unique access code (Case No: {case_data['case_id']}) sent via SMS,
-    and confirmed participation in the digital arbitration process.
-    <br/><br/>
-    <b>תאריכי אישור / Confirmation Dates:</b><br/>
+    <b>תאריכי אישור:</b><br/>
     מערכת Resolve AI שומרת את תיעוד המועדים המדויקים בהם כל צד ביצע את פעולותיו במערכת,
     כולל העלאת מסמכים ואישור תנאי הבוררות.
-    <br/><br/>
-    The Resolve AI system maintains precise records of when each party performed their actions in the system,
-    including document uploads and confirmation of arbitration terms.
     """
     elements.append(Paragraph(auth_text, normal_style))
     elements.append(Spacer(1, 0.8*cm))
 
     # Signature section
-    elements.append(Paragraph("חתימות / Signatures", heading_style))
+    elements.append(Paragraph("חתימות", heading_style))
     elements.append(Spacer(1, 0.5*cm))
 
+    date_str = award_timestamp.strftime("%d/%m/%Y")
+
     signature_data = [
-        ['____________________', '____________________'],
-        ['Resolve AI System Signature', f'תאריך / Date: {award_timestamp.strftime("%d/%m/%Y")}'],
-        ['', ''],
-        ['____________________', '____________________'],
-        ['אישור קבלה - נתבע', 'אישור קבלה - תובע'],
-        ['Defendant Acknowledgment', 'Claimant Acknowledgment']
+        [Paragraph(f'<b>נחתם דיגיטלית על ידי:</b><br/>מערכת Resolve AI<br/><b>תאריך:</b> {date_str}', normal_style),
+         Paragraph('', normal_style)],
+        [Paragraph('', normal_style), Paragraph('', normal_style)],
+        [Paragraph(f'<b>אישור קבלה - תובע</b><br/>נחתם דיגיטלית על ידי:<br/>{case_data["claimant"]}<br/>תאריך: ___________', normal_style),
+         Paragraph(f'<b>אישור קבלה - נתבע</b><br/>נחתם דיגיטלית על ידי:<br/>{case_data["defendant"]}<br/>תאריך: ___________', normal_style)]
     ]
 
     sig_table = Table(signature_data, colWidths=[7*cm, 7*cm])
     sig_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('FONTNAME', (0, 0), (-1, -1), HEBREW_FONT),
-        ('FONTSIZE', (0, 0), (-1, -1), 9),
-        ('TOPPADDING', (0, 0), (-1, -1), 8),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('TOPPADDING', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+        ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#0A2647')),
+        ('LINEBELOW', (0, 0), (-1, 0), 2, colors.HexColor('#0A2647')),
     ]))
 
     elements.append(sig_table)
@@ -522,22 +517,18 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     )
 
     hash_text = f"""
-    <b>קוד אימות (Hash) / Verification Code:</b><br/>
+    <b>קוד אימות (Hash):</b><br/>
     {doc_hash}<br/>
-    <i>קוד ייחודי לאימות שלמות המסמך / Unique code to verify document integrity</i>
+    <i>קוד ייחודי לאימות שלמות המסמך</i>
     """
     elements.append(Paragraph(hash_text, hash_style))
     elements.append(Spacer(1, 0.5*cm))
 
     # Footer
     footer_text = """
-    <i>This arbitral award is issued in accordance with the Arbitration Law, 5728-1968, and constitutes a final and binding judgment.<br/>
-    An appeal against this arbitral award may be submitted to the court in accordance with the provisions of the law.<br/>
-    This document was created using the Resolve AI system - AI-powered digital arbitration.</i>
-    <br/><br/>
-    <i>Pesaq borerot ze nitan al pi Hoq Haborerut, Hashtsa'h-1968, umehave pesaq din sofi umhaiyv.<br/>
-    Arur al pesaq borerot ze nitan lehagish lebeit hamishpat behatamaa lehoraut hahoq.<br/>
-    Mismakh ze notzar beemtzaut maarekhet Resolve AI - borerot digitali mesubeset binah meluakhtit.</i>
+    <i>פסק בוררות זה ניתן על פי חוק הבוררות, התשכ"ח-1968, ומהווה פסק דין סופי ומחייב.<br/>
+    ערר על פסק בוררות זה ניתן להגיש לבית המשפט בהתאם להוראות החוק.<br/>
+    מסמך זה נוצר באמצעות מערכת Resolve AI - בוררות דיגיטלית מבוססת בינה מלאכותית.</i>
     """
     elements.append(Paragraph(footer_text, ParagraphStyle(
         'Footer',

@@ -151,16 +151,61 @@ st.markdown("""
     }
 
     .card p {
-        color: #0A2647;
+        color: #0A2647 !important;
     }
 
-    /* Expander text color */
+    .card div {
+        color: #0A2647 !important;
+    }
+
+    /* Expander text color - multiple selectors for maximum specificity */
     .streamlit-expanderHeader {
         color: #0A2647 !important;
     }
 
-    /* Checkbox text color */
+    [data-testid="stExpander"] {
+        color: #0A2647 !important;
+    }
+
+    [data-testid="stExpander"] summary {
+        color: #0A2647 !important;
+    }
+
+    [data-testid="stExpander"] p {
+        color: #0A2647 !important;
+    }
+
+    [data-testid="stExpander"] div {
+        color: #0A2647 !important;
+    }
+
+    /* Checkbox text color - multiple selectors */
     .stCheckbox label {
+        color: #0A2647 !important;
+    }
+
+    .stCheckbox {
+        color: #0A2647 !important;
+    }
+
+    .stCheckbox > label {
+        color: #0A2647 !important;
+    }
+
+    [data-testid="stCheckbox"] label {
+        color: #0A2647 !important;
+    }
+
+    /* Markdown text in cards */
+    .stMarkdown {
+        color: #0A2647 !important;
+    }
+
+    .stMarkdown p {
+        color: #0A2647 !important;
+    }
+
+    .stMarkdown div {
         color: #0A2647 !important;
     }
 
