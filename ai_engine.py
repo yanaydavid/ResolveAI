@@ -16,6 +16,7 @@ import os
 import random
 import hashlib
 from bidi.algorithm import get_display
+import re
 
 # PDF text extraction (optional, only if PyPDF2 is available)
 try:
@@ -238,10 +239,34 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
     # Helper function to fix Hebrew text direction
     def fix_hebrew(text):
-        """Fix Hebrew text direction using BiDi algorithm"""
+        """Fix Hebrew text direction using BiDi algorithm with proper RTL handling"""
         if not text:
             return text
-        return get_display(text)
+
+        # Handle HTML tags separately - extract them, process text, then reinsert
+        # Pattern to find HTML tags
+        html_tag_pattern = re.compile(r'(<[^>]+>)')
+
+        # Split text by HTML tags
+        parts = html_tag_pattern.split(str(text))
+
+        processed_parts = []
+        for part in parts:
+            if html_tag_pattern.match(part):
+                # It's an HTML tag, keep as is
+                processed_parts.append(part)
+            elif part.strip():
+                # It's text content, apply BiDi with RTL base direction
+                try:
+                    processed_parts.append(get_display(part, base_dir='R'))
+                except:
+                    # Fallback if BiDi fails
+                    processed_parts.append(part)
+            else:
+                # It's whitespace
+                processed_parts.append(part)
+
+        return ''.join(processed_parts)
 
     # Define styles
     styles = getSampleStyleSheet()
