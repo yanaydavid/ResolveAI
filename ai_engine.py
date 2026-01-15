@@ -274,13 +274,20 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
     # Add Logo
     try:
-        logo_url = "https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png"
-        logo = Image(logo_url, width=2*cm, height=2*cm)
+        # Try to load logo from local file first, then from URL
+        logo_path = "logo.png"
+        if os.path.exists(logo_path):
+            logo = Image(logo_path, width=2*cm, height=2*cm)
+        else:
+            # Try URL if local file doesn't exist
+            logo_url = "https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png"
+            logo = Image(logo_url, width=2*cm, height=2*cm)
         logo.hAlign = 'CENTER'
         elements.append(logo)
         elements.append(Spacer(1, 0.3*cm))
-    except:
-        pass  # If logo can't be loaded, continue without it
+    except Exception as e:
+        print(f"Warning: Could not load logo: {e}")
+        # Continue without logo if it can't be loaded
 
     # Legal Header
     legal_header_style = ParagraphStyle(
@@ -355,17 +362,17 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     # Create table with proper styling and flexible row heights
     dispute_table = Table(table_data, colWidths=[4*cm, 4*cm, 4*cm, 4*cm], repeatRows=1)
     dispute_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#0A2647')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#E0E7FF')),  # Light blue background
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#0A2647')),  # Dark blue text
+        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),  # Right align for RTL
         ('FONTNAME', (0, 0), (-1, 0), HEBREW_FONT),
-        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('FONTSIZE', (0, 0), (-1, 0), 11),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('TOPPADDING', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('FONTNAME', (0, 1), (-1, -1), HEBREW_FONT),
-        ('FONTSIZE', (0, 1), (-1, -1), 8),
+        ('FONTSIZE', (0, 1), (-1, -1), 10),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
     ]))
