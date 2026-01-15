@@ -225,12 +225,41 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
         str: Path to generated PDF file
     """
 
+    # Function to add logo to each page
+    def add_page_header(canvas, doc):
+        """Add Resolve AI logo to every page header"""
+        canvas.saveState()
+        try:
+            # Try to load logo
+            logo_path = "logo.png"
+            if os.path.exists(logo_path):
+                canvas.drawImage(logo_path,
+                               doc.width/2 + doc.leftMargin - 1*cm,  # Center horizontally
+                               doc.height + doc.topMargin - 1.5*cm,  # Top of page
+                               width=2*cm,
+                               height=2*cm,
+                               preserveAspectRatio=True,
+                               mask='auto')
+            else:
+                # Try URL if local file doesn't exist
+                logo_url = "https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png"
+                canvas.drawImage(logo_url,
+                               doc.width/2 + doc.leftMargin - 1*cm,
+                               doc.height + doc.topMargin - 1.5*cm,
+                               width=2*cm,
+                               height=2*cm,
+                               preserveAspectRatio=True,
+                               mask='auto')
+        except Exception as e:
+            print(f"Warning: Could not load logo on page: {e}")
+        canvas.restoreState()
+
     doc = SimpleDocTemplate(
         output_path,
         pagesize=A4,
         rightMargin=2*cm,
         leftMargin=2*cm,
-        topMargin=2*cm,
+        topMargin=3*cm,  # Increased to make room for logo header
         bottomMargin=2*cm
     )
 
@@ -318,24 +347,7 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
         spaceAfter=2
     )
 
-    # Add Logo
-    try:
-        # Try to load logo from local file first, then from URL
-        logo_path = "logo.png"
-        if os.path.exists(logo_path):
-            logo = Image(logo_path, width=2*cm, height=2*cm)
-        else:
-            # Try URL if local file doesn't exist
-            logo_url = "https://raw.githubusercontent.com/yanaydavid/ResolveAI/main/logo.png"
-            logo = Image(logo_url, width=2*cm, height=2*cm)
-        logo.hAlign = 'CENTER'
-        elements.append(logo)
-        elements.append(Spacer(1, 0.3*cm))
-    except Exception as e:
-        print(f"Warning: Could not load logo: {e}")
-        # Continue without logo if it can't be loaded
-
-    # Legal Header
+    # Legal Header (Logo will be added to every page via add_page_header callback)
     legal_header_style = ParagraphStyle(
         'LegalHeader',
         parent=normal_style,
@@ -519,34 +531,40 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     elements.append(Paragraph(payment_text, normal_style))
     elements.append(Spacer(1, 1.2*cm))
 
-    # Authentication Appendix
-    elements.append(Paragraph(fix_hebrew("נספח אימות - דף הסבר לשופט"), heading_style))
+    # Generate document hash first (needed for authentication appendix)
+    hash_content = f"{case_data['case_id']}|{case_data['claimant']}|{case_data['defendant']}|{timestamp_str}|{decision['amount_awarded']}|{decision['total_payment']}"
+    doc_hash = hashlib.sha256(hash_content.encode('utf-8')).hexdigest()
+
+    # Authentication Appendix - Improved, concise, and emphasizes Hash
+    elements.append(Paragraph(fix_hebrew("נספח אימות ושלמות מסמך"), heading_style))
 
     auth_text = f"""
-    <b>{fix_hebrew('שורת אימות טכנולוגית:')}</b><br/>
-    {fix_hebrew('מסמך זה הופק במערכת Resolve AI לאחר ששני הצדדים אישרו את הסכם הבוררות. התובע הגיש את התביעה והנתבע הגיש את כתב ההגנה דרך הפלטפורמה הדיגיטלית.')}
+    <b>{fix_hebrew('אימות שלמות המסמך:')}</b><br/>
+    {fix_hebrew('מסמך זה הופק דיגיטלית במערכת Resolve AI לאחר שני הצדדים אישרו את הליך הבוררות והגישו את מסמכיהם דרך הפלטפורמה המאובטחת.')}
     <br/><br/>
-    <b>{fix_hebrew('תיעוד הגישה:')}</b><br/>
-    {fix_hebrew(f'הנתבע נכנס למערכת באמצעות קוד גישה ייחודי (מספר תיק: {case_data["case_id"]}) שנשלח אליו ב-SMS, ואישר את השתתפותו בהליך הבוררות הדיגיטלי.')}
+    <b>{fix_hebrew('קוד אימות Hash (חשוב):')}</b><br/>
+    <font size="8" color="#0A2647"><b>{doc_hash}</b></font><br/>
+    {fix_hebrew('קוד ייחודי זה מאמת את שלמות תוכן המסמך ומונע כל שינוי או זיוף. ניתן לאמת את המסמך באמצעות קוד זה במערכת Resolve AI.')}
     <br/><br/>
-    <b>{fix_hebrew('תאריכי אישור:')}</b><br/>
-    {fix_hebrew('מערכת Resolve AI שומרת את תיעוד המועדים המדויקים בהם כל צד ביצע את פעולותיו במערכת, כולל העלאת מסמכים ואישור תנאי הבוררות.')}
+    <b>{fix_hebrew('תיעוד דיגיטלי:')}</b><br/>
+    {fix_hebrew(f'תיק מספר {case_data["case_id"]} תועד במלואו במערכת, כולל אישורי הצדדים, מועדי הגשת המסמכים, וזמני האישור.')}
     """
     elements.append(Paragraph(auth_text, normal_style))
     elements.append(Spacer(1, 0.8*cm))
 
-    # Signature section
-    elements.append(Paragraph(fix_hebrew("חתימות"), heading_style))
+    # Signature section - Digital signatures with actual dates
+    elements.append(Paragraph(fix_hebrew("חתימות דיגיטליות"), heading_style))
     elements.append(Spacer(1, 0.5*cm))
 
     date_str = award_timestamp.strftime("%d/%m/%Y")
+    time_str = award_timestamp.strftime("%H:%M:%S")
 
     signature_data = [
-        [Paragraph(f'<b>{fix_hebrew("נחתם דיגיטלית על ידי:")}</b><br/>{fix_hebrew("מערכת Resolve AI")}<br/><b>{fix_hebrew("תאריך:")}</b> {date_str}', table_cell_style),
+        [Paragraph(f'<b>{fix_hebrew("נחתם דיגיטלית על ידי:")}</b><br/>{fix_hebrew("מערכת Resolve AI")}<br/><b>{fix_hebrew("תאריך:")}</b> {date_str}<br/><b>{fix_hebrew("שעה:")}</b> {time_str}', table_cell_style),
          Paragraph('', table_cell_style)],
         [Paragraph('', table_cell_style), Paragraph('', table_cell_style)],
-        [Paragraph(f'<b>{fix_hebrew("אישור קבלה - תובע")}</b><br/>{fix_hebrew("נחתם דיגיטלית על ידי:")}<br/>{fix_hebrew(case_data["claimant"])}<br/>{fix_hebrew("תאריך:")} ___________', table_cell_style),
-         Paragraph(f'<b>{fix_hebrew("אישור קבלה - נתבע")}</b><br/>{fix_hebrew("נחתם דיגיטלית על ידי:")}<br/>{fix_hebrew(case_data["defendant"])}<br/>{fix_hebrew("תאריך:")} ___________', table_cell_style)]
+        [Paragraph(f'<b>{fix_hebrew("אישור קבלה - תובע")}</b><br/>{fix_hebrew("נחתם דיגיטלית על ידי:")}<br/>{fix_hebrew(case_data["claimant"])}<br/><b>{fix_hebrew("תאריך:")}</b> {date_str}<br/><b>{fix_hebrew("שעה:")}</b> {time_str}', table_cell_style),
+         Paragraph(f'<b>{fix_hebrew("אישור קבלה - נתבע")}</b><br/>{fix_hebrew("נחתם דיגיטלית על ידי:")}<br/>{fix_hebrew(case_data["defendant"])}<br/><b>{fix_hebrew("תאריך:")}</b> {date_str}<br/><b>{fix_hebrew("שעה:")}</b> {time_str}', table_cell_style)]
     ]
 
     sig_table = Table(signature_data, colWidths=[7*cm, 7*cm])
@@ -566,30 +584,6 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     elements.append(sig_table)
     elements.append(Spacer(1, 1.2*cm))
 
-    # Generate document hash for verification
-    hash_content = f"{case_data['case_id']}|{case_data['claimant']}|{case_data['defendant']}|{timestamp_str}|{decision['amount_awarded']}|{decision['total_payment']}"
-    doc_hash = hashlib.sha256(hash_content.encode('utf-8')).hexdigest()
-
-    # Hash verification section
-    hash_style = ParagraphStyle(
-        'HashStyle',
-        parent=normal_style,
-        fontSize=9,
-        textColor=colors.HexColor('#0A2647'),
-        alignment=TA_CENTER,
-        leading=14,
-        spaceBefore=10,
-        spaceAfter=10
-    )
-
-    hash_text = f"""
-    <b>{fix_hebrew('קוד אימות (Hash):')}</b><br/>
-    {doc_hash}<br/>
-    <i>{fix_hebrew('קוד ייחודי לאימות שלמות המסמך')}</i>
-    """
-    elements.append(Paragraph(hash_text, hash_style))
-    elements.append(Spacer(1, 0.5*cm))
-
     # Footer
     footer_text = f"""
     <i>{fix_hebrew('פסק בוררות זה ניתן על פי חוק הבוררות, התשכ"ח-1968, ומהווה פסק דין סופי ומחייב.')}<br/>
@@ -605,9 +599,9 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
         leading=12
     )))
 
-    # Build PDF
+    # Build PDF with logo on every page
     try:
-        doc.build(elements)
+        doc.build(elements, onFirstPage=add_page_header, onLaterPages=add_page_header)
         return output_path
     except Exception as e:
         print(f"Error generating PDF: {e}")
