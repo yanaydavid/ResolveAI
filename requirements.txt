@@ -2,3 +2,4 @@ streamlit
 reportlab
 python-docx
 PyPDF2
+python-bidi
