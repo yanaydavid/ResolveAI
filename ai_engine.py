@@ -305,6 +305,19 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
         wordWrap='RTL'
     )
 
+    # Table cell style with better wrapping
+    table_cell_style = ParagraphStyle(
+        'TableCell',
+        parent=normal_style,
+        fontSize=10,
+        alignment=TA_RIGHT,
+        fontName=HEBREW_FONT,
+        leading=14,
+        wordWrap='RTL',
+        spaceBefore=2,
+        spaceAfter=2
+    )
+
     # Add Logo
     try:
         # Try to load logo from local file first, then from URL
@@ -375,23 +388,34 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     elements.append(Paragraph(fix_hebrew("ניתוח נקודות המחלוקת"), heading_style))
 
     # Wrap text in Paragraphs for proper RTL handling and word wrap
+    # Header style for table
+    table_header_style = ParagraphStyle(
+        'TableHeader',
+        parent=table_cell_style,
+        fontSize=11,
+        fontName=HEBREW_FONT,
+        alignment=TA_RIGHT,
+        leading=16
+    )
+
     table_data = [
-        [Paragraph(f'<b>{fix_hebrew("ניתוח AI")}</b>', normal_style),
-         Paragraph(f'<b>{fix_hebrew("גרסת הנתבע")}</b>', normal_style),
-         Paragraph(f'<b>{fix_hebrew("גרסת התובע")}</b>', normal_style),
-         Paragraph(f'<b>{fix_hebrew("נושא")}</b>', normal_style)]
+        [Paragraph(f'<b>{fix_hebrew("ניתוח AI")}</b>', table_header_style),
+         Paragraph(f'<b>{fix_hebrew("גרסת הנתבע")}</b>', table_header_style),
+         Paragraph(f'<b>{fix_hebrew("גרסת התובע")}</b>', table_header_style),
+         Paragraph(f'<b>{fix_hebrew("נושא")}</b>', table_header_style)]
     ]
 
     for dispute in analysis['dispute_table']:
         table_data.append([
-            Paragraph(fix_hebrew(dispute['ai_analysis']), normal_style),
-            Paragraph(fix_hebrew(dispute['defendant_version']), normal_style),
-            Paragraph(fix_hebrew(dispute['claimant_version']), normal_style),
-            Paragraph(fix_hebrew(dispute['issue']), normal_style)
+            Paragraph(fix_hebrew(dispute['ai_analysis']), table_cell_style),
+            Paragraph(fix_hebrew(dispute['defendant_version']), table_cell_style),
+            Paragraph(fix_hebrew(dispute['claimant_version']), table_cell_style),
+            Paragraph(fix_hebrew(dispute['issue']), table_cell_style)
         ])
 
-    # Create table with proper styling and flexible row heights
-    dispute_table = Table(table_data, colWidths=[4*cm, 4*cm, 4*cm, 4*cm], repeatRows=1)
+    # Create table with flexible column widths and dynamic row heights
+    # Using None for rowHeights allows automatic height adjustment based on content
+    dispute_table = Table(table_data, colWidths=[4.5*cm, 4.5*cm, 4.5*cm, 3*cm], repeatRows=1)
     dispute_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#E0E7FF')),  # Light blue background
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#0A2647')),  # Dark blue text
@@ -400,11 +424,15 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
         ('FONTSIZE', (0, 0), (-1, 0), 11),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('TOPPADDING', (0, 0), (-1, 0), 12),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),  # Add horizontal padding
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('FONTNAME', (0, 1), (-1, -1), HEBREW_FONT),
         ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to top for better readability
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 10),  # More padding in content cells
+        ('TOPPADDING', (0, 1), (-1, -1), 10),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
     ]))
 
@@ -455,22 +483,24 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     legal_exp_amount = legal_exp.get('registered_mail', decision.get('legal_expenses', 35.0))
 
     financial_data = [
-        [Paragraph(f'<b>{fix_hebrew("סכום")}</b>', normal_style), Paragraph(f'<b>{fix_hebrew("פריט")}</b>', normal_style)],
-        [Paragraph(f"{decision['amount_awarded']:,.2f} ₪", normal_style), Paragraph(fix_hebrew('סכום הפיצוי'), normal_style)],
-        [Paragraph(f"{legal_exp_amount:.2f} ₪", normal_style), Paragraph(fix_hebrew('דמי משלוח דואר רשום'), normal_style)],
-        [Paragraph(f"{decision['total_payment']:,.2f} ₪", normal_style), Paragraph(fix_hebrew('סה"כ לתשלום'), normal_style)]
+        [Paragraph(f'<b>{fix_hebrew("סכום")}</b>', table_cell_style), Paragraph(f'<b>{fix_hebrew("פריט")}</b>', table_cell_style)],
+        [Paragraph(f"{decision['amount_awarded']:,.2f} ₪", table_cell_style), Paragraph(fix_hebrew('סכום הפיצוי'), table_cell_style)],
+        [Paragraph(f"{legal_exp_amount:.2f} ₪", table_cell_style), Paragraph(fix_hebrew('דמי משלוח דואר רשום'), table_cell_style)],
+        [Paragraph(f"{decision['total_payment']:,.2f} ₪", table_cell_style), Paragraph(fix_hebrew('סה"כ לתשלום'), table_cell_style)]
     ]
 
     financial_table = Table(financial_data, colWidths=[6*cm, 8*cm])
     financial_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#7C3AED')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),  # Right align for RTL
         ('FONTNAME', (0, 0), (-1, -1), HEBREW_FONT),
         ('FONTSIZE', (0, 0), (-1, 0), 12),
         ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TOPPADDING', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 12),  # Padding for all cells
+        ('TOPPADDING', (0, 0), (-1, -1), 12),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),  # Add horizontal padding
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
         ('BACKGROUND', (0, 1), (-1, -2), colors.white),
         ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#F1F5F9')),
         ('GRID', (0, 0), (-1, -1), 1.5, colors.black),
@@ -512,11 +542,11 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     date_str = award_timestamp.strftime("%d/%m/%Y")
 
     signature_data = [
-        [Paragraph(f'<b>{fix_hebrew("נחתם דיגיטלית על ידי:")}</b><br/>{fix_hebrew("מערכת Resolve AI")}<br/><b>{fix_hebrew("תאריך:")}</b> {date_str}', normal_style),
-         Paragraph('', normal_style)],
-        [Paragraph('', normal_style), Paragraph('', normal_style)],
-        [Paragraph(f'<b>{fix_hebrew("אישור קבלה - תובע")}</b><br/>{fix_hebrew("נחתם דיגיטלית על ידי:")}<br/>{fix_hebrew(case_data["claimant"])}<br/>{fix_hebrew("תאריך:")} ___________', normal_style),
-         Paragraph(f'<b>{fix_hebrew("אישור קבלה - נתבע")}</b><br/>{fix_hebrew("נחתם דיגיטלית על ידי:")}<br/>{fix_hebrew(case_data["defendant"])}<br/>{fix_hebrew("תאריך:")} ___________', normal_style)]
+        [Paragraph(f'<b>{fix_hebrew("נחתם דיגיטלית על ידי:")}</b><br/>{fix_hebrew("מערכת Resolve AI")}<br/><b>{fix_hebrew("תאריך:")}</b> {date_str}', table_cell_style),
+         Paragraph('', table_cell_style)],
+        [Paragraph('', table_cell_style), Paragraph('', table_cell_style)],
+        [Paragraph(f'<b>{fix_hebrew("אישור קבלה - תובע")}</b><br/>{fix_hebrew("נחתם דיגיטלית על ידי:")}<br/>{fix_hebrew(case_data["claimant"])}<br/>{fix_hebrew("תאריך:")} ___________', table_cell_style),
+         Paragraph(f'<b>{fix_hebrew("אישור קבלה - נתבע")}</b><br/>{fix_hebrew("נחתם דיגיטלית על ידי:")}<br/>{fix_hebrew(case_data["defendant"])}<br/>{fix_hebrew("תאריך:")} ___________', table_cell_style)]
     ]
 
     sig_table = Table(signature_data, colWidths=[7*cm, 7*cm])
@@ -525,8 +555,10 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('FONTNAME', (0, 0), (-1, -1), HEBREW_FONT),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('TOPPADDING', (0, 0), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+        ('TOPPADDING', (0, 0), (-1, -1), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
         ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#0A2647')),
         ('LINEBELOW', (0, 0), (-1, 0), 2, colors.HexColor('#0A2647')),
     ]))
