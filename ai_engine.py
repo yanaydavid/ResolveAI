@@ -15,8 +15,6 @@ from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 import os
 import random
 import hashlib
-from bidi.algorithm import get_display
-import re
 
 # PDF text extraction (optional, only if PyPDF2 is available)
 try:
@@ -266,37 +264,6 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     # Container for the 'Flowable' objects
     elements = []
 
-    # Helper function to fix Hebrew text direction
-    def fix_hebrew(text):
-        """Fix Hebrew text direction using BiDi algorithm with proper RTL handling"""
-        if not text:
-            return text
-
-        # Handle HTML tags separately - extract them, process text, then reinsert
-        # Pattern to find HTML tags
-        html_tag_pattern = re.compile(r'(<[^>]+>)')
-
-        # Split text by HTML tags
-        parts = html_tag_pattern.split(str(text))
-
-        processed_parts = []
-        for part in parts:
-            if html_tag_pattern.match(part):
-                # It's an HTML tag, keep as is
-                processed_parts.append(part)
-            elif part.strip():
-                # It's text content, apply BiDi with RTL base direction
-                try:
-                    processed_parts.append(get_display(part, base_dir='R'))
-                except:
-                    # Fallback if BiDi fails
-                    processed_parts.append(part)
-            else:
-                # It's whitespace
-                processed_parts.append(part)
-
-        return ''.join(processed_parts)
-
     # Define styles
     styles = getSampleStyleSheet()
 
@@ -356,11 +323,11 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
         textColor=colors.HexColor('#0A2647'),
         spaceAfter=15
     )
-    elements.append(Paragraph(fix_hebrew("פסק בורר לפי חוק הבוררות, התשכ\"ח-1968"), legal_header_style))
+    elements.append(Paragraph("פסק בורר לפי חוק הבוררות, התשכ\"ח-1968", legal_header_style))
     elements.append(Spacer(1, 0.3*cm))
 
     # Title
-    elements.append(Paragraph(fix_hebrew("פסק בוררות"), title_style))
+    elements.append(Paragraph("פסק בוררות", title_style))
     elements.append(Spacer(1, 0.8*cm))
 
     # Generate timestamp for the arbitral award
@@ -369,35 +336,35 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
     # Case Information Box
     case_info = f"""
-    <b>{fix_hebrew('מספר תיק:')}</b> {case_data['case_id']}<br/>
-    <b>{fix_hebrew('תאריך וזמן מתן הפסק:')}</b> {timestamp_str}<br/>
-    <b>{fix_hebrew('התובע:')}</b> {fix_hebrew(case_data['claimant'])}<br/>
-    <b>{fix_hebrew('הנתבע:')}</b> {fix_hebrew(case_data['defendant'])}<br/>
+    <b>מספר תיק:</b> {case_data['case_id']}<br/>
+    <b>תאריך וזמן מתן הפסק:</b> {timestamp_str}<br/>
+    <b>התובע:</b> {case_data['claimant']}<br/>
+    <b>הנתבע:</b> {case_data['defendant']}<br/>
     """
     elements.append(Paragraph(case_info, normal_style))
     elements.append(Spacer(1, 0.8*cm))
 
     # Introduction
-    elements.append(Paragraph(fix_hebrew("הקדמה"), heading_style))
-    intro_text = fix_hebrew("""
+    elements.append(Paragraph("הקדמה", heading_style))
+    intro_text = """
     בהתאם לחוק הבוררות, התשכ"ח-1968, ולאחר בחינה מעמיקה של כתב התביעה וכתב ההגנה,
     וניתוח הראיות באמצעות מערכת Resolve AI, מתפרסם בזו פסק הבוררות הבא.
-    """)
+    """
     elements.append(Paragraph(intro_text, normal_style))
     elements.append(Spacer(1, 0.5*cm))
 
     # Objectivity Declaration
-    elements.append(Paragraph(fix_hebrew("הצהרת אובייקטיביות"), heading_style))
-    objectivity_text = f"""
-    <b>{fix_hebrew('ההכרעה התקבלה על ידי אלגוריתם בינה מלאכותית המבוסס על ניתוח עובדתי של המסמכים שהוגשו בלבד, ללא מגע יד אדם וללא ניגוד עניינים.')}</b>
+    elements.append(Paragraph("הצהרת אובייקטיביות", heading_style))
+    objectivity_text = """
+    <b>ההכרעה התקבלה על ידי אלגוריתם בינה מלאכותית המבוסס על ניתוח עובדתי של המסמכים שהוגשו בלבד, ללא מגע יד אדם וללא ניגוד עניינים.</b>
     <br/><br/>
-    {fix_hebrew('המערכת מבצעת ניתוח אוטומטי ואובייקטיבי של הטיעונים והראיות שהוצגו על ידי שני הצדדים, ומפיקה החלטה מבוססת על עקרונות משפטיים מקובלים וצדק טבעי.')}
+    המערכת מבצעת ניתוח אוטומטי ואובייקטיבי של הטיעונים והראיות שהוצגו על ידי שני הצדדים, ומפיקה החלטה מבוססת על עקרונות משפטיים מקובלים וצדק טבעי.
     """
     elements.append(Paragraph(objectivity_text, normal_style))
     elements.append(Spacer(1, 0.8*cm))
 
     # Disputes Analysis Table
-    elements.append(Paragraph(fix_hebrew("ניתוח נקודות המחלוקת"), heading_style))
+    elements.append(Paragraph("ניתוח נקודות המחלוקת", heading_style))
 
     # Wrap text in Paragraphs for proper RTL handling and word wrap
     # Header style for table
@@ -411,18 +378,18 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     )
 
     table_data = [
-        [Paragraph(f'<b>{fix_hebrew("ניתוח AI")}</b>', table_header_style),
-         Paragraph(f'<b>{fix_hebrew("גרסת הנתבע")}</b>', table_header_style),
-         Paragraph(f'<b>{fix_hebrew("גרסת התובע")}</b>', table_header_style),
-         Paragraph(f'<b>{fix_hebrew("נושא")}</b>', table_header_style)]
+        [Paragraph('<b>ניתוח AI</b>', table_header_style),
+         Paragraph('<b>גרסת הנתבע</b>', table_header_style),
+         Paragraph('<b>גרסת התובע</b>', table_header_style),
+         Paragraph('<b>נושא</b>', table_header_style)]
     ]
 
     for dispute in analysis['dispute_table']:
         table_data.append([
-            Paragraph(fix_hebrew(dispute['ai_analysis']), table_cell_style),
-            Paragraph(fix_hebrew(dispute['defendant_version']), table_cell_style),
-            Paragraph(fix_hebrew(dispute['claimant_version']), table_cell_style),
-            Paragraph(fix_hebrew(dispute['issue']), table_cell_style)
+            Paragraph(dispute['ai_analysis'], table_cell_style),
+            Paragraph(dispute['defendant_version'], table_cell_style),
+            Paragraph(dispute['claimant_version'], table_cell_style),
+            Paragraph(dispute['issue'], table_cell_style)
         ])
 
     # Create table with flexible column widths and dynamic row heights
@@ -453,52 +420,52 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
     # Mediation Proposal
     if 'mediation_proposal' in analysis:
-        elements.append(Paragraph(fix_hebrew("הצעת פשרה"), heading_style))
+        elements.append(Paragraph("הצעת פשרה", heading_style))
         mediation = analysis['mediation_proposal']
         mediation_text = f"""
-        <b>{fix_hebrew('ההצעה:')}</b> {fix_hebrew(mediation['proposal'])}<br/><br/>
-        <b>{fix_hebrew('נימוק:')}</b> {fix_hebrew(mediation['rationale'])}
+        <b>ההצעה:</b> {mediation['proposal']}<br/><br/>
+        <b>נימוק:</b> {mediation['rationale']}
         """
         elements.append(Paragraph(mediation_text, normal_style))
         elements.append(Spacer(1, 0.8*cm))
 
     # Final Decision
-    elements.append(Paragraph(fix_hebrew("ההחלטה הסופית"), heading_style))
+    elements.append(Paragraph("ההחלטה הסופית", heading_style))
     decision = analysis['final_verdict']
     reasoning = analysis['reasoning']
 
     verdict_text = f"""
-    <b>{fix_hebrew('פסיקה:')}</b> {fix_hebrew(decision['verdict'])}<br/><br/>
+    <b>פסיקה:</b> {decision['verdict']}<br/><br/>
     """
     elements.append(Paragraph(verdict_text, normal_style))
 
     # Reasoning
-    elements.append(Paragraph(fix_hebrew("נימוקים"), heading_style))
-    reasoning_summary = f"<b>{fix_hebrew('סיכום:')}</b> {fix_hebrew(reasoning['summary'])}<br/><br/>"
+    elements.append(Paragraph("נימוקים", heading_style))
+    reasoning_summary = f"<b>סיכום:</b> {reasoning['summary']}<br/><br/>"
     elements.append(Paragraph(reasoning_summary, normal_style))
 
     if 'detailed_analysis' in reasoning:
         for i, point in enumerate(reasoning['detailed_analysis'], 1):
-            elements.append(Paragraph(f"{i}. {fix_hebrew(point)}", normal_style))
+            elements.append(Paragraph(f"{i}. {point}", normal_style))
             elements.append(Spacer(1, 0.3*cm))
 
     if 'legal_basis' in reasoning:
-        legal_basis_text = f"<br/><b>{fix_hebrew('בסיס משפטי:')}</b> {fix_hebrew(reasoning['legal_basis'])}"
+        legal_basis_text = f"<br/><b>בסיס משפטי:</b> {reasoning['legal_basis']}"
         elements.append(Paragraph(legal_basis_text, normal_style))
 
     elements.append(Spacer(1, 0.8*cm))
 
     # Financial Summary
-    elements.append(Paragraph(fix_hebrew("סיכום כספי"), heading_style))
+    elements.append(Paragraph("סיכום כספי", heading_style))
 
     legal_exp = analysis.get('legal_expenses', {})
     legal_exp_amount = legal_exp.get('registered_mail', decision.get('legal_expenses', 35.0))
 
     financial_data = [
-        [Paragraph(f'<b>{fix_hebrew("סכום")}</b>', table_cell_style), Paragraph(f'<b>{fix_hebrew("פריט")}</b>', table_cell_style)],
-        [Paragraph(f"{decision['amount_awarded']:,.2f} ₪", table_cell_style), Paragraph(fix_hebrew('סכום הפיצוי'), table_cell_style)],
-        [Paragraph(f"{legal_exp_amount:.2f} ₪", table_cell_style), Paragraph(fix_hebrew('דמי משלוח דואר רשום'), table_cell_style)],
-        [Paragraph(f"{decision['total_payment']:,.2f} ₪", table_cell_style), Paragraph(fix_hebrew('סה"כ לתשלום'), table_cell_style)]
+        [Paragraph('<b>סכום</b>', table_cell_style), Paragraph('<b>פריט</b>', table_cell_style)],
+        [Paragraph(f"{decision['amount_awarded']:,.2f} ₪", table_cell_style), Paragraph('סכום הפיצוי', table_cell_style)],
+        [Paragraph(f"{legal_exp_amount:.2f} ₪", table_cell_style), Paragraph('דמי משלוח דואר רשום', table_cell_style)],
+        [Paragraph(f"{decision['total_payment']:,.2f} ₪", table_cell_style), Paragraph('סה"כ לתשלום', table_cell_style)]
     ]
 
     financial_table = Table(financial_data, colWidths=[6*cm, 8*cm])
@@ -526,7 +493,7 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
 
     # Payment terms
     payment_text = f"""
-    <b>{fix_hebrew('מועד תשלום:')}</b> {fix_hebrew(f'על הנתבע לשלם את מלוא הסכום תוך {decision["payment_deadline_days"]} ימים מיום קבלת פסק בוררות זה.')}
+    <b>מועד תשלום:</b> על הנתבע לשלם את מלוא הסכום תוך {decision["payment_deadline_days"]} ימים מיום קבלת פסק בוררות זה.
     """
     elements.append(Paragraph(payment_text, normal_style))
     elements.append(Spacer(1, 1.2*cm))
@@ -536,35 +503,35 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     doc_hash = hashlib.sha256(hash_content.encode('utf-8')).hexdigest()
 
     # Authentication Appendix - Improved, concise, and emphasizes Hash
-    elements.append(Paragraph(fix_hebrew("נספח אימות ושלמות מסמך"), heading_style))
+    elements.append(Paragraph("נספח אימות ושלמות מסמך", heading_style))
 
     auth_text = f"""
-    <b>{fix_hebrew('אימות שלמות המסמך:')}</b><br/>
-    {fix_hebrew('מסמך זה הופק דיגיטלית במערכת Resolve AI לאחר שני הצדדים אישרו את הליך הבוררות והגישו את מסמכיהם דרך הפלטפורמה המאובטחת.')}
+    <b>אימות שלמות המסמך:</b><br/>
+    מסמך זה הופק דיגיטלית במערכת Resolve AI לאחר שני הצדדים אישרו את הליך הבוררות והגישו את מסמכיהם דרך הפלטפורמה המאובטחת.
     <br/><br/>
-    <b>{fix_hebrew('קוד אימות Hash (חשוב):')}</b><br/>
+    <b>קוד אימות Hash (חשוב):</b><br/>
     <font size="8" color="#0A2647"><b>{doc_hash}</b></font><br/>
-    {fix_hebrew('קוד ייחודי זה מאמת את שלמות תוכן המסמך ומונע כל שינוי או זיוף. ניתן לאמת את המסמך באמצעות קוד זה במערכת Resolve AI.')}
+    קוד ייחודי זה מאמת את שלמות תוכן המסמך ומונע כל שינוי או זיוף. ניתן לאמת את המסמך באמצעות קוד זה במערכת Resolve AI.
     <br/><br/>
-    <b>{fix_hebrew('תיעוד דיגיטלי:')}</b><br/>
-    {fix_hebrew(f'תיק מספר {case_data["case_id"]} תועד במלואו במערכת, כולל אישורי הצדדים, מועדי הגשת המסמכים, וזמני האישור.')}
+    <b>תיעוד דיגיטלי:</b><br/>
+    תיק מספר {case_data["case_id"]} תועד במלואו במערכת, כולל אישורי הצדדים, מועדי הגשת המסמכים, וזמני האישור.
     """
     elements.append(Paragraph(auth_text, normal_style))
     elements.append(Spacer(1, 0.8*cm))
 
     # Signature section - Digital signatures with actual dates
-    elements.append(Paragraph(fix_hebrew("חתימות דיגיטליות"), heading_style))
+    elements.append(Paragraph("חתימות דיגיטליות", heading_style))
     elements.append(Spacer(1, 0.5*cm))
 
     date_str = award_timestamp.strftime("%d/%m/%Y")
     time_str = award_timestamp.strftime("%H:%M:%S")
 
     signature_data = [
-        [Paragraph(f'<b>{fix_hebrew("נחתם דיגיטלית על ידי:")}</b><br/>{fix_hebrew("מערכת Resolve AI")}<br/><b>{fix_hebrew("תאריך:")}</b> {date_str}<br/><b>{fix_hebrew("שעה:")}</b> {time_str}', table_cell_style),
+        [Paragraph(f'<b>נחתם דיגיטלית על ידי:</b><br/>מערכת Resolve AI<br/><b>תאריך:</b> {date_str}<br/><b>שעה:</b> {time_str}', table_cell_style),
          Paragraph('', table_cell_style)],
         [Paragraph('', table_cell_style), Paragraph('', table_cell_style)],
-        [Paragraph(f'<b>{fix_hebrew("אישור קבלה - תובע")}</b><br/>{fix_hebrew("נחתם דיגיטלית על ידי:")}<br/>{fix_hebrew(case_data["claimant"])}<br/><b>{fix_hebrew("תאריך:")}</b> {date_str}<br/><b>{fix_hebrew("שעה:")}</b> {time_str}', table_cell_style),
-         Paragraph(f'<b>{fix_hebrew("אישור קבלה - נתבע")}</b><br/>{fix_hebrew("נחתם דיגיטלית על ידי:")}<br/>{fix_hebrew(case_data["defendant"])}<br/><b>{fix_hebrew("תאריך:")}</b> {date_str}<br/><b>{fix_hebrew("שעה:")}</b> {time_str}', table_cell_style)]
+        [Paragraph(f'<b>אישור קבלה - תובע</b><br/>נחתם דיגיטלית על ידי:<br/>{case_data["claimant"]}<br/><b>תאריך:</b> {date_str}<br/><b>שעה:</b> {time_str}', table_cell_style),
+         Paragraph(f'<b>אישור קבלה - נתבע</b><br/>נחתם דיגיטלית על ידי:<br/>{case_data["defendant"]}<br/><b>תאריך:</b> {date_str}<br/><b>שעה:</b> {time_str}', table_cell_style)]
     ]
 
     sig_table = Table(signature_data, colWidths=[7*cm, 7*cm])
@@ -585,10 +552,10 @@ def generate_arbitral_award_pdf(case_data, analysis, output_path):
     elements.append(Spacer(1, 1.2*cm))
 
     # Footer
-    footer_text = f"""
-    <i>{fix_hebrew('פסק בוררות זה ניתן על פי חוק הבוררות, התשכ"ח-1968, ומהווה פסק דין סופי ומחייב.')}<br/>
-    {fix_hebrew('ערר על פסק בוררות זה ניתן להגיש לבית המשפט בהתאם להוראות החוק.')}<br/>
-    {fix_hebrew('מסמך זה נוצר באמצעות מערכת Resolve AI - בוררות דיגיטלית מבוססת בינה מלאכותית.')}</i>
+    footer_text = """
+    <i>פסק בוררות זה ניתן על פי חוק הבוררות, התשכ"ח-1968, ומהווה פסק דין סופי ומחייב.<br/>
+    ערר על פסק בוררות זה ניתן להגיש לבית המשפט בהתאם להוראות החוק.<br/>
+    מסמך זה נוצר באמצעות מערכת Resolve AI - בוררות דיגיטלית מבוססת בינה מלאכותית.</i>
     """
     elements.append(Paragraph(footer_text, ParagraphStyle(
         'Footer',
