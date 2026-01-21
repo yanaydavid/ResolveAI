@@ -609,6 +609,19 @@ TERMS_HTML = """
     </p>
 </div>
 
+<div class="terms-section">
+    <h3>8. הגנת פרטיות ואימות זהות</h3>
+    <p>
+        המערכת פועלת בשיטת 'עיבוד בר-חלוף' (Ephemeral Processing). צילום תעודת הזהות משמש לאימות בלבד ונמחק פיזית וצמיתות מהשרת מיד עם סיום חילוץ הנתונים.
+    </p>
+    <p>
+        לצורך תיעוד משפטי, יישמר קוד אימות דיגיטלי (Hash) מוצפן בלבד, המבטיח את שלמות ההליך ללא החזקת המידע הרגיש.
+    </p>
+    <p>
+        Resolve AI אינה שומרת עותקים של תעודות מזהות ומתחייבת למחיקה מיידית בהתאם לתקנות הגנת הפרטיות, התשמ"א-1981 ולתקנת הגנת הפרטיות (אבטחת מידע), התשע"ז-2017.
+    </p>
+</div>
+
 <div class="scroll-instruction">
     אנא גלול עד סוף התקנון לפני האישור
 </div>
@@ -824,6 +837,17 @@ def render_claimant_portal():
         """, unsafe_allow_html=True)
 
         st.markdown("""
+            <div class="success-box">
+                <p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 15px;">
+                    הודעת SMS רשמית הכוללת הזמנה לדין נשלחה כעת לנתבע
+                </p>
+                <p style="font-size: 1rem; opacity: 0.9;">
+                    המערכת שלחה הודעה אוטומטית עם פרטי התיק והזמנה להגיש כתב הגנה.
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
             <div class="instruction-box">
                 <p style="font-size: 1.3rem; font-weight: 700; margin-bottom: 15px;">
                     שלב הבא - העברת הפרטים לנתבע
@@ -889,6 +913,8 @@ def render_claimant_portal():
             key="claimant_id_document",
             help="קובץ PDF או תמונה (JPG/PNG)"
         )
+
+        st.info("למען הגנת פרטיותך, הקובץ נמחק מהשרת מיד לאחר האימות. Resolve AI אינה שומרת עותקים של תעודות מזהות.")
 
         # Personal Details
         st.markdown('<p class="subsection-title">פרטים אישיים</p>', unsafe_allow_html=True)
@@ -1171,6 +1197,8 @@ def render_defendant_portal():
             key="defendant_id_document",
             help="קובץ PDF או תמונה (JPG/PNG)"
         )
+
+        st.info("למען הגנת פרטיותך, הקובץ נמחק מהשרת מיד לאחר האימות. Resolve AI אינה שומרת עותקים של תעודות מזהות.")
 
         # Personal Details
         st.markdown('<p class="subsection-title">פרטים אישיים</p>', unsafe_allow_html=True)
