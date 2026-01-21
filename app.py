@@ -1,5 +1,9 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import os
+import random
+import string
+from datetime import datetime
 
 # =====================================================
 # Page Configuration
@@ -10,6 +14,28 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+# =====================================================
+# Utility Functions
+# =====================================================
+def generate_case_id():
+    """Generate unique case ID"""
+    timestamp = datetime.now().strftime("%Y%m%d")
+    random_part = ''.join(random.choices(string.digits, k=6))
+    return f"RA-{timestamp}-{random_part}"
+
+def save_uploaded_file(uploaded_file, case_id, file_type):
+    """Save uploaded file and return path"""
+    if not os.path.exists("uploads"):
+        os.makedirs("uploads")
+
+    file_extension = uploaded_file.name.split('.')[-1]
+    file_path = os.path.join("uploads", f"{case_id}_{file_type}.{file_extension}")
+
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+
+    return file_path
 
 # =====================================================
 # Custom CSS - Luxury Design with RTL Support
@@ -126,6 +152,17 @@ st.markdown("""
         text-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
+    .subsection-title {
+        color: #FFD700;
+        font-size: 1.5rem;
+        font-weight: 600;
+        text-align: right;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid rgba(218, 165, 32, 0.3);
+        padding-bottom: 10px;
+    }
+
     /* Terms Container */
     .terms-container {
         background: rgba(255, 255, 255, 0.1);
@@ -202,6 +239,55 @@ st.markdown("""
         50% { opacity: 0.6; }
     }
 
+    /* Case ID Display */
+    .case-id-box {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        color: white;
+        margin: 30px 0;
+        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+    }
+
+    .case-id-title {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        opacity: 0.9;
+    }
+
+    .case-id-number {
+        font-size: 3.5rem;
+        font-weight: 900;
+        margin: 0;
+        letter-spacing: 3px;
+    }
+
+    /* Success Message Box */
+    .success-box {
+        background: rgba(16, 185, 129, 0.2);
+        border: 2px solid #10b981;
+        border-radius: 15px;
+        padding: 25px;
+        margin: 30px 0;
+        color: white;
+        text-align: center;
+    }
+
+    /* Instruction Box */
+    .instruction-box {
+        background: rgba(255, 193, 7, 0.15);
+        border: 2px solid rgba(255, 193, 7, 0.5);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        color: white;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        direction: rtl;
+        text-align: right;
+    }
+
     /* Luxury Buttons */
     .stButton > button {
         background: transparent !important;
@@ -251,12 +337,44 @@ st.markdown("""
         color: rgba(255, 255, 255, 0.5) !important;
     }
 
+    /* Text Area */
+    .stTextArea textarea {
+        background: rgba(255, 255, 255, 0.15) !important;
+        border: 2px solid rgba(218, 165, 32, 0.4) !important;
+        border-radius: 12px !important;
+        color: white !important;
+        font-size: 1.1rem !important;
+        padding: 15px 20px !important;
+        direction: rtl !important;
+        text-align: right !important;
+        min-height: 200px !important;
+    }
+
+    .stTextArea textarea:focus {
+        border-color: #DAA520 !important;
+        box-shadow: 0 0 20px rgba(218, 165, 32, 0.4) !important;
+    }
+
     /* Labels */
-    .stTextInput label {
+    .stTextInput label, .stTextArea label {
         color: white !important;
         font-size: 1.1rem !important;
         font-weight: 600 !important;
         margin-bottom: 8px !important;
+    }
+
+    /* File Uploader */
+    .stFileUploader {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 2px solid rgba(218, 165, 32, 0.4) !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+    }
+
+    .stFileUploader label {
+        color: white !important;
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
     }
 
     /* Checkbox */
@@ -273,6 +391,16 @@ st.markdown("""
         font-size: 1.15rem !important;
         font-weight: 500 !important;
         line-height: 1.8 !important;
+    }
+
+    /* Expander */
+    .streamlit-expanderHeader {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 2px solid rgba(218, 165, 32, 0.4) !important;
+        border-radius: 12px !important;
+        color: white !important;
+        font-size: 1.2rem !important;
+        font-weight: 600 !important;
     }
 
     /* Warning/Info boxes */
@@ -322,6 +450,10 @@ st.markdown("""
         .terms-container {
             padding: 20px;
             max-height: 400px;
+        }
+
+        .case-id-number {
+            font-size: 2.5rem !important;
         }
 
         .stButton > button {
@@ -411,7 +543,7 @@ TERMS_HTML = """
 </div>
 
 <div class="scroll-instruction">
-    ↓ אנא גלול עד סוף התקנון לפני האישור ↓
+    אנא גלול עד סוף התקנון לפני האישור
 </div>
 """
 
@@ -424,6 +556,14 @@ if 'terms_scrolled_claimant' not in st.session_state:
     st.session_state.terms_scrolled_claimant = False
 if 'terms_scrolled_defendant' not in st.session_state:
     st.session_state.terms_scrolled_defendant = False
+if 'case_id' not in st.session_state:
+    st.session_state.case_id = None
+if 'claimant_submitted' not in st.session_state:
+    st.session_state.claimant_submitted = False
+if 'defendant_submitted' not in st.session_state:
+    st.session_state.defendant_submitted = False
+if 'case_data' not in st.session_state:
+    st.session_state.case_data = {}
 
 # =====================================================
 # Navigation Functions
@@ -445,9 +585,7 @@ def go_to_home():
 def render_terms_with_scroll(portal_type):
     """
     Renders the terms and conditions with scroll detection.
-    Returns True if user has scrolled to bottom, False otherwise.
     """
-    # Unique key for this portal
     scroll_key = f"terms_scroll_{portal_type}"
 
     # Display terms in scrollable container
@@ -455,18 +593,16 @@ def render_terms_with_scroll(portal_type):
     st.markdown(TERMS_HTML, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Simple approach: Add a button at the bottom to confirm reading
+    # Add button to confirm reading
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        if st.button("✓ קראתי את התקנון המלא", key=f"confirm_read_{portal_type}", use_container_width=True):
+        if st.button("קראתי את התקנון המלא", key=f"confirm_read_{portal_type}", use_container_width=True):
             if portal_type == "claimant":
                 st.session_state.terms_scrolled_claimant = True
             else:
                 st.session_state.terms_scrolled_defendant = True
             st.rerun()
-
-    return False
 
 # =====================================================
 # Page: Home (Landing Page)
@@ -525,19 +661,51 @@ def render_claimant_portal():
     # Form Container
     st.markdown('<div class="form-container">', unsafe_allow_html=True)
 
+    # Check if claim already submitted
+    if st.session_state.claimant_submitted:
+        st.markdown(f"""
+            <div class="case-id-box">
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">כתב התביעה הוגש בהצלחה</h2>
+                <p class="case-id-title">מספר תיק</p>
+                <h1 class="case-id-number">{st.session_state.case_id}</h1>
+            </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+            <div class="instruction-box">
+                <p style="font-size: 1.3rem; font-weight: 700; margin-bottom: 15px;">
+                    שלב הבא - העברת הפרטים לנתבע
+                </p>
+                <p>
+                    עליך להעביר את מספר התיק הבא לנתבע:
+                </p>
+                <p style="font-size: 1.5rem; font-weight: 800; text-align: center; margin: 20px 0; color: #FFD700;">
+                    {case_id}
+                </p>
+                <p>
+                    הנתבע יזין את מספר התיק במסוף הנתבעים על מנת להגיש את כתב ההגנה שלו.
+                </p>
+                <p style="margin-top: 20px; font-weight: 600;">
+                    רק לאחר שהנתבע יגיש את כתב ההגנה, המערכת תעבור לשלב ניתוח הנתונים והפקת פסק בוררות.
+                </p>
+            </div>
+        """.format(case_id=st.session_state.case_id), unsafe_allow_html=True)
+
+        st.markdown('</div>', unsafe_allow_html=True)
+        return
+
     # Section Title
     st.markdown("""
-        <h2 class="section-title">רישום תובע</h2>
+        <h2 class="section-title">רישום תובע והגשת תביעה</h2>
     """, unsafe_allow_html=True)
 
-    # Check if terms have been read and confirmed
+    # Check if terms have been read
     if not st.session_state.terms_scrolled_claimant:
-        # Display terms with scroll detection
         render_terms_with_scroll("claimant")
         st.markdown('</div>', unsafe_allow_html=True)
         return
 
-    # Terms confirmed - show the agreement checkbox and form
+    # Terms confirmed
     st.success("התקנון נקרא בהצלחה")
 
     # Legal Agreement Checkbox
@@ -546,33 +714,61 @@ def render_claimant_portal():
         key="terms_claimant"
     )
 
-    # Show form only if terms accepted
     if terms_accepted:
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # Personal Details Form
-        full_name = st.text_input(
-            "שם מלא",
-            key="claimant_full_name",
-            placeholder="הזן שם פרטי ושם משפחה"
+        # Personal Details
+        st.markdown('<p class="subsection-title">פרטים אישיים</p>', unsafe_allow_html=True)
+
+        col1, col2 = st.columns(2)
+        with col1:
+            full_name = st.text_input(
+                "שם מלא",
+                key="claimant_full_name",
+                placeholder="הזן שם פרטי ושם משפחה"
+            )
+            email = st.text_input(
+                "כתובת אימייל",
+                key="claimant_email",
+                placeholder="example@email.com"
+            )
+
+        with col2:
+            id_number = st.text_input(
+                "מספר תעודת זהות",
+                key="claimant_id",
+                placeholder="הזן מספר תעודת זהות או מספר חברה"
+            )
+            phone = st.text_input(
+                "מספר טלפון",
+                key="claimant_phone",
+                placeholder="05XXXXXXXX"
+            )
+
+        # Claim Details
+        st.markdown('<p class="subsection-title">כתב תביעה ופירוט עובדתי</p>', unsafe_allow_html=True)
+
+        st.markdown("""
+            <div class="instruction-box">
+                פרט את השתלשלות האירועים, העובדות והסעד המבוקש. פסק הדין יתבסס על הסנכרון בין טיעוניך לראיות שיצורפו.
+            </div>
+        """, unsafe_allow_html=True)
+
+        claim_text = st.text_area(
+            "תיאור המקרה",
+            key="claim_description",
+            placeholder="פרט כאן את כל העובדות, האירועים והסעד המבוקש...",
+            height=300
         )
 
-        id_number = st.text_input(
-            "מספר תעודת זהות / ח.ר",
-            key="claimant_id",
-            placeholder="הזן מספר תעודת זהות או מספר חברה"
-        )
+        # Evidence Upload
+        st.markdown('<p class="subsection-title">נספחים ואסמכתאות</p>', unsafe_allow_html=True)
 
-        email = st.text_input(
-            "כתובת אימייל",
-            key="claimant_email",
-            placeholder="example@email.com"
-        )
-
-        phone = st.text_input(
-            "מספר טלפון",
-            key="claimant_phone",
-            placeholder="05XXXXXXXX"
+        evidence_files = st.file_uploader(
+            "העלה קבצי ראיות (PDF או DOCX בלבד)",
+            type=["pdf", "docx"],
+            accept_multiple_files=True,
+            key="claimant_evidence"
         )
 
         st.markdown("<br><br>", unsafe_allow_html=True)
@@ -580,19 +776,42 @@ def render_claimant_portal():
         # Submit Button
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            if st.button("שמור והמשך", key="submit_claimant"):
+            if st.button("שלח תביעה", key="submit_claim"):
                 # Validation
                 if not full_name or not id_number or not email or not phone:
-                    st.error("נא למלא את כל השדות")
+                    st.error("נא למלא את כל הפרטים האישיים")
+                elif not claim_text or len(claim_text) < 50:
+                    st.error("נא לפרט את כתב התביעה בצורה מפורטת (לפחות 50 תווים)")
+                elif not evidence_files or len(evidence_files) == 0:
+                    st.error("נא להעלות לפחות קובץ ראיה אחד")
                 else:
-                    st.success("הפרטים נשמרו בהצלחה")
-                    # Here you can save the data to database or session state
-                    st.session_state.claimant_data = {
-                        'full_name': full_name,
-                        'id_number': id_number,
-                        'email': email,
-                        'phone': phone
+                    # Generate case ID
+                    case_id = generate_case_id()
+                    st.session_state.case_id = case_id
+
+                    # Save files
+                    saved_files = []
+                    for idx, file in enumerate(evidence_files):
+                        file_path = save_uploaded_file(file, case_id, f"claimant_evidence_{idx}")
+                        saved_files.append(file_path)
+
+                    # Save case data
+                    st.session_state.case_data = {
+                        'case_id': case_id,
+                        'claimant': {
+                            'full_name': full_name,
+                            'id_number': id_number,
+                            'email': email,
+                            'phone': phone,
+                            'claim_text': claim_text,
+                            'evidence_files': saved_files
+                        },
+                        'defendant': None
                     }
+
+                    st.session_state.claimant_submitted = True
+                    st.success("התביעה נשלחה בהצלחה!")
+                    st.rerun()
     else:
         st.info("יש לאשר את התקנון והסכם הבוררות על מנת להמשיך")
 
@@ -617,54 +836,144 @@ def render_defendant_portal():
     # Form Container
     st.markdown('<div class="form-container">', unsafe_allow_html=True)
 
-    # Section Title
-    st.markdown("""
-        <h2 class="section-title">רישום נתבע</h2>
-    """, unsafe_allow_html=True)
+    # Check if defense already submitted
+    if st.session_state.defendant_submitted:
+        st.markdown("""
+            <div class="success-box">
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">כתב ההגנה הוגש בהצלחה</h2>
+                <p style="font-size: 1.3rem;">
+                    טיעוני שני הצדדים ונספחיהם התקבלו במערכת.
+                </p>
+                <p style="font-size: 1.3rem; margin-top: 20px; font-weight: 700;">
+                    Resolve AI עוברת כעת לשלב ניתוח הנתונים והפקת פסק בוררות סופי ומחייב.
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
 
-    # Check if terms have been read and confirmed
-    if not st.session_state.terms_scrolled_defendant:
-        # Display terms with scroll detection
-        render_terms_with_scroll("defendant")
         st.markdown('</div>', unsafe_allow_html=True)
         return
 
-    # Terms confirmed - show the agreement checkbox and form
-    st.success("התקנון נקרא בהצלחה")
+    # Section Title
+    st.markdown("""
+        <h2 class="section-title">אימות תיק והגשת כתב הגנה</h2>
+    """, unsafe_allow_html=True)
+
+    # Case ID Verification
+    if 'defendant_case_verified' not in st.session_state:
+        st.session_state.defendant_case_verified = False
+
+    if not st.session_state.defendant_case_verified:
+        st.markdown("""
+            <div class="instruction-box">
+                הזן את מספר התיק שקיבלת מהתובע על מנת להמשיך להגשת כתב הגנה.
+            </div>
+        """, unsafe_allow_html=True)
+
+        case_id_input = st.text_input(
+            "מספר תיק",
+            key="defendant_case_id",
+            placeholder="RA-XXXXXXXX-XXXXXX"
+        )
+
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            if st.button("אמת תיק", key="verify_case"):
+                if not case_id_input:
+                    st.error("נא להזין מספר תיק")
+                elif case_id_input != st.session_state.case_id:
+                    st.error("מספר תיק לא נמצא במערכת. אנא בדוק את המספר שקיבלת.")
+                else:
+                    st.session_state.defendant_case_verified = True
+                    st.success("תיק אומת בהצלחה!")
+                    st.rerun()
+
+        st.markdown('</div>', unsafe_allow_html=True)
+        return
+
+    # Case verified - show arbitration agreement
+    if not st.session_state.terms_scrolled_defendant:
+        st.markdown("""
+            <div class="instruction-box">
+                <p style="font-weight: 700; font-size: 1.2rem;">
+                    אישור סמכות חובה
+                </p>
+                <p>
+                    לפני הגשת כתב ההגנה, עליך לקרוא ולאשר את הסכם הבוררות המפורט.
+                    ללא הסכמה זו, אין לבורר סמכות חוקית עליך.
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+
+        with st.expander("הסכם הבוררות המפורט - לחץ לקריאה"):
+            render_terms_with_scroll("defendant")
+
+        st.markdown('</div>', unsafe_allow_html=True)
+        return
+
+    # Terms confirmed
+    st.success("התקנון נקרא והסכמת הבוררות אושרה")
 
     # Legal Agreement Checkbox
     terms_accepted = st.checkbox(
-        "אני מאשר כי קראתי ואני מסכים לתקנון האתר ולהסכם הבוררות של Resolve AI",
+        "אני מסכים להסכם הבוררות ומאשר את סמכות Resolve AI",
         key="terms_defendant"
     )
 
-    # Show form only if terms accepted
     if terms_accepted:
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # Personal Details Form
-        full_name = st.text_input(
-            "שם מלא",
-            key="defendant_full_name",
-            placeholder="הזן שם פרטי ושם משפחה"
+        # Personal Details
+        st.markdown('<p class="subsection-title">פרטים אישיים</p>', unsafe_allow_html=True)
+
+        col1, col2 = st.columns(2)
+        with col1:
+            full_name = st.text_input(
+                "שם מלא",
+                key="defendant_full_name",
+                placeholder="הזן שם פרטי ושם משפחה"
+            )
+            email = st.text_input(
+                "כתובת אימייל",
+                key="defendant_email",
+                placeholder="example@email.com"
+            )
+
+        with col2:
+            id_number = st.text_input(
+                "מספר תעודת זהות",
+                key="defendant_id",
+                placeholder="הזן מספר תעודת זהות או מספר חברה"
+            )
+            phone = st.text_input(
+                "מספר טלפון",
+                key="defendant_phone",
+                placeholder="05XXXXXXXX"
+            )
+
+        # Defense Details
+        st.markdown('<p class="subsection-title">כתב הגנה ופירוט עובדתי</p>', unsafe_allow_html=True)
+
+        st.markdown("""
+            <div class="instruction-box">
+                פרט את תגובתך לטענות התובע, את גרסתך לאירועים ואת טענות ההגנה שלך.
+            </div>
+        """, unsafe_allow_html=True)
+
+        defense_text = st.text_area(
+            "תיאור ההגנה",
+            key="defense_description",
+            placeholder="פרט כאן את תגובתך לתביעה, גרסתך לאירועים וטענות ההגנה...",
+            height=300
         )
 
-        id_number = st.text_input(
-            "מספר תעודת זהות / ח.ר",
-            key="defendant_id",
-            placeholder="הזן מספר תעודת זהות או מספר חברה"
-        )
+        # Evidence Upload
+        st.markdown('<p class="subsection-title">נספחים ואסמכתאות</p>', unsafe_allow_html=True)
 
-        email = st.text_input(
-            "כתובת אימייל",
-            key="defendant_email",
-            placeholder="example@email.com"
-        )
-
-        phone = st.text_input(
-            "מספר טלפון",
-            key="defendant_phone",
-            placeholder="05XXXXXXXX"
+        defense_evidence_files = st.file_uploader(
+            "העלה קבצי ראיות (PDF או DOCX בלבד)",
+            type=["pdf", "docx"],
+            accept_multiple_files=True,
+            key="defendant_evidence"
         )
 
         st.markdown("<br><br>", unsafe_allow_html=True)
@@ -672,21 +981,36 @@ def render_defendant_portal():
         # Submit Button
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            if st.button("שמור והמשך", key="submit_defendant"):
+            if st.button("שלח כתב הגנה", key="submit_defense"):
                 # Validation
                 if not full_name or not id_number or not email or not phone:
-                    st.error("נא למלא את כל השדות")
+                    st.error("נא למלא את כל הפרטים האישיים")
+                elif not defense_text or len(defense_text) < 50:
+                    st.error("נא לפרט את כתב ההגנה בצורה מפורטת (לפחות 50 תווים)")
+                elif not defense_evidence_files or len(defense_evidence_files) == 0:
+                    st.error("נא להעלות לפחות קובץ ראיה אחד")
                 else:
-                    st.success("הפרטים נשמרו בהצלחה")
-                    # Here you can save the data to database or session state
-                    st.session_state.defendant_data = {
+                    # Save files
+                    saved_files = []
+                    for idx, file in enumerate(defense_evidence_files):
+                        file_path = save_uploaded_file(file, st.session_state.case_id, f"defendant_evidence_{idx}")
+                        saved_files.append(file_path)
+
+                    # Update case data with defendant info
+                    st.session_state.case_data['defendant'] = {
                         'full_name': full_name,
                         'id_number': id_number,
                         'email': email,
-                        'phone': phone
+                        'phone': phone,
+                        'defense_text': defense_text,
+                        'evidence_files': saved_files
                     }
+
+                    st.session_state.defendant_submitted = True
+                    st.success("כתב ההגנה נשלח בהצלחה!")
+                    st.rerun()
     else:
-        st.info("יש לאשר את התקנון והסכם הבוררות על מנת להמשיך")
+        st.info("יש לאשר את הסכם הבוררות על מנת להמשיך")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
