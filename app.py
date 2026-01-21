@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 # =====================================================
 # Page Configuration
@@ -125,6 +126,82 @@ st.markdown("""
         text-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
+    /* Terms Container */
+    .terms-container {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(218, 165, 32, 0.4);
+        border-radius: 15px;
+        padding: 30px;
+        margin: 30px 0;
+        max-height: 500px;
+        overflow-y: scroll;
+        direction: rtl;
+        text-align: right;
+    }
+
+    .terms-container::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .terms-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+
+    .terms-container::-webkit-scrollbar-thumb {
+        background: rgba(218, 165, 32, 0.6);
+        border-radius: 10px;
+    }
+
+    .terms-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(218, 165, 32, 0.8);
+    }
+
+    .terms-title {
+        color: #FFD700;
+        font-size: 1.8rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid rgba(218, 165, 32, 0.5);
+        padding-bottom: 15px;
+    }
+
+    .terms-section {
+        color: white;
+        margin-bottom: 25px;
+        line-height: 1.9;
+        font-size: 1.05rem;
+    }
+
+    .terms-section h3 {
+        color: #FFD700;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        margin-top: 20px;
+    }
+
+    .terms-section p {
+        margin-bottom: 12px;
+        text-align: right;
+        direction: rtl;
+    }
+
+    .scroll-instruction {
+        color: #FFD700;
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-top: 15px;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
     /* Luxury Buttons */
     .stButton > button {
         background: transparent !important;
@@ -242,6 +319,11 @@ st.markdown("""
             padding: 30px 20px;
         }
 
+        .terms-container {
+            padding: 20px;
+            max-height: 400px;
+        }
+
         .stButton > button {
             font-size: 1.2rem !important;
             padding: 15px 40px !important;
@@ -251,14 +333,97 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =====================================================
+# Terms and Conditions - Full Legal Text
+# =====================================================
+TERMS_HTML = """
+<div class="terms-title">
+    תקנון, תנאי שימוש והסכם בוררות מחייב – Resolve AI
+</div>
+
+<div class="terms-section">
+    <h3>1. הגדרת ההסכם וסמכות הכרעה</h3>
+    <p>
+        המשתמשים (להלן: "הצדדים") נותנים בזאת את הסכמתם המלאה, המפורשת והבלתי חוזרת למסור כל סכסוך ביניהם להכרעה בלעדית של מערכת Resolve AI (להלן: "הבורר").
+    </p>
+    <p>
+        הצדדים מאשרים כי ידוע להם והם מסכימים לכך שהבורר הינו מערכת בינה מלאכותית המקבלת החלטות על בסיס ניתוח לוגי של טענות וראיות, ללא התערבות אנושית בזמן אמת.
+    </p>
+</div>
+
+<div class="terms-section">
+    <h3>2. כפיפות לחוק הבוררות וסמכויות</h3>
+    <p>
+        הליך הבוררות כפוף להוראות חוק הבוררות, התשכ"ח-1968 (להלן: "החוק").
+    </p>
+    <p>
+        פסק הבוררות שיופק יהיה סופי ומחייב, וניתן יהיה לאשרו כפסק דין על ידי בית המשפט המוסמך לפי סעיף 23 לחוק.
+    </p>
+    <p>
+        בהתאם לסעיף 22 לחוק, הבורר שומר לעצמו את הסמכות לתקן פסק דין במקרה של טעות סופר או טעות חישוב טכנית.
+    </p>
+</div>
+
+<div class="terms-section">
+    <h3>3. פטור מסדרי דין ודיני ראיות</h3>
+    <p>
+        בהתאם לסמכות לפי החוק, הבורר לא יהיה קשור בסדרי הדין האזרחיים או בדיני הראיות.
+    </p>
+    <p>
+        הבורר יפסוק על פי שיקול דעת אובייקטיבי, עקרונות הצדק הטבעי והמסמכים שהוגשו על ידי הצדדים בלבד.
+    </p>
+</div>
+
+<div class="terms-section">
+    <h3>4. חובת גילוי ושלמות המידע</h3>
+    <p>
+        כל צד מתחייב להעלות את כל הראיות והטענות שברשותו. אי-העלאת ראיה תהווה ויתור על הזכות להסתמך עליה בעתיד.
+    </p>
+    <p>
+        העלאת מידע כוזב או מסמכים מזויפים מהווה עילה לביטול הפסק ולחיוב בפיצויים.
+    </p>
+</div>
+
+<div class="terms-section">
+    <h3>5. סופיות הדיון וויתור על ערעור</h3>
+    <p>
+        הצדדים מוותרים על זכות הערעור על פסק הבוררות בכל ערכאה שהיא, למעט בעילות המצומצמות המנויות בסעיף 24 לחוק הבוררות.
+    </p>
+    <p>
+        מוסכם כי השימוש בבינה מלאכותית כבורר אינו מהווה כשלעצמו עילה לביטול הפסק לפי סעיף 24.
+    </p>
+</div>
+
+<div class="terms-section">
+    <h3>6. אבטחה, אימות וחתימה דיגיטלית</h3>
+    <p>
+        הצדדים מסכימים כי הפקת קוד זיהוי דיגיטלי (Hash) המוטמע במסמך מהווה חתימה אלקטרונית מאושרת לפי חוק חתימה אלקטרונית, התשס"א-2001.
+    </p>
+    <p>
+        קוד זה מהווה ראיה חלוטה לשלמות המסמך ומניעת כל שינוי בו לאחר הפקתו.
+    </p>
+</div>
+
+<div class="terms-section">
+    <h3>7. סמכות שיפוט שיורית</h3>
+    <p>
+        כל פנייה לבית משפט בבקשה לסעד זמני או לאישור/ביטול הפסק תוגש לבית המשפט המוסמך במחוז תל אביב בלבד.
+    </p>
+</div>
+
+<div class="scroll-instruction">
+    ↓ אנא גלול עד סוף התקנון לפני האישור ↓
+</div>
+"""
+
+# =====================================================
 # Initialize Session State
 # =====================================================
 if 'page' not in st.session_state:
     st.session_state.page = 'home'
-if 'terms_accepted_claimant' not in st.session_state:
-    st.session_state.terms_accepted_claimant = False
-if 'terms_accepted_defendant' not in st.session_state:
-    st.session_state.terms_accepted_defendant = False
+if 'terms_scrolled_claimant' not in st.session_state:
+    st.session_state.terms_scrolled_claimant = False
+if 'terms_scrolled_defendant' not in st.session_state:
+    st.session_state.terms_scrolled_defendant = False
 
 # =====================================================
 # Navigation Functions
@@ -271,8 +436,37 @@ def go_to_defendant_portal():
 
 def go_to_home():
     st.session_state.page = 'home'
-    st.session_state.terms_accepted_claimant = False
-    st.session_state.terms_accepted_defendant = False
+    st.session_state.terms_scrolled_claimant = False
+    st.session_state.terms_scrolled_defendant = False
+
+# =====================================================
+# Terms Display Component with Scroll Detection
+# =====================================================
+def render_terms_with_scroll(portal_type):
+    """
+    Renders the terms and conditions with scroll detection.
+    Returns True if user has scrolled to bottom, False otherwise.
+    """
+    # Unique key for this portal
+    scroll_key = f"terms_scroll_{portal_type}"
+
+    # Display terms in scrollable container
+    st.markdown(f'<div class="terms-container" id="{scroll_key}">', unsafe_allow_html=True)
+    st.markdown(TERMS_HTML, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Simple approach: Add a button at the bottom to confirm reading
+    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("✓ קראתי את התקנון המלא", key=f"confirm_read_{portal_type}", use_container_width=True):
+            if portal_type == "claimant":
+                st.session_state.terms_scrolled_claimant = True
+            else:
+                st.session_state.terms_scrolled_defendant = True
+            st.rerun()
+
+    return False
 
 # =====================================================
 # Page: Home (Landing Page)
@@ -336,13 +530,21 @@ def render_claimant_portal():
         <h2 class="section-title">רישום תובע</h2>
     """, unsafe_allow_html=True)
 
+    # Check if terms have been read and confirmed
+    if not st.session_state.terms_scrolled_claimant:
+        # Display terms with scroll detection
+        render_terms_with_scroll("claimant")
+        st.markdown('</div>', unsafe_allow_html=True)
+        return
+
+    # Terms confirmed - show the agreement checkbox and form
+    st.success("התקנון נקרא בהצלחה")
+
     # Legal Agreement Checkbox
     terms_accepted = st.checkbox(
         "אני מאשר כי קראתי ואני מסכים לתקנון האתר ולהסכם הבוררות של Resolve AI",
-        key="terms_claimant",
-        value=st.session_state.terms_accepted_claimant
+        key="terms_claimant"
     )
-    st.session_state.terms_accepted_claimant = terms_accepted
 
     # Show form only if terms accepted
     if terms_accepted:
@@ -420,13 +622,21 @@ def render_defendant_portal():
         <h2 class="section-title">רישום נתבע</h2>
     """, unsafe_allow_html=True)
 
+    # Check if terms have been read and confirmed
+    if not st.session_state.terms_scrolled_defendant:
+        # Display terms with scroll detection
+        render_terms_with_scroll("defendant")
+        st.markdown('</div>', unsafe_allow_html=True)
+        return
+
+    # Terms confirmed - show the agreement checkbox and form
+    st.success("התקנון נקרא בהצלחה")
+
     # Legal Agreement Checkbox
     terms_accepted = st.checkbox(
         "אני מאשר כי קראתי ואני מסכים לתקנון האתר ולהסכם הבוררות של Resolve AI",
-        key="terms_defendant",
-        value=st.session_state.terms_accepted_defendant
+        key="terms_defendant"
     )
-    st.session_state.terms_accepted_defendant = terms_accepted
 
     # Show form only if terms accepted
     if terms_accepted:
