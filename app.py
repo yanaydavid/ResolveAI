@@ -77,7 +77,22 @@ st.markdown("""
     [data-testid="stMarkdownContainer"] p,
     [data-testid="stMarkdownContainer"] h1,
     [data-testid="stMarkdownContainer"] h2,
-    [data-testid="stMarkdownContainer"] h3 {
+    [data-testid="stMarkdownContainer"] h3,
+    .stTextInput > label,
+    .stTextArea > label,
+    .stFileUploader > label {
+        color: #FFFFFF !important;
+    }
+
+    /* Force white text in Streamlit widgets */
+    .stTextInput, .stTextArea, .stFileUploader, .stCheckbox {
+        color: #FFFFFF !important;
+    }
+
+    /* Widget labels specifically */
+    .stTextInput label span,
+    .stTextArea label span,
+    .stFileUploader label span {
         color: #FFFFFF !important;
     }
 
@@ -88,7 +103,9 @@ st.markdown("""
     input[type="text"],
     input[type="email"],
     input[type="number"],
-    textarea {
+    textarea,
+    .stTextInput input,
+    .stTextArea textarea {
         background-color: #161B22 !important;
         background: #161B22 !important;
         color: #FFFFFF !important;
@@ -96,25 +113,57 @@ st.markdown("""
         caret-color: #FFFFFF !important;
     }
 
+    /* Override Streamlit's default white background */
+    div[data-baseweb="input"] > div {
+        background-color: #161B22 !important;
+    }
+
+    div[data-baseweb="base-input"] {
+        background-color: #161B22 !important;
+    }
+
+    /* Placeholder text color */
+    .stTextInput input::placeholder,
+    .stTextArea textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
     /* 4. תיבות העלאת קבצים - רקע כהה */
     .stFileUploader section,
     .stFileUploader [data-testid="stFileUploadDropzone"],
-    [data-testid="stFileUploadDropzone"] {
+    [data-testid="stFileUploadDropzone"],
+    section[data-testid="stFileUploadDropzone"],
+    .stFileUploader > div,
+    .stFileUploader div[data-testid="stFileUploadDropzone"] {
         background-color: #161B22 !important;
         border: 2px solid rgba(212, 175, 55, 0.4) !important;
     }
 
     .stFileUploader section button,
     .stFileUploader label,
-    [data-testid="stFileUploadDropzone"] span {
+    .stFileUploader span,
+    [data-testid="stFileUploadDropzone"] span,
+    [data-testid="stFileUploadDropzone"] p {
         color: #FFFFFF !important;
+        background-color: transparent !important;
+    }
+
+    /* File uploader button */
+    .stFileUploader button[kind="secondary"] {
+        background-color: #0A2647 !important;
+        color: #FFFFFF !important;
+        border: 1px solid rgba(212, 175, 55, 0.4) !important;
     }
 
     /* 5. תיבות מידע (st.info, st.success) - רקע כהה ומסגרת זהב */
     .stAlert,
     [data-testid="stNotification"],
     .element-container .stAlert,
-    div[data-baseweb="notification"] {
+    div[data-baseweb="notification"],
+    .stInfo,
+    .stSuccess,
+    .stWarning,
+    .stError {
         background-color: #0A2647 !important;
         border: 1px solid #D4AF37 !important;
         border-radius: 8px !important;
@@ -123,8 +172,17 @@ st.markdown("""
 
     .stAlert p, .stAlert span,
     [data-testid="stNotification"] p,
-    [data-testid="stNotification"] span {
+    [data-testid="stNotification"] span,
+    .stInfo p, .stSuccess p, .stWarning p, .stError p,
+    .stInfo span, .stSuccess span, .stWarning span, .stError span {
         color: #FFFFFF !important;
+    }
+
+    /* Alert icon color */
+    .stAlert svg,
+    .stInfo svg,
+    .stSuccess svg {
+        fill: #D4AF37 !important;
     }
 
     /* 6. Checkboxes - רקע כהה */
