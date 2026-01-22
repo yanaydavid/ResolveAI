@@ -60,33 +60,37 @@ st.markdown("""
 
     /* ===== DESIGN HARDENING - ABSOLUTE COLOR CONTROL ===== */
 
-    /* 1. קיבוע רקע וצבע טקסט בסיסי */
-    .stApp {
+    /* 1. קיבוע רקע כחול נייבי עמוק לכל האפליקציה */
+    .stApp, [data-testid="stAppViewContainer"], .main, .block-container {
+        background: #0E1117 !important;
         background-color: #0E1117 !important;
+    }
+
+    /* 2. מניעת טקסט שחור - צבע לבן לכל הטקסט */
+    body, div, p, h1, h2, h3, h4, h5, h6, span, label, a,
+    .stMarkdown, .stMarkdown p, .stMarkdown div, .stMarkdown span,
+    .stTextInput label, .stTextArea label, .stFileUploader label,
+    .stCheckbox label, .stButton label {
         color: #FFFFFF !important;
     }
 
-    /* 2. מניעת טקסט שחור בתיבות ובכותרות */
-    h1, h2, h3, h4, p, label, span, .stMarkdown p {
+    /* 3. שדות קלט - רקע כהה וטקסט לבן */
+    .stTextInput input, .stTextArea textarea, .stSelectbox select {
+        background: rgba(14, 17, 23, 0.9) !important;
         color: #FFFFFF !important;
+        border: 2px solid rgba(212, 175, 55, 0.4) !important;
     }
 
-    /* 3. הגדרת זהב יוקרתי לאלמנטים נבחרים בלבד */
-    /* זהב לתקנון (Expander) */
-    .st-emotion-cache-p5msec e1nzilvr4, [data-testid="stExpander"] p, [data-testid="stExpander"] label {
-        color: #D4AF37 !important;
-    }
-
-    /* זהב למספר התיק ולכותרת תיבת הסטטוס */
+    /* 4. זהב למספר התיק ולכותרת תיבת הסטטוס */
     .gold-highlight {
         color: #D4AF37 !important;
         font-weight: bold !important;
         font-size: 1.2em !important;
     }
 
-    /* 4. עיצוב תיבות סטטוס (Success/Info) */
+    /* 5. עיצוב תיבות סטטוס */
     div[data-testid="stNotification"] {
-        background-color: #161B22 !important;
+        background-color: #0E1117 !important;
         border: 1px solid #D4AF37 !important;
         border-radius: 8px !important;
     }
@@ -100,29 +104,6 @@ st.markdown("""
         text-align: right;
     }
 
-    /* Force Dark Theme - Override Browser Light Mode */
-    p, h1, h2, h3, h4, h5, h6, span, label, div, a {
-        color: #FFFFFF !important;
-    }
-
-    /* Force Dark Background for All Containers */
-    .stApp, [data-testid="stAppViewContainer"], .main, .block-container {
-        background: linear-gradient(135deg, #0A2647 0%, #144272 50%, #205295 100%) !important;
-    }
-
-    /* Force White/Gold Text for All Streamlit Elements */
-    .stMarkdown p, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3,
-    .stMarkdown span, .stMarkdown label, .stMarkdown div {
-        color: #FFFFFF !important;
-    }
-
-    /* Input Fields - Force Dark Background */
-    .stTextInput input, .stTextArea textarea, .stSelectbox select {
-        background: rgba(10, 38, 71, 0.8) !important;
-        color: #FFFFFF !important;
-        border: 2px solid rgba(218, 165, 32, 0.4) !important;
-    }
-
     /* Hide Streamlit Branding */
     header[data-testid="stHeader"],
     footer,
@@ -134,12 +115,6 @@ st.markdown("""
     .block-container {
         padding-top: 2rem !important;
         max-width: 100% !important;
-    }
-
-    /* Background - Deep Navy */
-    [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #0A2647 0%, #144272 50%, #205295 100%);
-        min-height: 100vh;
     }
 
     /* Main Content Container */
@@ -314,13 +289,14 @@ st.markdown("""
 
     /* Case ID Display */
     .case-id-box {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        background: #0E1117 !important;
         padding: 30px !important;
         border-radius: 20px !important;
         text-align: center !important;
         color: white !important;
         margin: 30px 0 !important;
-        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4) !important;
+        border: 2px solid #D4AF37 !important;
+        box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3) !important;
     }
 
     .case-id-box h2, .case-id-box p, .case-id-box span {
