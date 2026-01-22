@@ -65,6 +65,29 @@ st.markdown("""
         text-align: right;
     }
 
+    /* Force Dark Theme - Override Browser Light Mode */
+    p, h1, h2, h3, h4, h5, h6, span, label, div, a {
+        color: #FFFFFF !important;
+    }
+
+    /* Force Dark Background for All Containers */
+    .stApp, [data-testid="stAppViewContainer"], .main, .block-container {
+        background: linear-gradient(135deg, #0A2647 0%, #144272 50%, #205295 100%) !important;
+    }
+
+    /* Force White/Gold Text for All Streamlit Elements */
+    .stMarkdown p, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3,
+    .stMarkdown span, .stMarkdown label, .stMarkdown div {
+        color: #FFFFFF !important;
+    }
+
+    /* Input Fields - Force Dark Background */
+    .stTextInput input, .stTextArea textarea, .stSelectbox select {
+        background: rgba(10, 38, 71, 0.8) !important;
+        color: #FFFFFF !important;
+        border: 2px solid rgba(218, 165, 32, 0.4) !important;
+    }
+
     /* Hide Streamlit Branding */
     header[data-testid="stHeader"],
     footer,
@@ -209,34 +232,35 @@ st.markdown("""
     }
 
     .terms-title {
-        color: #FFD700;
-        font-size: 1.8rem;
-        font-weight: 800;
-        text-align: center;
-        margin-bottom: 30px;
-        border-bottom: 2px solid rgba(218, 165, 32, 0.5);
-        padding-bottom: 15px;
+        color: #FFD700 !important;
+        font-size: 1.8rem !important;
+        font-weight: 800 !important;
+        text-align: center !important;
+        margin-bottom: 30px !important;
+        border-bottom: 2px solid rgba(218, 165, 32, 0.5) !important;
+        padding-bottom: 15px !important;
     }
 
     .terms-section {
-        color: white;
-        margin-bottom: 25px;
-        line-height: 1.9;
-        font-size: 1.05rem;
+        color: white !important;
+        margin-bottom: 25px !important;
+        line-height: 1.9 !important;
+        font-size: 1.05rem !important;
     }
 
     .terms-section h3 {
-        color: #FFD700;
-        font-size: 1.4rem;
-        font-weight: 700;
-        margin-bottom: 15px;
-        margin-top: 20px;
+        color: #FFD700 !important;
+        font-size: 1.4rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 15px !important;
+        margin-top: 20px !important;
     }
 
     .terms-section p {
-        margin-bottom: 12px;
-        text-align: right;
-        direction: rtl;
+        margin-bottom: 12px !important;
+        text-align: right !important;
+        direction: rtl !important;
+        color: #FFFFFF !important;
     }
 
     .scroll-instruction {
@@ -255,104 +279,127 @@ st.markdown("""
 
     /* Case ID Display */
     .case-id-box {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        padding: 30px;
-        border-radius: 20px;
-        text-align: center;
-        color: white;
-        margin: 30px 0;
-        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        padding: 30px !important;
+        border-radius: 20px !important;
+        text-align: center !important;
+        color: white !important;
+        margin: 30px 0 !important;
+        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4) !important;
+    }
+
+    .case-id-box h2, .case-id-box p, .case-id-box span {
+        color: #FFFFFF !important;
     }
 
     .case-id-title {
-        font-size: 1.3rem;
-        margin-bottom: 10px;
-        opacity: 0.9;
+        font-size: 1.3rem !important;
+        margin-bottom: 10px !important;
+        opacity: 0.9 !important;
+        color: #FFFFFF !important;
     }
 
     .case-id-number {
-        font-size: 3.5rem;
-        font-weight: 900;
-        margin: 0;
-        letter-spacing: 3px;
+        font-size: 3.5rem !important;
+        font-weight: 900 !important;
+        margin: 0 !important;
+        letter-spacing: 3px !important;
+        color: #FFFFFF !important;
     }
 
     /* Success Message Box */
     .success-box {
-        background: rgba(16, 185, 129, 0.2);
-        border: 2px solid #10b981;
-        border-radius: 15px;
-        padding: 25px;
-        margin: 30px 0;
-        color: white;
-        text-align: center;
+        background: rgba(16, 185, 129, 0.2) !important;
+        border: 2px solid #10b981 !important;
+        border-radius: 15px !important;
+        padding: 30px !important;
+        margin: 30px 0 !important;
+        color: white !important;
+        text-align: center !important;
+    }
+
+    .success-box h2, .success-box p, .success-box span {
+        color: #FFFFFF !important;
     }
 
     /* Warning Box */
     .warning-box {
-        background: rgba(239, 68, 68, 0.15);
-        border: 2px solid rgba(239, 68, 68, 0.5);
-        border-radius: 12px;
-        padding: 20px;
-        margin: 20px 0;
-        color: white;
-        font-size: 1.1rem;
-        line-height: 1.8;
-        direction: rtl;
-        text-align: right;
+        background: rgba(239, 68, 68, 0.15) !important;
+        border: 2px solid rgba(239, 68, 68, 0.5) !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        margin: 20px 0 !important;
+        color: white !important;
+        font-size: 1.1rem !important;
+        line-height: 1.8 !important;
+        direction: rtl !important;
+        text-align: right !important;
+    }
+
+    .warning-box p, .warning-box span {
+        color: #FFFFFF !important;
     }
 
     /* Instruction Box */
     .instruction-box {
-        background: rgba(255, 193, 7, 0.15);
-        border: 2px solid rgba(255, 193, 7, 0.5);
-        border-radius: 12px;
-        padding: 20px;
-        margin: 20px 0;
-        color: white;
-        font-size: 1.1rem;
-        line-height: 1.8;
-        direction: rtl;
-        text-align: right;
+        background: rgba(255, 193, 7, 0.15) !important;
+        border: 2px solid rgba(255, 193, 7, 0.5) !important;
+        border-radius: 12px !important;
+        padding: 25px !important;
+        margin: 20px 0 !important;
+        color: white !important;
+        font-size: 1.1rem !important;
+        line-height: 1.8 !important;
+        direction: rtl !important;
+        text-align: right !important;
+    }
+
+    .instruction-box p, .instruction-box span {
+        color: #FFFFFF !important;
     }
 
     /* Read-Only Box */
     .readonly-box {
-        background: rgba(255, 255, 255, 0.05);
-        border: 2px solid rgba(100, 116, 139, 0.5);
-        border-radius: 12px;
-        padding: 25px;
-        margin: 20px 0;
-        color: white;
-        direction: rtl;
-        text-align: right;
-        max-height: 400px;
-        overflow-y: auto;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 2px solid rgba(100, 116, 139, 0.5) !important;
+        border-radius: 12px !important;
+        padding: 25px !important;
+        margin: 20px 0 !important;
+        color: white !important;
+        direction: rtl !important;
+        text-align: right !important;
+        max-height: 400px !important;
+        overflow-y: auto !important;
     }
 
     .readonly-box h4 {
-        color: #FFD700;
-        font-size: 1.3rem;
-        margin-bottom: 15px;
+        color: #FFD700 !important;
+        font-size: 1.3rem !important;
+        margin-bottom: 15px !important;
         border-bottom: 1px solid rgba(218, 165, 32, 0.3);
         padding-bottom: 10px;
     }
 
     .readonly-box p {
-        line-height: 1.8;
-        font-size: 1.05rem;
-        white-space: pre-wrap;
+        line-height: 1.8 !important;
+        font-size: 1.05rem !important;
+        white-space: pre-wrap !important;
+        color: #FFFFFF !important;
     }
 
     /* Locked Case Box */
     .locked-box {
-        background: rgba(100, 116, 139, 0.2);
-        border: 3px solid rgba(100, 116, 139, 0.6);
-        border-radius: 15px;
-        padding: 30px;
-        margin: 30px 0;
-        color: white;
-        text-align: center;
+        background: rgba(100, 116, 139, 0.2) !important;
+        border: 3px solid rgba(100, 116, 139, 0.6) !important;
+        border-radius: 15px !important;
+        padding: 30px !important;
+        margin: 30px 0 !important;
+        color: white !important;
+        text-align: center !important;
+    }
+
+    .locked-box h2, .locked-box p, .locked-box span {
+        color: #FFFFFF !important;
     }
 
     /* Luxury Buttons */
@@ -828,44 +875,30 @@ def render_claimant_portal():
 
     # Check if claim already submitted
     if st.session_state.case_stage == 'claim_submitted':
-        st.markdown(f"""
-            <div class="case-id-box">
-                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">כתב התביעה הוגש בהצלחה</h2>
-                <p class="case-id-title">מספר תיק</p>
-                <h1 class="case-id-number">{st.session_state.case_id}</h1>
-            </div>
-        """, unsafe_allow_html=True)
-
         st.markdown("""
             <div class="success-box">
-                <p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 15px;">
-                    הודעת SMS רשמית הכוללת הזמנה לדין נשלחה כעת לנתבע
+                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 25px; color: #FFFFFF !important;">
+                    המשך התהליך ועדכונים
+                </h2>
+                <p style="font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: #D4AF37 !important;">
+                    מספר תיק למעקב אישי:
                 </p>
-                <p style="font-size: 1rem; opacity: 0.9;">
-                    המערכת שלחה הודעה אוטומטית עם פרטי התיק והזמנה להגיש כתב הגנה.
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-            <div class="instruction-box">
-                <p style="font-size: 1.3rem; font-weight: 700; margin-bottom: 15px;">
-                    שלב הבא - העברת הפרטים לנתבע
-                </p>
-                <p>
-                    עליך להעביר את מספר התיק הבא לנתבע:
-                </p>
-                <p style="font-size: 1.5rem; font-weight: 800; text-align: center; margin: 20px 0; color: #FFD700;">
+                <p style="font-size: 3rem; font-weight: 900; margin: 20px 0; color: #FFD700 !important; letter-spacing: 2px;">
                     {case_id}
-                </p>
-                <p>
-                    הנתבע יזין את מספר התיק במסוף הנתבעים על מנת להגיש את כתב ההגנה שלו.
-                </p>
-                <p style="margin-top: 20px; font-weight: 600;">
-                    לאחר שהנתבע יגיש את כתב ההגנה, תקבל הזדמנות להגיש כתב תשובה.
                 </p>
             </div>
         """.format(case_id=st.session_state.case_id), unsafe_allow_html=True)
+
+        st.markdown("""
+            <div class="instruction-box">
+                <p style="font-size: 1.2rem; line-height: 1.9; color: #FFFFFF !important;">
+                    מערכת Resolve AI תעביר לנתבע הזמנה לדין וגישה לכתב התביעה באופן ישיר.
+                </p>
+                <p style="font-size: 1.2rem; line-height: 1.9; margin-top: 15px; color: #FFFFFF !important;">
+                    לאחר שהנתבע יאשר את סמכות הבוררות ויגיש את כתב הגנתו, תקבל מסרון (SMS) עם קישור לכניסה וצפייה בפסק הבוררות המנומק.
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
 
         st.markdown('</div>', unsafe_allow_html=True)
         return
