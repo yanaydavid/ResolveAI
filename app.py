@@ -60,39 +60,88 @@ st.markdown("""
 
     /* ===== DESIGN HARDENING - ABSOLUTE COLOR CONTROL ===== */
 
-    /* 1. קיבוע רקע כחול נייבי עמוק לכל האפליקציה */
-    .stApp, [data-testid="stAppViewContainer"], .main, .block-container {
-        background: #0E1117 !important;
-        background-color: #0E1117 !important;
+    /* 1. קיבוע רקע כחול כהה עמוק (Dark Navy) לכל האפליקציה */
+    .stApp, [data-testid="stAppViewContainer"], .main, .block-container,
+    [data-testid="stSidebar"], section[data-testid="stSidebar"] > div,
+    .element-container {
+        background: linear-gradient(135deg, #0A2647 0%, #144272 50%, #205295 100%) !important;
+        background-color: #0A2647 !important;
     }
 
     /* 2. מניעת טקסט שחור - צבע לבן לכל הטקסט */
     body, div, p, h1, h2, h3, h4, h5, h6, span, label, a,
     .stMarkdown, .stMarkdown p, .stMarkdown div, .stMarkdown span,
     .stTextInput label, .stTextArea label, .stFileUploader label,
-    .stCheckbox label, .stButton label {
+    .stCheckbox label, .stButton label,
+    [data-testid="stMarkdownContainer"],
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] h1,
+    [data-testid="stMarkdownContainer"] h2,
+    [data-testid="stMarkdownContainer"] h3 {
         color: #FFFFFF !important;
     }
 
-    /* 3. שדות קלט - רקע כהה וטקסט לבן */
-    .stTextInput input, .stTextArea textarea, .stSelectbox select {
-        background: rgba(14, 17, 23, 0.9) !important;
+    /* 3. תיבות קלט - רקע כהה וטקסט לבן (FIX CRITICAL) */
+    .stTextInput > div > div > input,
+    .stTextArea > div > div > textarea,
+    .stSelectbox > div > div > div,
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    textarea {
+        background-color: #161B22 !important;
+        background: #161B22 !important;
         color: #FFFFFF !important;
+        border: 2px solid rgba(212, 175, 55, 0.4) !important;
+        caret-color: #FFFFFF !important;
+    }
+
+    /* 4. תיבות העלאת קבצים - רקע כהה */
+    .stFileUploader section,
+    .stFileUploader [data-testid="stFileUploadDropzone"],
+    [data-testid="stFileUploadDropzone"] {
+        background-color: #161B22 !important;
         border: 2px solid rgba(212, 175, 55, 0.4) !important;
     }
 
-    /* 4. זהב למספר התיק ולכותרת תיבת הסטטוס */
+    .stFileUploader section button,
+    .stFileUploader label,
+    [data-testid="stFileUploadDropzone"] span {
+        color: #FFFFFF !important;
+    }
+
+    /* 5. תיבות מידע (st.info, st.success) - רקע כהה ומסגרת זהב */
+    .stAlert,
+    [data-testid="stNotification"],
+    .element-container .stAlert,
+    div[data-baseweb="notification"] {
+        background-color: #0A2647 !important;
+        border: 1px solid #D4AF37 !important;
+        border-radius: 8px !important;
+        color: #FFFFFF !important;
+    }
+
+    .stAlert p, .stAlert span,
+    [data-testid="stNotification"] p,
+    [data-testid="stNotification"] span {
+        color: #FFFFFF !important;
+    }
+
+    /* 6. Checkboxes - רקע כהה */
+    .stCheckbox {
+        background-color: transparent !important;
+    }
+
+    .stCheckbox label,
+    .stCheckbox span {
+        color: #FFFFFF !important;
+    }
+
+    /* 7. זהב למספר התיק ולכותרת תיבת הסטטוס */
     .gold-highlight {
         color: #D4AF37 !important;
         font-weight: bold !important;
         font-size: 1.2em !important;
-    }
-
-    /* 5. עיצוב תיבות סטטוס */
-    div[data-testid="stNotification"] {
-        background-color: #0E1117 !important;
-        border: 1px solid #D4AF37 !important;
-        border-radius: 8px !important;
     }
 
     /* ===== END DESIGN HARDENING ===== */
