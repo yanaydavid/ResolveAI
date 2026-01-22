@@ -116,101 +116,101 @@ st.markdown("""
 
     /* Header Title */
     .main-title {
-        color: white;
-        font-size: 4.5rem;
-        font-weight: 900;
-        text-align: center;
-        margin-bottom: 80px;
-        margin-top: 40px;
-        text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        letter-spacing: -1px;
+        color: white !important;
+        font-size: 4.5rem !important;
+        font-weight: 900 !important;
+        text-align: center !important;
+        margin-bottom: 80px !important;
+        margin-top: 40px !important;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+        letter-spacing: -1px !important;
     }
 
     /* Portal Title */
     .portal-title {
-        color: white;
-        font-size: 3rem;
-        font-weight: 800;
-        text-align: center;
-        margin-bottom: 50px;
-        margin-top: 20px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        color: white !important;
+        font-size: 3rem !important;
+        font-weight: 800 !important;
+        text-align: center !important;
+        margin-bottom: 50px !important;
+        margin-top: 20px !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
     }
 
     /* Column Cards */
     .column-card {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 20px;
-        padding: 60px 40px;
-        text-align: center;
-        transition: all 0.4s ease;
-        border: 2px solid transparent;
-        backdrop-filter: blur(10px);
-        min-height: 400px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 20px !important;
+        padding: 60px 40px !important;
+        text-align: center !important;
+        transition: all 0.4s ease !important;
+        border: 2px solid transparent !important;
+        backdrop-filter: blur(10px) !important;
+        min-height: 400px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
 
     .column-card:hover {
-        transform: translateY(-10px);
-        background: rgba(255, 255, 255, 0.08);
-        border: 2px solid rgba(218, 165, 32, 0.5);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        transform: translateY(-10px) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 2px solid rgba(218, 165, 32, 0.5) !important;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4) !important;
     }
 
     .column-title {
-        color: white;
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 40px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        color: white !important;
+        font-size: 2.5rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 40px !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
     }
 
     /* Form Container */
     .form-container {
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 20px;
-        padding: 50px;
-        margin: 30px auto;
-        max-width: 900px;
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(218, 165, 32, 0.3);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-radius: 20px !important;
+        padding: 50px !important;
+        margin: 30px auto !important;
+        max-width: 900px !important;
+        backdrop-filter: blur(10px) !important;
+        border: 2px solid rgba(212, 175, 55, 0.3) !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important;
     }
 
     .section-title {
-        color: white;
-        font-size: 2rem;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 30px;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        color: white !important;
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        text-align: center !important;
+        margin-bottom: 30px !important;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
     }
 
     .subsection-title {
-        color: #FFD700;
-        font-size: 1.5rem;
-        font-weight: 600;
-        text-align: right;
-        margin-top: 30px;
-        margin-bottom: 15px;
-        border-bottom: 1px solid rgba(218, 165, 32, 0.3);
-        padding-bottom: 10px;
+        color: #D4AF37 !important;
+        font-size: 1.5rem !important;
+        font-weight: 600 !important;
+        text-align: right !important;
+        margin-top: 30px !important;
+        margin-bottom: 15px !important;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
+        padding-bottom: 10px !important;
     }
 
     /* Terms Container */
     .terms-container {
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(218, 165, 32, 0.4);
-        border-radius: 15px;
-        padding: 30px;
-        margin: 30px 0;
-        max-height: 500px;
-        overflow-y: scroll;
-        direction: rtl;
-        text-align: right;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 2px solid rgba(212, 175, 55, 0.4) !important;
+        border-radius: 15px !important;
+        padding: 30px !important;
+        margin: 30px 0 !important;
+        max-height: 500px !important;
+        overflow-y: scroll !important;
+        direction: rtl !important;
+        text-align: right !important;
     }
 
     .terms-container::-webkit-scrollbar {
@@ -232,12 +232,12 @@ st.markdown("""
     }
 
     .terms-title {
-        color: #FFD700 !important;
+        color: #D4AF37 !important;
         font-size: 1.8rem !important;
         font-weight: 800 !important;
         text-align: center !important;
         margin-bottom: 30px !important;
-        border-bottom: 2px solid rgba(218, 165, 32, 0.5) !important;
+        border-bottom: 2px solid rgba(212, 175, 55, 0.5) !important;
         padding-bottom: 15px !important;
     }
 
@@ -249,7 +249,7 @@ st.markdown("""
     }
 
     .terms-section h3 {
-        color: #FFD700 !important;
+        color: #D4AF37 !important;
         font-size: 1.4rem !important;
         font-weight: 700 !important;
         margin-bottom: 15px !important;
@@ -264,12 +264,12 @@ st.markdown("""
     }
 
     .scroll-instruction {
-        color: #FFD700;
-        text-align: center;
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-top: 15px;
-        animation: pulse 2s infinite;
+        color: #D4AF37 !important;
+        text-align: center !important;
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        margin-top: 15px !important;
+        animation: pulse 2s infinite !important;
     }
 
     @keyframes pulse {
@@ -309,7 +309,7 @@ st.markdown("""
 
     /* Success Message Box */
     .success-box {
-        background: rgba(16, 185, 129, 0.2) !important;
+        background: #0E1117 !important;
         border: 2px solid #10b981 !important;
         border-radius: 15px !important;
         padding: 30px !important;
@@ -324,7 +324,7 @@ st.markdown("""
 
     /* Warning Box */
     .warning-box {
-        background: rgba(239, 68, 68, 0.15) !important;
+        background: #0E1117 !important;
         border: 2px solid rgba(239, 68, 68, 0.5) !important;
         border-radius: 12px !important;
         padding: 20px !important;
@@ -342,7 +342,7 @@ st.markdown("""
 
     /* Instruction Box */
     .instruction-box {
-        background: rgba(255, 193, 7, 0.15) !important;
+        background: #0E1117 !important;
         border: 2px solid rgba(255, 193, 7, 0.5) !important;
         border-radius: 12px !important;
         padding: 25px !important;
@@ -360,7 +360,7 @@ st.markdown("""
 
     /* Read-Only Box */
     .readonly-box {
-        background: rgba(255, 255, 255, 0.05) !important;
+        background: #0E1117 !important;
         border: 2px solid rgba(100, 116, 139, 0.5) !important;
         border-radius: 12px !important;
         padding: 25px !important;
@@ -373,11 +373,11 @@ st.markdown("""
     }
 
     .readonly-box h4 {
-        color: #FFD700 !important;
+        color: #D4AF37 !important;
         font-size: 1.3rem !important;
         margin-bottom: 15px !important;
-        border-bottom: 1px solid rgba(218, 165, 32, 0.3);
-        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
+        padding-bottom: 10px !important;
     }
 
     .readonly-box p {
@@ -389,7 +389,7 @@ st.markdown("""
 
     /* Locked Case Box */
     .locked-box {
-        background: rgba(100, 116, 139, 0.2) !important;
+        background: #0E1117 !important;
         border: 3px solid rgba(100, 116, 139, 0.6) !important;
         border-radius: 15px !important;
         padding: 30px !important;
@@ -877,13 +877,13 @@ def render_claimant_portal():
     if st.session_state.case_stage == 'claim_submitted':
         st.markdown("""
             <div class="success-box">
-                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 25px; color: #FFFFFF !important;">
+                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 25px; color: #D4AF37 !important;">
                     המשך התהליך ועדכונים
                 </h2>
                 <p style="font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: #D4AF37 !important;">
                     מספר תיק למעקב אישי:
                 </p>
-                <p style="font-size: 3rem; font-weight: 900; margin: 20px 0; color: #FFD700 !important; letter-spacing: 2px;">
+                <p style="font-size: 3rem; font-weight: 900; margin: 20px 0; color: #D4AF37 !important; letter-spacing: 2px;">
                     {case_id}
                 </p>
             </div>
