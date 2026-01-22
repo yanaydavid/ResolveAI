@@ -58,6 +58,41 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap');
 
+    /* ===== DESIGN HARDENING - ABSOLUTE COLOR CONTROL ===== */
+
+    /* 1. קיבוע רקע וצבע טקסט בסיסי */
+    .stApp {
+        background-color: #0E1117 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* 2. מניעת טקסט שחור בתיבות ובכותרות */
+    h1, h2, h3, h4, p, label, span, .stMarkdown p {
+        color: #FFFFFF !important;
+    }
+
+    /* 3. הגדרת זהב יוקרתי לאלמנטים נבחרים בלבד */
+    /* זהב לתקנון (Expander) */
+    .st-emotion-cache-p5msec e1nzilvr4, [data-testid="stExpander"] p, [data-testid="stExpander"] label {
+        color: #D4AF37 !important;
+    }
+
+    /* זהב למספר התיק ולכותרת תיבת הסטטוס */
+    .gold-highlight {
+        color: #D4AF37 !important;
+        font-weight: bold !important;
+        font-size: 1.2em !important;
+    }
+
+    /* 4. עיצוב תיבות סטטוס (Success/Info) */
+    div[data-testid="stNotification"] {
+        background-color: #161B22 !important;
+        border: 1px solid #D4AF37 !important;
+        border-radius: 8px !important;
+    }
+
+    /* ===== END DESIGN HARDENING ===== */
+
     /* Global RTL Settings */
     * {
         font-family: 'Heebo', sans-serif;
@@ -583,11 +618,11 @@ st.markdown("""
 # =====================================================
 TERMS_HTML = """
 <div class="terms-title">
-    תקנון, תנאי שימוש והסכם בוררות מחייב – Resolve AI
+    <span style='color:#D4AF37'>תקנון, תנאי שימוש והסכם בוררות מחייב – Resolve AI</span>
 </div>
 
 <div class="terms-section">
-    <h3>1. הגדרת ההסכם וסמכות הכרעה</h3>
+    <h3><span style='color:#D4AF37'>1. הגדרת ההסכם וסמכות הכרעה</span></h3>
     <p>
         המשתמשים (להלן: "הצדדים") נותנים בזאת את הסכמתם המלאה, המפורשת והבלתי חוזרת למסור כל סכסוך ביניהם להכרעה בלעדית של מערכת Resolve AI (להלן: "הבורר").
     </p>
@@ -597,7 +632,7 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3>2. כפיפות לחוק הבוררות וסמכויות</h3>
+    <h3><span style='color:#D4AF37'>2. כפיפות לחוק הבוררות וסמכויות</span></h3>
     <p>
         הליך הבוררות כפוף להוראות חוק הבוררות, התשכ"ח-1968 (להלן: "החוק").
     </p>
@@ -610,7 +645,7 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3>3. פטור מסדרי דין ודיני ראיות</h3>
+    <h3><span style='color:#D4AF37'>3. פטור מסדרי דין ודיני ראיות</span></h3>
     <p>
         בהתאם לסמכות לפי החוק, הבורר לא יהיה קשור בסדרי הדין האזרחיים או בדיני הראיות.
     </p>
@@ -620,7 +655,7 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3>4. חובת גילוי ושלמות המידע</h3>
+    <h3><span style='color:#D4AF37'>4. חובת גילוי ושלמות המידע</span></h3>
     <p>
         כל צד מתחייב להעלות את כל הראיות והטענות שברשותו. אי-העלאת ראיה תהווה ויתור על הזכות להסתמך עליה בעתיד.
     </p>
@@ -630,7 +665,7 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3>5. סופיות הדיון וויתור על ערעור</h3>
+    <h3><span style='color:#D4AF37'>5. סופיות הדיון וויתור על ערעור</span></h3>
     <p>
         הצדדים מוותרים על זכות הערעור על פסק הבוררות בכל ערכאה שהיא, למעט בעילות המצומצמות המנויות בסעיף 24 לחוק הבוררות.
     </p>
@@ -640,7 +675,7 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3>6. אבטחה, אימות וחתימה דיגיטלית</h3>
+    <h3><span style='color:#D4AF37'>6. אבטחה, אימות וחתימה דיגיטלית</span></h3>
     <p>
         הצדדים מסכימים כי הפקת קוד זיהוי דיגיטלי (Hash) המוטמע במסמך מהווה חתימה אלקטרונית מאושרת לפי חוק חתימה אלקטרונית, התשס"א-2001.
     </p>
@@ -650,14 +685,14 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3>7. סמכות שיפוט שיורית</h3>
+    <h3><span style='color:#D4AF37'>7. סמכות שיפוט שיורית</span></h3>
     <p>
         כל פנייה לבית משפט בבקשה לסעד זמני או לאישור/ביטול הפסק תוגש לבית המשפט המוסמך במחוז תל אביב בלבד.
     </p>
 </div>
 
 <div class="terms-section">
-    <h3>8. הגנת פרטיות ואימות זהות</h3>
+    <h3><span style='color:#D4AF37'>8. הגנת פרטיות ואימות זהות</span></h3>
     <p>
         המערכת פועלת בשיטת 'עיבוד בר-חלוף' (Ephemeral Processing). צילום תעודת הזהות משמש לאימות בלבד ונמחק פיזית וצמיתות מהשרת מיד עם סיום חילוץ הנתונים.
     </p>
@@ -670,7 +705,7 @@ TERMS_HTML = """
 </div>
 
 <div class="scroll-instruction">
-    אנא גלול עד סוף התקנון לפני האישור
+    <span style='color:#D4AF37'>אנא גלול עד סוף התקנון לפני האישור</span>
 </div>
 """
 
@@ -877,13 +912,13 @@ def render_claimant_portal():
     if st.session_state.case_stage == 'claim_submitted':
         st.markdown("""
             <div class="success-box">
-                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 25px; color: #D4AF37 !important;">
+                <div class="gold-highlight" style="font-size: 2.5rem; margin-bottom: 25px;">
                     המשך התהליך ועדכונים
-                </h2>
-                <p style="font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: #D4AF37 !important;">
+                </div>
+                <p class="gold-highlight" style="font-size: 1.2rem; margin-bottom: 10px;">
                     מספר תיק למעקב אישי:
                 </p>
-                <p style="font-size: 3rem; font-weight: 900; margin: 20px 0; color: #D4AF37 !important; letter-spacing: 2px;">
+                <p class="gold-highlight" style="font-size: 3rem; font-weight: 900; margin: 20px 0; letter-spacing: 2px;">
                     {case_id}
                 </p>
             </div>
@@ -892,7 +927,7 @@ def render_claimant_portal():
         st.markdown("""
             <div class="instruction-box">
                 <p style="font-size: 1.2rem; line-height: 1.9; color: #FFFFFF !important;">
-                    מערכת Resolve AI תעביר לנתבע הזמנה לדין וגישה לכתב התביעה באופן ישיר.
+                    מערכת Resolve AI שלחה לנתבע הזמנה לדין וגישה לכתב התביעה באופן אוטומטי.
                 </p>
                 <p style="font-size: 1.2rem; line-height: 1.9; margin-top: 15px; color: #FFFFFF !important;">
                     לאחר שהנתבע יאשר את סמכות הבוררות ויגיש את כתב הגנתו, תקבל מסרון (SMS) עם קישור לכניסה וצפייה בפסק הבוררות המנומק.
