@@ -130,7 +130,7 @@ st.markdown("""
     }
 
     .gold-gradient-text {
-        background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #FFC107 100%) !important;
+        background: linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #E6C68A 100%) !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
@@ -155,7 +155,7 @@ st.markdown("""
     /* ===== CUSTOM CLASSES ===== */
 
     .main-title {
-        background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #FFC107 100%) !important;
+        background: linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #E6C68A 100%) !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
