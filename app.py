@@ -136,11 +136,15 @@ st.markdown("""
     /* ===== CUSTOM CLASSES ===== */
 
     .main-title {
-        color: white !important;
+        background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #FFC107 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
         font-size: 4.5rem !important;
         font-weight: 900 !important;
         text-align: center !important;
         margin: 40px 0 80px 0 !important;
+        text-shadow: none !important;
     }
 
     .portal-title {
