@@ -109,11 +109,26 @@ st.markdown("""
         padding: 20px 60px !important;
         font-size: 1.5rem !important;
         font-weight: 700 !important;
+        outline: none !important;
+        box-shadow: none !important;
     }
 
     .stButton > button:hover {
         background: linear-gradient(135deg, #DAA520, #FFD700) !important;
         color: #0A2647 !important;
+    }
+
+    .stButton > button:focus,
+    .stButton > button:active {
+        outline: none !important;
+        box-shadow: none !important;
+        border: 3px solid #DAA520 !important;
+    }
+
+    .stButton > button:focus:not(:hover),
+    .stButton > button:active:not(:hover) {
+        background: transparent !important;
+        color: white !important;
     }
 
     /* 6. Info/Alert Boxes - Dark with Gold Border */
@@ -131,23 +146,12 @@ st.markdown("""
 
     .gold-gradient-text {
         color: #D4AF37 !important;
-        background: linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #E6C68A 100%) !important;
-        -webkit-background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-        background-clip: text !important;
         font-size: 1.8rem !important;
         font-weight: 700 !important;
         text-align: center !important;
         margin: 20px 0 !important;
         line-height: 1.6 !important;
-    }
-
-    /* Fallback for browsers that don't support background-clip */
-    @supports not (background-clip: text) {
-        .gold-gradient-text {
-            color: #D4AF37 !important;
-            -webkit-text-fill-color: #D4AF37 !important;
-        }
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.5) !important;
     }
 
     /* 8. Hide Streamlit Branding */
@@ -166,15 +170,11 @@ st.markdown("""
 
     .main-title {
         color: #D4AF37 !important;
-        background: linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #E6C68A 100%) !important;
-        -webkit-background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-        background-clip: text !important;
         font-size: 4.5rem !important;
         font-weight: 900 !important;
         text-align: center !important;
         margin: 40px 0 80px 0 !important;
-        text-shadow: none !important;
+        text-shadow: 0 0 30px rgba(212, 175, 55, 0.6) !important;
     }
 
     .portal-title {
