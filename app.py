@@ -86,10 +86,18 @@ st.markdown("""
         color: rgba(255, 255, 255, 0.5) !important;
     }
 
-    /* 4. File Uploader - Dark */
-    [data-testid="stFileUploadDropzone"] {
-        background-color: #161B22 !important;
+    /* 4. File Uploader - Dark Navy Background */
+    [data-testid="stFileUploadDropzone"],
+    .stFileUploader section,
+    .stFileUploader > div {
+        background-color: #0A2647 !important;
         border: 2px solid rgba(212, 175, 55, 0.4) !important;
+    }
+
+    .stFileUploader label,
+    [data-testid="stFileUploadDropzone"] span,
+    [data-testid="stFileUploadDropzone"] p {
+        color: #FFFFFF !important;
     }
 
     /* 5. Buttons - Gold Border */
@@ -119,6 +127,17 @@ st.markdown("""
     .gold-highlight {
         color: #D4AF37 !important;
         font-weight: bold !important;
+    }
+
+    .gold-gradient-text {
+        background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #FFC107 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        font-size: 1.8rem !important;
+        font-weight: 700 !important;
+        text-align: center !important;
+        margin: 20px 0 !important;
     }
 
     /* 8. Hide Streamlit Branding */
@@ -447,6 +466,13 @@ def render_claimant_portal():
         <h1 class="portal-title">מסוף תובעים</h1>
     """, unsafe_allow_html=True)
 
+    # Portal Description Box
+    st.markdown("""
+        <div style="background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 20px; padding: 40px; margin: 20px auto 40px auto; max-width: 800px;">
+            <p class="gold-gradient-text">כאן ניתן להגיש את תביעתך</p>
+        </div>
+    """, unsafe_allow_html=True)
+
     # Form Container
     st.markdown('<div class="form-container">', unsafe_allow_html=True)
 
@@ -568,6 +594,13 @@ def render_claimant_portal():
     # Section Title
     st.markdown("""
         <h2 class="section-title">רישום תובע והגשת תביעה</h2>
+    """, unsafe_allow_html=True)
+
+    # Instruction Box
+    st.markdown("""
+        <div style="background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 20px; padding: 40px; margin: 20px auto 40px auto; max-width: 800px;">
+            <p class="gold-gradient-text">על מנת שתוכל להגיש את כתב התביעה עליך לקרוא בעיון את התקנון ולאשר אותו</p>
+        </div>
     """, unsafe_allow_html=True)
 
     # Check if terms have been read
@@ -769,6 +802,13 @@ def render_defendant_portal():
     # Section Title
     st.markdown("""
         <h2 class="section-title">אימות תיק והגשת כתב הגנה</h2>
+    """, unsafe_allow_html=True)
+
+    # Portal Description Box
+    st.markdown("""
+        <div style="background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 20px; padding: 40px; margin: 20px auto 40px auto; max-width: 800px;">
+            <p class="gold-gradient-text">כאן ניתן להגיש את כתב ההגנה שלך</p>
+        </div>
     """, unsafe_allow_html=True)
 
     # Case ID Verification
