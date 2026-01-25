@@ -58,469 +58,41 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap');
 
-    /* ===== DESIGN HARDENING - ABSOLUTE COLOR CONTROL ===== */
+    /* ===== CORE DESIGN - OPTIMIZED FOR PERFORMANCE ===== */
 
-    /* 1. קיבוע רקע כחול כהה עמוק (Dark Navy) לכל האפליקציה */
-    .stApp, [data-testid="stAppViewContainer"], .main, .block-container,
-    [data-testid="stSidebar"], section[data-testid="stSidebar"] > div,
-    .element-container {
+    /* 1. Base App Styling */
+    .stApp, [data-testid="stAppViewContainer"] {
         background: linear-gradient(135deg, #0A2647 0%, #144272 50%, #205295 100%) !important;
-        background-color: #0A2647 !important;
-    }
-
-    /* 2. מניעת טקסט שחור - צבע לבן לכל הטקסט */
-    body, div, p, h1, h2, h3, h4, h5, h6, span, label, a,
-    .stMarkdown, .stMarkdown p, .stMarkdown div, .stMarkdown span,
-    .stTextInput label, .stTextArea label, .stFileUploader label,
-    .stCheckbox label, .stButton label,
-    [data-testid="stMarkdownContainer"],
-    [data-testid="stMarkdownContainer"] p,
-    [data-testid="stMarkdownContainer"] h1,
-    [data-testid="stMarkdownContainer"] h2,
-    [data-testid="stMarkdownContainer"] h3,
-    .stTextInput > label,
-    .stTextArea > label,
-    .stFileUploader > label {
         color: #FFFFFF !important;
     }
 
-    /* Force white text in Streamlit widgets */
-    .stTextInput, .stTextArea, .stFileUploader, .stCheckbox {
+    /* 2. Global Text - White */
+    body, div, p, h1, h2, h3, h4, h5, h6, span, label, a {
         color: #FFFFFF !important;
-    }
-
-    /* Widget labels specifically */
-    .stTextInput label span,
-    .stTextArea label span,
-    .stFileUploader label span {
-        color: #FFFFFF !important;
-    }
-
-    /* 3. תיבות קלט - רקע כהה וטקסט לבן (FIX CRITICAL) */
-    .stTextInput > div > div > input,
-    .stTextArea > div > div > textarea,
-    .stSelectbox > div > div > div,
-    input[type="text"],
-    input[type="email"],
-    input[type="number"],
-    textarea,
-    .stTextInput input,
-    .stTextArea textarea {
-        background-color: #161B22 !important;
-        background: #161B22 !important;
-        color: #FFFFFF !important;
-        border: 2px solid rgba(212, 175, 55, 0.4) !important;
-        caret-color: #FFFFFF !important;
-    }
-
-    /* Override Streamlit's default white background */
-    div[data-baseweb="input"] > div {
-        background-color: #161B22 !important;
-    }
-
-    div[data-baseweb="base-input"] {
-        background-color: #161B22 !important;
-    }
-
-    /* Placeholder text color */
-    .stTextInput input::placeholder,
-    .stTextArea textarea::placeholder {
-        color: rgba(255, 255, 255, 0.5) !important;
-    }
-
-    /* 4. תיבות העלאת קבצים - רקע כהה */
-    .stFileUploader section,
-    .stFileUploader [data-testid="stFileUploadDropzone"],
-    [data-testid="stFileUploadDropzone"],
-    section[data-testid="stFileUploadDropzone"],
-    .stFileUploader > div,
-    .stFileUploader div[data-testid="stFileUploadDropzone"] {
-        background-color: #161B22 !important;
-        border: 2px solid rgba(212, 175, 55, 0.4) !important;
-    }
-
-    .stFileUploader section button,
-    .stFileUploader label,
-    .stFileUploader span,
-    [data-testid="stFileUploadDropzone"] span,
-    [data-testid="stFileUploadDropzone"] p {
-        color: #FFFFFF !important;
-        background-color: transparent !important;
-    }
-
-    /* File uploader button */
-    .stFileUploader button[kind="secondary"] {
-        background-color: #0A2647 !important;
-        color: #FFFFFF !important;
-        border: 1px solid rgba(212, 175, 55, 0.4) !important;
-    }
-
-    /* 5. תיבות מידע (st.info, st.success) - רקע כהה ומסגרת זהב */
-    .stAlert,
-    [data-testid="stNotification"],
-    .element-container .stAlert,
-    div[data-baseweb="notification"],
-    .stInfo,
-    .stSuccess,
-    .stWarning,
-    .stError {
-        background-color: #0A2647 !important;
-        border: 1px solid #D4AF37 !important;
-        border-radius: 8px !important;
-        color: #FFFFFF !important;
-    }
-
-    .stAlert p, .stAlert span,
-    [data-testid="stNotification"] p,
-    [data-testid="stNotification"] span,
-    .stInfo p, .stSuccess p, .stWarning p, .stError p,
-    .stInfo span, .stSuccess span, .stWarning span, .stError span {
-        color: #FFFFFF !important;
-    }
-
-    /* Alert icon color */
-    .stAlert svg,
-    .stInfo svg,
-    .stSuccess svg {
-        fill: #D4AF37 !important;
-    }
-
-    /* 6. Checkboxes - רקע כהה */
-    .stCheckbox {
-        background-color: transparent !important;
-    }
-
-    .stCheckbox label,
-    .stCheckbox span {
-        color: #FFFFFF !important;
-    }
-
-    /* 7. זהב למספר התיק ולכותרת תיבת הסטטוס */
-    .gold-highlight {
-        color: #D4AF37 !important;
-        font-weight: bold !important;
-        font-size: 1.2em !important;
-    }
-
-    /* ===== END DESIGN HARDENING ===== */
-
-    /* Global RTL Settings */
-    * {
         font-family: 'Heebo', sans-serif;
         direction: rtl;
         text-align: right;
     }
 
-    /* Hide Streamlit Branding */
-    header[data-testid="stHeader"],
-    footer,
-    #MainMenu {
-        visibility: hidden;
-        height: 0;
-    }
-
-    .block-container {
-        padding-top: 2rem !important;
-        max-width: 100% !important;
-    }
-
-    /* Main Content Container */
-    .main-content {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    /* Header Title */
-    .main-title {
-        color: white !important;
-        font-size: 4.5rem !important;
-        font-weight: 900 !important;
-        text-align: center !important;
-        margin-bottom: 80px !important;
-        margin-top: 40px !important;
-        text-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
-        letter-spacing: -1px !important;
-    }
-
-    /* Portal Title */
-    .portal-title {
-        color: white !important;
-        font-size: 3rem !important;
-        font-weight: 800 !important;
-        text-align: center !important;
-        margin-bottom: 50px !important;
-        margin-top: 20px !important;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
-    }
-
-    /* Column Cards */
-    .column-card {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border-radius: 20px !important;
-        padding: 60px 40px !important;
-        text-align: center !important;
-        transition: all 0.4s ease !important;
-        border: 2px solid transparent !important;
-        backdrop-filter: blur(10px) !important;
-        min-height: 400px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-    }
-
-    .column-card:hover {
-        transform: translateY(-10px) !important;
-        background: rgba(255, 255, 255, 0.08) !important;
-        border: 2px solid rgba(218, 165, 32, 0.5) !important;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4) !important;
-    }
-
-    .column-title {
-        color: white !important;
-        font-size: 2.5rem !important;
-        font-weight: 700 !important;
-        margin-bottom: 40px !important;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
-    }
-
-    /* Form Container */
-    .form-container {
-        background: rgba(255, 255, 255, 0.08) !important;
-        border-radius: 20px !important;
-        padding: 50px !important;
-        margin: 30px auto !important;
-        max-width: 900px !important;
-        backdrop-filter: blur(10px) !important;
-        border: 2px solid rgba(212, 175, 55, 0.3) !important;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important;
-    }
-
-    .section-title {
-        color: white !important;
-        font-size: 2rem !important;
-        font-weight: 700 !important;
-        text-align: center !important;
-        margin-bottom: 30px !important;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
-    }
-
-    .subsection-title {
-        color: #D4AF37 !important;
-        font-size: 1.5rem !important;
-        font-weight: 600 !important;
-        text-align: right !important;
-        margin-top: 30px !important;
-        margin-bottom: 15px !important;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
-        padding-bottom: 10px !important;
-    }
-
-    /* Terms Container */
-    .terms-container {
-        background: rgba(255, 255, 255, 0.1) !important;
+    /* 3. Input Fields - Dark Background */
+    input, textarea, select {
+        background-color: #161B22 !important;
+        color: #FFFFFF !important;
         border: 2px solid rgba(212, 175, 55, 0.4) !important;
-        border-radius: 15px !important;
-        padding: 30px !important;
-        margin: 30px 0 !important;
-        max-height: 500px !important;
-        overflow-y: scroll !important;
-        direction: rtl !important;
-        text-align: right !important;
+        caret-color: #FFFFFF !important;
     }
 
-    .terms-container::-webkit-scrollbar {
-        width: 10px;
+    input::placeholder, textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
     }
 
-    .terms-container::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 10px;
+    /* 4. File Uploader - Dark */
+    [data-testid="stFileUploadDropzone"] {
+        background-color: #161B22 !important;
+        border: 2px solid rgba(212, 175, 55, 0.4) !important;
     }
 
-    .terms-container::-webkit-scrollbar-thumb {
-        background: rgba(218, 165, 32, 0.6);
-        border-radius: 10px;
-    }
-
-    .terms-container::-webkit-scrollbar-thumb:hover {
-        background: rgba(218, 165, 32, 0.8);
-    }
-
-    .terms-title {
-        color: #D4AF37 !important;
-        font-size: 1.8rem !important;
-        font-weight: 800 !important;
-        text-align: center !important;
-        margin-bottom: 30px !important;
-        border-bottom: 2px solid rgba(212, 175, 55, 0.5) !important;
-        padding-bottom: 15px !important;
-    }
-
-    .terms-section {
-        color: white !important;
-        margin-bottom: 25px !important;
-        line-height: 1.9 !important;
-        font-size: 1.05rem !important;
-    }
-
-    .terms-section h3 {
-        color: #D4AF37 !important;
-        font-size: 1.4rem !important;
-        font-weight: 700 !important;
-        margin-bottom: 15px !important;
-        margin-top: 20px !important;
-    }
-
-    .terms-section p {
-        margin-bottom: 12px !important;
-        text-align: right !important;
-        direction: rtl !important;
-        color: #FFFFFF !important;
-    }
-
-    .scroll-instruction {
-        color: #D4AF37 !important;
-        text-align: center !important;
-        font-size: 1.1rem !important;
-        font-weight: 600 !important;
-        margin-top: 15px !important;
-        animation: pulse 2s infinite !important;
-    }
-
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.6; }
-    }
-
-    /* Case ID Display */
-    .case-id-box {
-        background: #0E1117 !important;
-        padding: 30px !important;
-        border-radius: 20px !important;
-        text-align: center !important;
-        color: white !important;
-        margin: 30px 0 !important;
-        border: 2px solid #D4AF37 !important;
-        box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3) !important;
-    }
-
-    .case-id-box h2, .case-id-box p, .case-id-box span {
-        color: #FFFFFF !important;
-    }
-
-    .case-id-title {
-        font-size: 1.3rem !important;
-        margin-bottom: 10px !important;
-        opacity: 0.9 !important;
-        color: #FFFFFF !important;
-    }
-
-    .case-id-number {
-        font-size: 3.5rem !important;
-        font-weight: 900 !important;
-        margin: 0 !important;
-        letter-spacing: 3px !important;
-        color: #FFFFFF !important;
-    }
-
-    /* Success Message Box */
-    .success-box {
-        background: #0E1117 !important;
-        border: 2px solid #10b981 !important;
-        border-radius: 15px !important;
-        padding: 30px !important;
-        margin: 30px 0 !important;
-        color: white !important;
-        text-align: center !important;
-    }
-
-    .success-box h2, .success-box p, .success-box span {
-        color: #FFFFFF !important;
-    }
-
-    /* Warning Box */
-    .warning-box {
-        background: #0E1117 !important;
-        border: 2px solid rgba(239, 68, 68, 0.5) !important;
-        border-radius: 12px !important;
-        padding: 20px !important;
-        margin: 20px 0 !important;
-        color: white !important;
-        font-size: 1.1rem !important;
-        line-height: 1.8 !important;
-        direction: rtl !important;
-        text-align: right !important;
-    }
-
-    .warning-box p, .warning-box span {
-        color: #FFFFFF !important;
-    }
-
-    /* Instruction Box */
-    .instruction-box {
-        background: #0E1117 !important;
-        border: 2px solid rgba(255, 193, 7, 0.5) !important;
-        border-radius: 12px !important;
-        padding: 25px !important;
-        margin: 20px 0 !important;
-        color: white !important;
-        font-size: 1.1rem !important;
-        line-height: 1.8 !important;
-        direction: rtl !important;
-        text-align: right !important;
-    }
-
-    .instruction-box p, .instruction-box span {
-        color: #FFFFFF !important;
-    }
-
-    /* Read-Only Box */
-    .readonly-box {
-        background: #0E1117 !important;
-        border: 2px solid rgba(100, 116, 139, 0.5) !important;
-        border-radius: 12px !important;
-        padding: 25px !important;
-        margin: 20px 0 !important;
-        color: white !important;
-        direction: rtl !important;
-        text-align: right !important;
-        max-height: 400px !important;
-        overflow-y: auto !important;
-    }
-
-    .readonly-box h4 {
-        color: #D4AF37 !important;
-        font-size: 1.3rem !important;
-        margin-bottom: 15px !important;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
-        padding-bottom: 10px !important;
-    }
-
-    .readonly-box p {
-        line-height: 1.8 !important;
-        font-size: 1.05rem !important;
-        white-space: pre-wrap !important;
-        color: #FFFFFF !important;
-    }
-
-    /* Locked Case Box */
-    .locked-box {
-        background: #0E1117 !important;
-        border: 3px solid rgba(100, 116, 139, 0.6) !important;
-        border-radius: 15px !important;
-        padding: 30px !important;
-        margin: 30px 0 !important;
-        color: white !important;
-        text-align: center !important;
-    }
-
-    .locked-box h2, .locked-box p, .locked-box span {
-        color: #FFFFFF !important;
-    }
-
-    /* Luxury Buttons */
+    /* 5. Buttons - Gold Border */
     .stButton > button {
         background: transparent !important;
         color: white !important;
@@ -529,169 +101,137 @@ st.markdown("""
         padding: 20px 60px !important;
         font-size: 1.5rem !important;
         font-weight: 700 !important;
-        transition: all 0.4s ease !important;
-        box-shadow: 0 0 30px rgba(218, 165, 32, 0.3) !important;
-        letter-spacing: 1px !important;
-        width: 100% !important;
-        max-width: 400px !important;
     }
 
     .stButton > button:hover {
         background: linear-gradient(135deg, #DAA520, #FFD700) !important;
         color: #0A2647 !important;
-        border-color: #FFD700 !important;
-        box-shadow: 0 0 50px rgba(218, 165, 32, 0.6) !important;
-        transform: scale(1.05) !important;
     }
 
-    .stButton > button:active {
-        transform: scale(0.98) !important;
+    /* 6. Info/Alert Boxes - Dark with Gold Border */
+    .stAlert, .stInfo, .stSuccess {
+        background-color: #0A2647 !important;
+        border: 1px solid #D4AF37 !important;
+        color: #FFFFFF !important;
     }
 
-    /* Text Inputs */
-    .stTextInput > div > div > input {
-        background: rgba(255, 255, 255, 0.15) !important;
-        border: 2px solid rgba(218, 165, 32, 0.4) !important;
-        border-radius: 12px !important;
-        color: white !important;
-        font-size: 1.1rem !important;
-        padding: 15px 20px !important;
-        direction: rtl !important;
-        text-align: right !important;
+    /* 7. Gold Highlights */
+    .gold-highlight {
+        color: #D4AF37 !important;
+        font-weight: bold !important;
     }
 
-    .stTextInput > div > div > input:focus {
-        border-color: #DAA520 !important;
-        box-shadow: 0 0 20px rgba(218, 165, 32, 0.4) !important;
+    /* 8. Hide Streamlit Branding */
+    header[data-testid="stHeader"], footer, #MainMenu {
+        visibility: hidden;
+        height: 0;
     }
 
-    .stTextInput > div > div > input::placeholder {
-        color: rgba(255, 255, 255, 0.5) !important;
-    }
-
-    /* Text Area */
-    .stTextArea textarea {
-        background: rgba(255, 255, 255, 0.15) !important;
-        border: 2px solid rgba(218, 165, 32, 0.4) !important;
-        border-radius: 12px !important;
-        color: white !important;
-        font-size: 1.1rem !important;
-        padding: 15px 20px !important;
-        direction: rtl !important;
-        text-align: right !important;
-        min-height: 200px !important;
-    }
-
-    .stTextArea textarea:focus {
-        border-color: #DAA520 !important;
-        box-shadow: 0 0 20px rgba(218, 165, 32, 0.4) !important;
-    }
-
-    /* Labels */
-    .stTextInput label, .stTextArea label {
-        color: white !important;
-        font-size: 1.1rem !important;
-        font-weight: 600 !important;
-        margin-bottom: 8px !important;
-    }
-
-    /* File Uploader */
-    .stFileUploader {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border: 2px solid rgba(218, 165, 32, 0.4) !important;
-        border-radius: 12px !important;
-        padding: 20px !important;
-    }
-
-    .stFileUploader label {
-        color: white !important;
-        font-size: 1.1rem !important;
-        font-weight: 600 !important;
-    }
-
-    /* Checkbox */
-    .stCheckbox {
-        background: rgba(255, 255, 255, 0.05);
-        padding: 25px;
-        border-radius: 12px;
-        border: 2px solid rgba(218, 165, 32, 0.3);
-        margin: 30px 0;
-    }
-
-    .stCheckbox label {
-        color: white !important;
-        font-size: 1.15rem !important;
-        font-weight: 500 !important;
-        line-height: 1.8 !important;
-    }
-
-    /* Expander */
-    .streamlit-expanderHeader {
-        background: rgba(255, 255, 255, 0.1) !important;
-        border: 2px solid rgba(218, 165, 32, 0.4) !important;
-        border-radius: 12px !important;
-        color: white !important;
-        font-size: 1.2rem !important;
-        font-weight: 600 !important;
-    }
-
-    /* Warning/Info boxes */
-    .stAlert {
-        background: rgba(255, 255, 255, 0.1) !important;
-        color: white !important;
-        border-radius: 12px !important;
-        direction: rtl !important;
-        text-align: right !important;
-    }
-
-    /* RTL Columns */
-    [data-testid="column"] {
+    /* 9. RTL */
+    * {
         direction: rtl;
-        text-align: center;
+        text-align: right;
     }
 
-    /* Back Button Style */
-    .back-button {
-        margin-bottom: 30px;
+    /* ===== CUSTOM CLASSES ===== */
+
+    .main-title {
+        color: white !important;
+        font-size: 4.5rem !important;
+        font-weight: 900 !important;
+        text-align: center !important;
+        margin: 40px 0 80px 0 !important;
     }
 
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-        .main-title {
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-        }
+    .portal-title {
+        color: white !important;
+        font-size: 3rem !important;
+        font-weight: 800 !important;
+        text-align: center !important;
+        margin: 20px 0 50px 0 !important;
+    }
 
-        .portal-title {
-            font-size: 2rem;
-        }
+    .column-card {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 20px !important;
+        padding: 60px 40px !important;
+        text-align: center !important;
+        border: 2px solid transparent !important;
+        min-height: 400px !important;
+    }
 
-        .column-title {
-            font-size: 1.8rem;
-        }
+    .column-card:hover {
+        border: 2px solid rgba(218, 165, 32, 0.5) !important;
+    }
 
-        .column-card {
-            padding: 40px 20px;
-            min-height: 300px;
-        }
+    .column-title {
+        color: white !important;
+        font-size: 2.5rem !important;
+        font-weight: 700 !important;
+    }
 
-        .form-container {
-            padding: 30px 20px;
-        }
+    .form-container {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-radius: 20px !important;
+        padding: 50px !important;
+        margin: 30px auto !important;
+        max-width: 900px !important;
+        border: 2px solid rgba(212, 175, 55, 0.3) !important;
+    }
 
-        .terms-container {
-            padding: 20px;
-            max-height: 400px;
-        }
+    .section-title {
+        color: white !important;
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        text-align: center !important;
+        margin-bottom: 30px !important;
+    }
 
-        .case-id-number {
-            font-size: 2.5rem !important;
-        }
+    .subsection-title {
+        color: #D4AF37 !important;
+        font-size: 1.5rem !important;
+        font-weight: 600 !important;
+        margin: 30px 0 15px 0 !important;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
+        padding-bottom: 10px !important;
+    }
 
-        .stButton > button {
-            font-size: 1.2rem !important;
-            padding: 15px 40px !important;
-        }
+    .terms-container {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 2px solid rgba(212, 175, 55, 0.4) !important;
+        border-radius: 15px !important;
+        padding: 30px !important;
+        margin: 30px 0 !important;
+        max-height: 500px !important;
+        overflow-y: scroll !important;
+    }
+
+    .success-box, .warning-box, .instruction-box, .readonly-box, .locked-box {
+        background: #0E1117 !important;
+        border-radius: 12px !important;
+        padding: 25px !important;
+        margin: 20px 0 !important;
+        color: white !important;
+    }
+
+    .success-box {
+        border: 2px solid #10b981 !important;
+    }
+
+    .warning-box {
+        border: 2px solid rgba(239, 68, 68, 0.5) !important;
+    }
+
+    .instruction-box {
+        border: 2px solid rgba(255, 193, 7, 0.5) !important;
+    }
+
+    .readonly-box {
+        border: 2px solid rgba(100, 116, 139, 0.5) !important;
+    }
+
+    .locked-box {
+        border: 3px solid rgba(100, 116, 139, 0.6) !important;
     }
     </style>
 """, unsafe_allow_html=True)
