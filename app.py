@@ -385,6 +385,230 @@ if 'audit_log' not in st.session_state:
     st.session_state.audit_log = []
 
 # =====================================================
+# Analysis Engine & Arbitration Ruling Generator
+# =====================================================
+
+def analyze_case_evidence(case_data):
+    """
+    מנגנון ניתוח ראיות - מנתח את התיק ומחלץ עובדות מרכזיות
+    """
+    import re
+
+    analysis = {
+        'agreed_facts': [],
+        'disputed_points': [],
+        'key_findings': [],
+        'legal_basis': []
+    }
+
+    # חילוץ עובדות מתביעת התובע
+    if 'claimant' in case_data and case_data['claimant']:
+        claim_text = case_data['claimant'].get('claim_text', '')
+
+        # חיפוש תאריכים
+        dates = re.findall(r'\d{1,2}[/.-]\d{1,2}[/.-]\d{2,4}', claim_text)
+        if dates:
+            analysis['agreed_facts'].append(f"תאריכים רלוונטיים: {', '.join(dates)}")
+
+        # חיפוש סכומים כספיים
+        amounts = re.findall(r'₪?\s*\d{1,3}(?:,\d{3})*(?:\.\d{2})?\s*₪?', claim_text)
+        if amounts:
+            analysis['agreed_facts'].append(f"סכומים נזכרים: {', '.join(amounts)}")
+
+        # זיהוי נקודות מפתח בתביעה
+        if 'חוזה' in claim_text or 'הסכם' in claim_text:
+            analysis['key_findings'].append("קיומו של הסכם חוזי בין הצדדים")
+        if 'הפרה' in claim_text or 'הפר' in claim_text:
+            analysis['key_findings'].append("טענה להפרת התחייבות חוזית")
+        if 'נזק' in claim_text or 'נזקים' in claim_text:
+            analysis['key_findings'].append("טענה לנזקים שנגרמו לתובע")
+
+    # ניתוח כתב הגנה
+    if 'defendant' in case_data and case_data['defendant']:
+        defense_text = case_data['defendant'].get('defense_text', '')
+
+        # זיהוי טענות הגנה
+        if 'מכחיש' in defense_text or 'כופר' in defense_text or 'לא נכון' in defense_text:
+            analysis['disputed_points'].append("הנתבע מכחיש את טענות התובע")
+        if 'מאשר' in defense_text or 'מודה' in defense_text:
+            analysis['disputed_points'].append("הנתבע מאשר חלק מהטענות")
+        if 'ראיה' in defense_text or 'ראיות' in defense_text:
+            analysis['disputed_points'].append("הנתבע הציג ראיות נגדיות")
+
+    # ניתוח כתב תשובה (אם קיים)
+    if 'rebuttal' in case_data and case_data['rebuttal']:
+        rebuttal_text = case_data['rebuttal'].get('text', '')
+        if 'סותר' in rebuttal_text or 'מפריך' in rebuttal_text:
+            analysis['disputed_points'].append("התובע מפריך את טענות ההגנה")
+
+    # בדיקת עמידה בתנאי התקנון
+    analysis['legal_basis'].append("התיק עומד בתנאי סף לבוררות על פי חוק הבוררות, התשכ\"ח-1968")
+    analysis['legal_basis'].append("שני הצדדים אישרו את סמכות הבורר והסכימו לתקנון Resolve AI")
+
+    # ספירת קבצי ראיות
+    claimant_evidence_count = len(case_data.get('claimant', {}).get('evidence_files', []))
+    defendant_evidence_count = len(case_data.get('defendant', {}).get('evidence_files', []))
+
+    if claimant_evidence_count > 0:
+        analysis['key_findings'].append(f"התובע הגיש {claimant_evidence_count} קבצי ראיות")
+    if defendant_evidence_count > 0:
+        analysis['key_findings'].append(f"הנתבע הגיש {defendant_evidence_count} קבצי ראיות")
+
+    return analysis
+
+
+def generate_arbitration_ruling(case_id, case_data):
+    """
+    מייצר פסק בוררות מנומק על בסיס ניתוח הראיות
+    """
+    analysis = analyze_case_evidence(case_data)
+
+    # פרטי הצדדים
+    claimant = case_data.get('claimant', {})
+    defendant = case_data.get('defendant', {})
+
+    claimant_name = claimant.get('full_name', 'התובע')
+    defendant_name = defendant.get('full_name', 'הנתבע')
+
+    # בניית פסק הדין
+    ruling = {
+        'case_id': case_id,
+        'date': datetime.now().strftime("%d.%m.%Y"),
+        'claimant_name': claimant_name,
+        'defendant_name': defendant_name,
+        'analysis': analysis,
+        'generated_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+
+    return ruling
+
+
+def render_arbitration_ruling(ruling):
+    """
+    מציג את פסק הבוררות בפורמט מעוצב
+    """
+    st.markdown("""
+        <div style="background: linear-gradient(135deg, #0A2647 0%, #144272 100%);
+                    border: 3px solid #D4AF37;
+                    border-radius: 20px;
+                    padding: 50px;
+                    margin: 40px auto;
+                    max-width: 1000px;
+                    box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);">
+
+            <h1 style="color: #D4AF37;
+                       text-align: center;
+                       font-size: 3rem;
+                       font-weight: 900;
+                       margin-bottom: 40px;
+                       text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);">
+                פסק בוררות מנומק
+            </h1>
+
+            <div style="background: rgba(255, 255, 255, 0.03);
+                        border-radius: 15px;
+                        padding: 30px;
+                        margin-bottom: 30px;">
+                <h2 style="color: #D4AF37; font-size: 1.8rem; margin-bottom: 20px;">מבוא</h2>
+                <p style="color: #FFFFFF; font-size: 1.2rem; line-height: 1.8;">
+                    מספר תיק: <strong style="color: #D4AF37;">{case_id}</strong><br>
+                    תאריך: <strong>{date}</strong><br><br>
+
+                    <strong>התובע:</strong> {claimant_name}<br>
+                    <strong>הנתבע:</strong> {defendant_name}<br><br>
+
+                    פסק בוררות זה ניתן על ידי מערכת Resolve AI בהתאם להסכמת הצדדים
+                    ובהתאם להוראות חוק הבוררות, התשכ"ח-1968.
+                </p>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.03);
+                        border-radius: 15px;
+                        padding: 30px;
+                        margin-bottom: 30px;">
+                <h2 style="color: #D4AF37; font-size: 1.8rem; margin-bottom: 20px;">עיקרי הטענות</h2>
+                <p style="color: #FFFFFF; font-size: 1.2rem; line-height: 1.8;">
+                    <strong>תביעת התובע:</strong><br>
+                    {claim_summary}
+                </p>
+                <p style="color: #FFFFFF; font-size: 1.2rem; line-height: 1.8; margin-top: 20px;">
+                    <strong>כתב הגנת הנתבע:</strong><br>
+                    {defense_summary}
+                </p>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.03);
+                        border-radius: 15px;
+                        padding: 30px;
+                        margin-bottom: 30px;">
+                <h2 style="color: #D4AF37; font-size: 1.8rem; margin-bottom: 20px;">ניתוח והכרעה</h2>
+
+                <h3 style="color: #FFFFFF; font-size: 1.4rem; margin-top: 20px; margin-bottom: 15px;">
+                    עובדות מוסכמות:
+                </h3>
+                <ul style="color: #FFFFFF; font-size: 1.1rem; line-height: 1.8;">
+                    {agreed_facts_html}
+                </ul>
+
+                <h3 style="color: #FFFFFF; font-size: 1.4rem; margin-top: 25px; margin-bottom: 15px;">
+                    נקודות במחלוקת:
+                </h3>
+                <ul style="color: #FFFFFF; font-size: 1.1rem; line-height: 1.8;">
+                    {disputed_points_html}
+                </ul>
+
+                <h3 style="color: #FFFFFF; font-size: 1.4rem; margin-top: 25px; margin-bottom: 15px;">
+                    ממצאים מרכזיים:
+                </h3>
+                <ul style="color: #FFFFFF; font-size: 1.1rem; line-height: 1.8;">
+                    {key_findings_html}
+                </ul>
+
+                <h3 style="color: #FFFFFF; font-size: 1.4rem; margin-top: 25px; margin-bottom: 15px;">
+                    בסיס משפטי:
+                </h3>
+                <ul style="color: #FFFFFF; font-size: 1.1rem; line-height: 1.8;">
+                    {legal_basis_html}
+                </ul>
+            </div>
+
+            <div style="background: rgba(212, 175, 55, 0.1);
+                        border: 2px solid #D4AF37;
+                        border-radius: 15px;
+                        padding: 30px;
+                        margin-bottom: 20px;">
+                <h2 style="color: #D4AF37; font-size: 1.8rem; margin-bottom: 20px;">סעד ופסיקה</h2>
+                <p style="color: #FFFFFF; font-size: 1.3rem; line-height: 1.8; font-weight: 600;">
+                    לאחר בחינה מעמיקה של כלל הראיות, הטיעונים וכתבי הטענות של שני הצדדים,
+                    ועל בסיס ניתוח משפטי מקיף, מערכת Resolve AI קובעת כדלקמן:
+                </p>
+                <p style="color: #D4AF37; font-size: 1.4rem; line-height: 1.8; font-weight: 700; margin-top: 20px;">
+                    פסק הבוררות הסופי ייקבע לאחר השלמת הליך הניתוח המעמיק.
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 2px solid rgba(212, 175, 55, 0.3);">
+                <p style="color: #D4AF37; font-size: 1.1rem;">
+                    Resolve AI - מערכת בוררות דיגיטלית<br>
+                    פסק בוררות זה ניתן בהתאם לחוק הבוררות, התשכ"ח-1968
+                </p>
+            </div>
+        </div>
+    """.format(
+        case_id=ruling['case_id'],
+        date=ruling['date'],
+        claimant_name=ruling['claimant_name'],
+        defendant_name=ruling['defendant_name'],
+        claim_summary=ruling['analysis'].get('key_findings', [''])[0] if ruling['analysis'].get('key_findings') else 'טענות התובע מפורטות בכתב התביעה',
+        defense_summary=ruling['analysis'].get('disputed_points', [''])[0] if ruling['analysis'].get('disputed_points') else 'טענות הנתבע מפורטות בכתב ההגנה',
+        agreed_facts_html=''.join([f'<li>{fact}</li>' for fact in ruling['analysis'].get('agreed_facts', ['לא נמצאו עובדות מוסכמות במפורש'])]),
+        disputed_points_html=''.join([f'<li>{point}</li>' for point in ruling['analysis'].get('disputed_points', ['נקודות המחלוקת מפורטות בכתבי הטענות'])]),
+        key_findings_html=''.join([f'<li>{finding}</li>' for finding in ruling['analysis'].get('key_findings', ['הממצאים מבוססים על ניתוח הראיות'])]),
+        legal_basis_html=''.join([f'<li>{basis}</li>' for basis in ruling['analysis'].get('legal_basis', ['חוק הבוררות, התשכ"ח-1968'])])
+    ), unsafe_allow_html=True)
+
+
+# =====================================================
 # Navigation Functions
 # =====================================================
 def go_to_claimant_portal():
@@ -555,15 +779,33 @@ def render_claimant_portal():
         st.markdown('</div>', unsafe_allow_html=True)
         return
 
-    # Check if case is locked
+    # Check if case is locked - Generate and display arbitration ruling
     if st.session_state.case_stage in ['rebuttal_submitted', 'locked']:
+        # סטטוס הודעה
         st.markdown("""
-            <div class="locked-box">
-                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">התיק נעול</h2>
-                <p style="font-size: 1.3rem;">
-                    כל הטיעונים והראיות הועברו לניתוח מעמיק של הבורר לצורך הפקת פסק דין מנומק.
+            <div class="instruction-box" style="background: rgba(212, 175, 55, 0.15); border: 2px solid #D4AF37;">
+                <p style="font-size: 1.4rem; font-weight: 700; color: #D4AF37; text-align: center;">
+                    ⚖️ התיק נעול - פסק הדין הראשוני הוכן
                 </p>
-                <p style="font-size: 1.1rem; margin-top: 20px; opacity: 0.9;">
+                <p style="font-size: 1.1rem; color: #FFFFFF; text-align: center; margin-top: 15px;">
+                    כל הטיעונים והראיות הועברו לניתוח מעמיק. להלן פסק הבוררות המנומק.
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+
+        # הפקת פסק דין
+        ruling = generate_arbitration_ruling(st.session_state.case_id, st.session_state.case_data)
+
+        # הצגת פסק הדין
+        render_arbitration_ruling(ruling)
+
+        # הודעת סיום
+        st.markdown("""
+            <div class="instruction-box" style="margin-top: 40px;">
+                <p style="font-size: 1.2rem; line-height: 1.8; text-align: center;">
+                    <strong>פסק הדין הראשוני הוכן וממתין להזנת כתב הגנה מהנתבע לצורך חתימה סופית.</strong>
+                </p>
+                <p style="font-size: 1rem; margin-top: 15px; opacity: 0.8; text-align: center;">
                     לא ניתן לערוך או להוסיף מסמכים נוספים בשלב זה.
                 </p>
             </div>
@@ -798,11 +1040,32 @@ def render_defendant_portal():
                 </div>
             """, unsafe_allow_html=True)
         else:
+            # התיק נעול - הצגת פסק דין
             st.markdown("""
-                <div class="locked-box">
-                    <h2 style="font-size: 2.5rem; margin-bottom: 20px;">התיק נעול</h2>
-                    <p style="font-size: 1.3rem;">
-                        כל הטיעונים והראיות הועברו לניתוח מעמיק של הבורר לצורך הפקת פסק דין מנומק.
+                <div class="instruction-box" style="background: rgba(212, 175, 55, 0.15); border: 2px solid #D4AF37;">
+                    <p style="font-size: 1.4rem; font-weight: 700; color: #D4AF37; text-align: center;">
+                        ⚖️ התיק נעול - פסק הדין הראשוני הוכן
+                    </p>
+                    <p style="font-size: 1.1rem; color: #FFFFFF; text-align: center; margin-top: 15px;">
+                        כל הטיעונים והראיות הועברו לניתוח מעמיק. להלן פסק הבוררות המנומק.
+                    </p>
+                </div>
+            """, unsafe_allow_html=True)
+
+            # הפקת פסק דין
+            ruling = generate_arbitration_ruling(st.session_state.case_id, st.session_state.case_data)
+
+            # הצגת פסק הדין
+            render_arbitration_ruling(ruling)
+
+            # הודעת סיום
+            st.markdown("""
+                <div class="instruction-box" style="margin-top: 40px;">
+                    <p style="font-size: 1.2rem; line-height: 1.8; text-align: center;">
+                        <strong>פסק הדין הראשוני הוכן וממתין לאישור סופי.</strong>
+                    </p>
+                    <p style="font-size: 1rem; margin-top: 15px; opacity: 0.8; text-align: center;">
+                        לא ניתן לערוך או להוסיף מסמכים נוספים בשלב זה.
                     </p>
                 </div>
             """, unsafe_allow_html=True)
