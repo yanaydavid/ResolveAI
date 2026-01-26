@@ -10,7 +10,7 @@ from datetime import datetime
 # =====================================================
 st.set_page_config(
     page_title="Resolve AI - בוררות דיגיטלית",
-    page_icon="⚖️",
+    page_icon="logo.png",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -50,6 +50,34 @@ def add_audit_log(case_id, stage, description):
         st.session_state.audit_log = []
 
     st.session_state.audit_log.append(log_entry)
+
+def render_logo():
+    """Display Resolve AI logo at the top of each page"""
+    import base64
+
+    # Read and encode logo
+    try:
+        with open("logo.png", "rb") as f:
+            logo_data = base64.b64encode(f.read()).decode()
+
+        st.markdown(f"""
+            <div style="display: flex; justify-content: center; align-items: center; padding: 20px 0 40px 0;">
+                <img src="data:image/png;base64,{logo_data}"
+                     alt="Resolve AI Logo"
+                     style="width: 250px;
+                            height: auto;
+                            max-width: 90vw;
+                            mix-blend-mode: lighten;
+                            filter: brightness(1.1);">
+            </div>
+        """, unsafe_allow_html=True)
+    except FileNotFoundError:
+        # Fallback if logo not found
+        st.markdown("""
+            <div style="text-align: center; padding: 20px 0 40px 0;">
+                <h1 style="color: #C29B40; font-size: 3rem; font-weight: 900;">Resolve AI</h1>
+            </div>
+        """, unsafe_allow_html=True)
 
 # =====================================================
 # Custom CSS - Luxury Design with RTL Support
@@ -183,6 +211,17 @@ st.markdown("""
     * {
         direction: rtl;
         text-align: right;
+    }
+
+    /* 10. Logo Styling - Optimized for Dark Background */
+    img[alt="Resolve AI Logo"],
+    img[alt="Resolve AI"] {
+        display: block !important;
+        margin: 0 auto !important;
+        mix-blend-mode: lighten !important;
+        filter: brightness(1.1) contrast(1.1) !important;
+        max-width: 90vw !important;
+        height: auto !important;
     }
 
     /* ===== CUSTOM CLASSES ===== */
@@ -517,7 +556,25 @@ def render_arbitration_ruling(ruling):
     """
     מציג את פסק הבוררות בפורמט מעוצב
     """
-    st.markdown("""
+    import base64
+
+    # Read and encode logo for embedding
+    logo_base64 = ""
+    try:
+        with open("logo.png", "rb") as f:
+            logo_base64 = base64.b64encode(f.read()).decode()
+    except FileNotFoundError:
+        pass
+
+    logo_html = f"""
+        <div style="text-align: center; margin-bottom: 30px;">
+            <img src="data:image/png;base64,{logo_base64}"
+                 alt="Resolve AI"
+                 style="width: 200px; height: auto; mix-blend-mode: lighten; filter: brightness(1.1);">
+        </div>
+    """ if logo_base64 else ""
+
+    st.markdown(f"""
         <div style="background: #0E1117;
                     border: 3px solid transparent;
                     border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1;
@@ -526,6 +583,8 @@ def render_arbitration_ruling(ruling):
                     margin: 40px auto;
                     max-width: 1000px;
                     box-shadow: 0 0 40px rgba(194, 155, 64, 0.4);">
+
+            {logo_html}
 
             <h1 style="color: #C29B40;
                        text-align: center;
@@ -682,6 +741,9 @@ def render_terms_with_scroll(portal_type):
 # Page: Home (Landing Page)
 # =====================================================
 def render_home_page():
+    # Logo
+    render_logo()
+
     # Main Title
     st.markdown("""
         <div class="main-content">
@@ -726,6 +788,9 @@ def render_claimant_portal():
         go_to_home()
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
+
+    # Logo
+    render_logo()
 
     # Portal Title
     st.markdown("""
@@ -1050,6 +1115,9 @@ def render_defendant_portal():
         go_to_home()
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
+
+    # Logo
+    render_logo()
 
     # Portal Title
     st.markdown("""
