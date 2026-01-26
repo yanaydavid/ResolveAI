@@ -1028,17 +1028,72 @@ def render_defendant_portal():
     # Check if defense already submitted
     if st.session_state.case_stage in ['defense_submitted', 'rebuttal_submitted', 'locked']:
         if st.session_state.case_stage == 'defense_submitted':
+            # מסך אישור מעודכן עם מיתוג אחיד
             st.markdown("""
-                <div class="success-box">
-                    <h2 style="font-size: 2.5rem; margin-bottom: 20px;">כתב ההגנה הוגש בהצלחה</h2>
-                    <p style="font-size: 1.3rem;">
-                        כתב ההגנה שלך הועבר לתובע.
-                    </p>
-                    <p style="font-size: 1.1rem; margin-top: 15px;">
+                <div style="background: linear-gradient(135deg, #0A2647 0%, #144272 100%);
+                            border: 3px solid #D4AF37;
+                            border-radius: 20px;
+                            padding: 50px;
+                            margin: 40px auto;
+                            max-width: 900px;">
+
+                    <h2 style="color: #D4AF37;
+                               font-size: 2.5rem;
+                               font-weight: 900;
+                               text-align: center;
+                               margin-bottom: 30px;">
+                        אישור קבלת מסמכים משפטיים
+                    </h2>
+
+                    <div style="text-align: center; margin: 30px 0;">
+                        <p style="color: #FFFFFF; font-size: 1.2rem; margin-bottom: 10px;">
+                            מספר תיק למעקב:
+                        </p>
+                        <p style="color: #D4AF37;
+                                  font-size: 2.5rem;
+                                  font-weight: 900;
+                                  letter-spacing: 2px;
+                                  margin: 15px 0;">
+                            {case_id}
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.05);
+                                border-radius: 15px;
+                                padding: 30px;
+                                margin: 30px 0;">
+                        <p style="color: #FFFFFF;
+                                  font-size: 1.3rem;
+                                  line-height: 1.8;
+                                  text-align: center;
+                                  margin-bottom: 20px;">
+                            כתב ההגנה שלך התקבל במערכת והועבר לתובע.
+                        </p>
+                        <p style="color: #FFFFFF;
+                                  font-size: 1.2rem;
+                                  line-height: 1.8;
+                                  text-align: center;">
+                            המערכת תעדכן אותך במסרון (SMS) על כל התקדמות בתיק, קבלת תגובה מהתובע או מתן פסק בוררות סופי.
+                        </p>
+                    </div>
+
+                    <p style="color: #FFFFFF;
+                              font-size: 1.1rem;
+                              text-align: center;
+                              opacity: 0.8;
+                              margin-top: 20px;">
                         התובע יקבל אפשרות להגיש כתב תשובה, ולאחר מכן התיק יועבר לניתוח הבורר.
                     </p>
                 </div>
-            """, unsafe_allow_html=True)
+            """.format(case_id=st.session_state.case_id), unsafe_allow_html=True)
+
+            # כפתור חזרה לדף הבית
+            st.markdown("<br>", unsafe_allow_html=True)
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col2:
+                if st.button("חזרה לדף הבית", key="back_to_home_defendant_success", use_container_width=True):
+                    go_to_home()
+                    st.rerun()
         else:
             # התיק נעול - הצגת פסק דין
             st.markdown("""
