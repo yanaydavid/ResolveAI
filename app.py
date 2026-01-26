@@ -98,6 +98,7 @@ def render_logo():
 
 # =====================================================
 # Custom CSS - Luxury Design with RTL Support
+# Version: 2.0 - Final Branded Design
 # =====================================================
 st.markdown("""
     <style>
