@@ -58,11 +58,16 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap');
 
+    /* ===== LUXURY METALLIC GOLD GRADIENT ===== */
+    :root {
+        --gold-metallic-gradient: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%);
+    }
+
     /* ===== CORE DESIGN - OPTIMIZED FOR PERFORMANCE ===== */
 
-    /* 1. Base App Styling */
+    /* 1. Base App Styling - Deep Dark Background */
     .stApp, [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #0A2647 0%, #144272 50%, #205295 100%) !important;
+        background: #0E1117 !important;
         color: #FFFFFF !important;
     }
 
@@ -74,24 +79,28 @@ st.markdown("""
         text-align: right;
     }
 
-    /* 3. Input Fields - Dark Background */
+    /* 3. Input Fields - Dark Background with Metallic Border */
     input, textarea, select {
         background-color: #161B22 !important;
         color: #FFFFFF !important;
-        border: 2px solid rgba(212, 175, 55, 0.4) !important;
+        border: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
         caret-color: #FFFFFF !important;
+        padding: 22px !important;
     }
 
     input::placeholder, textarea::placeholder {
         color: rgba(255, 255, 255, 0.5) !important;
     }
 
-    /* 4. File Uploader - Dark Navy Background */
+    /* 4. File Uploader - Dark Navy Background with Metallic Border */
     [data-testid="stFileUploadDropzone"],
     .stFileUploader section,
     .stFileUploader > div {
         background-color: #0A2647 !important;
-        border: 2px solid rgba(212, 175, 55, 0.4) !important;
+        border: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
+        padding: 22px !important;
     }
 
     .stFileUploader label,
@@ -100,11 +109,12 @@ st.markdown("""
         color: #FFFFFF !important;
     }
 
-    /* 5. Buttons - Gold Border */
+    /* 5. Buttons - Metallic Gold Border */
     .stButton > button {
         background: transparent !important;
         color: white !important;
-        border: 3px solid #DAA520 !important;
+        border: 3px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
         border-radius: 50px !important;
         padding: 20px 60px !important;
         font-size: 1.5rem !important;
@@ -114,15 +124,17 @@ st.markdown("""
     }
 
     .stButton > button:hover {
-        background: linear-gradient(135deg, #DAA520, #FFD700) !important;
-        color: #0A2647 !important;
+        background: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) !important;
+        color: #0E1117 !important;
+        border: 3px solid transparent !important;
     }
 
     .stButton > button:focus,
     .stButton > button:active {
         outline: none !important;
         box-shadow: none !important;
-        border: 3px solid #DAA520 !important;
+        border: 3px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
     }
 
     .stButton > button:focus:not(:hover),
@@ -131,27 +143,34 @@ st.markdown("""
         color: white !important;
     }
 
-    /* 6. Info/Alert Boxes - Dark with Gold Border */
+    /* 6. Info/Alert Boxes - Dark with Metallic Border */
     .stAlert, .stInfo, .stSuccess {
         background-color: #0A2647 !important;
-        border: 1px solid #D4AF37 !important;
+        border: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
         color: #FFFFFF !important;
+        padding: 22px !important;
     }
 
-    /* 7. Gold Highlights */
+    /* 7. Gold Highlights - Metallic Gradient Text */
     .gold-highlight {
-        color: #D4AF37 !important;
+        background: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
         font-weight: bold !important;
     }
 
     .gold-gradient-text {
-        color: #D4AF37 !important;
+        background: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
         font-size: 1.8rem !important;
         font-weight: 700 !important;
         text-align: center !important;
         margin: 20px 0 !important;
         line-height: 1.6 !important;
-        text-shadow: 0 0 20px rgba(212, 175, 55, 0.5) !important;
     }
 
     /* 8. Hide Streamlit Branding */
@@ -169,12 +188,14 @@ st.markdown("""
     /* ===== CUSTOM CLASSES ===== */
 
     .main-title {
-        color: #D4AF37 !important;
+        background: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
         font-size: 4.5rem !important;
         font-weight: 900 !important;
         text-align: center !important;
         margin: 40px 0 80px 0 !important;
-        text-shadow: 0 0 30px rgba(212, 175, 55, 0.6) !important;
     }
 
     .portal-title {
@@ -191,11 +212,14 @@ st.markdown("""
         padding: 60px 40px !important;
         text-align: center !important;
         border: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
         min-height: 400px !important;
     }
 
     .column-card:hover {
-        border: 2px solid rgba(218, 165, 32, 0.5) !important;
+        border: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
+        box-shadow: 0 0 30px rgba(194, 155, 64, 0.3) !important;
     }
 
     .column-title {
@@ -210,7 +234,8 @@ st.markdown("""
         padding: 50px !important;
         margin: 30px auto !important;
         max-width: 900px !important;
-        border: 2px solid rgba(212, 175, 55, 0.3) !important;
+        border: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
     }
 
     .section-title {
@@ -222,19 +247,24 @@ st.markdown("""
     }
 
     .subsection-title {
-        color: #D4AF37 !important;
+        background: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
         font-size: 1.5rem !important;
         font-weight: 600 !important;
         margin: 30px 0 15px 0 !important;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
+        border-bottom: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
         padding-bottom: 10px !important;
     }
 
     .terms-container {
         background: rgba(255, 255, 255, 0.1) !important;
-        border: 2px solid rgba(212, 175, 55, 0.4) !important;
+        border: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
         border-radius: 15px !important;
-        padding: 30px !important;
+        padding: 22px !important;
         margin: 30px 0 !important;
         max-height: 500px !important;
         overflow-y: scroll !important;
@@ -275,11 +305,11 @@ st.markdown("""
 # =====================================================
 TERMS_HTML = """
 <div class="terms-title">
-    <span style='color:#D4AF37'>תקנון, תנאי שימוש והסכם בוררות מחייב – Resolve AI</span>
+    <span class="gold-highlight">תקנון, תנאי שימוש והסכם בוררות מחייב – Resolve AI</span>
 </div>
 
 <div class="terms-section">
-    <h3><span style='color:#D4AF37'>1. הגדרת ההסכם וסמכות הכרעה</span></h3>
+    <h3><span class="gold-highlight">1. הגדרת ההסכם וסמכות הכרעה</span></h3>
     <p>
         המשתמשים (להלן: "הצדדים") נותנים בזאת את הסכמתם המלאה, המפורשת והבלתי חוזרת למסור כל סכסוך ביניהם להכרעה בלעדית של מערכת Resolve AI (להלן: "הבורר").
     </p>
@@ -289,7 +319,7 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3><span style='color:#D4AF37'>2. כפיפות לחוק הבוררות וסמכויות</span></h3>
+    <h3><span class="gold-highlight">2. כפיפות לחוק הבוררות וסמכויות</span></h3>
     <p>
         הליך הבוררות כפוף להוראות חוק הבוררות, התשכ"ח-1968 (להלן: "החוק").
     </p>
@@ -302,7 +332,7 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3><span style='color:#D4AF37'>3. פטור מסדרי דין ודיני ראיות</span></h3>
+    <h3><span class="gold-highlight">3. פטור מסדרי דין ודיני ראיות</span></h3>
     <p>
         בהתאם לסמכות לפי החוק, הבורר לא יהיה קשור בסדרי הדין האזרחיים או בדיני הראיות.
     </p>
@@ -312,7 +342,7 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3><span style='color:#D4AF37'>4. חובת גילוי ושלמות המידע</span></h3>
+    <h3><span class="gold-highlight">4. חובת גילוי ושלמות המידע</span></h3>
     <p>
         כל צד מתחייב להעלות את כל הראיות והטענות שברשותו. אי-העלאת ראיה תהווה ויתור על הזכות להסתמך עליה בעתיד.
     </p>
@@ -322,7 +352,7 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3><span style='color:#D4AF37'>5. סופיות הדיון וויתור על ערעור</span></h3>
+    <h3><span class="gold-highlight">5. סופיות הדיון וויתור על ערעור</span></h3>
     <p>
         הצדדים מוותרים על זכות הערעור על פסק הבוררות בכל ערכאה שהיא, למעט בעילות המצומצמות המנויות בסעיף 24 לחוק הבוררות.
     </p>
@@ -332,7 +362,7 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3><span style='color:#D4AF37'>6. אבטחה, אימות וחתימה דיגיטלית</span></h3>
+    <h3><span class="gold-highlight">6. אבטחה, אימות וחתימה דיגיטלית</span></h3>
     <p>
         הצדדים מסכימים כי הפקת קוד זיהוי דיגיטלי (Hash) המוטמע במסמך מהווה חתימה אלקטרונית מאושרת לפי חוק חתימה אלקטרונית, התשס"א-2001.
     </p>
@@ -342,14 +372,14 @@ TERMS_HTML = """
 </div>
 
 <div class="terms-section">
-    <h3><span style='color:#D4AF37'>7. סמכות שיפוט שיורית</span></h3>
+    <h3><span class="gold-highlight">7. סמכות שיפוט שיורית</span></h3>
     <p>
         כל פנייה לבית משפט בבקשה לסעד זמני או לאישור/ביטול הפסק תוגש לבית המשפט המוסמך במחוז תל אביב בלבד.
     </p>
 </div>
 
 <div class="terms-section">
-    <h3><span style='color:#D4AF37'>8. הגנת פרטיות ואימות זהות</span></h3>
+    <h3><span class="gold-highlight">8. הגנת פרטיות ואימות זהות</span></h3>
     <p>
         המערכת פועלת בשיטת 'עיבוד בר-חלוף' (Ephemeral Processing). צילום תעודת הזהות משמש לאימות בלבד ונמחק פיזית וצמיתות מהשרת מיד עם סיום חילוץ הנתונים.
     </p>
@@ -362,7 +392,7 @@ TERMS_HTML = """
 </div>
 
 <div class="scroll-instruction">
-    <span style='color:#D4AF37'>אנא גלול עד סוף התקנון לפני האישור</span>
+    <span class="gold-highlight">אנא גלול עד סוף התקנון לפני האישור</span>
 </div>
 """
 
@@ -488,30 +518,30 @@ def render_arbitration_ruling(ruling):
     מציג את פסק הבוררות בפורמט מעוצב
     """
     st.markdown("""
-        <div style="background: linear-gradient(135deg, #0A2647 0%, #144272 100%);
-                    border: 3px solid #D4AF37;
+        <div style="background: #0E1117;
+                    border: 3px solid transparent;
+                    border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1;
                     border-radius: 20px;
                     padding: 50px;
                     margin: 40px auto;
                     max-width: 1000px;
-                    box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);">
+                    box-shadow: 0 0 40px rgba(194, 155, 64, 0.4);">
 
-            <h1 style="color: #D4AF37;
+            <h1 style="color: #C29B40;
                        text-align: center;
                        font-size: 3rem;
                        font-weight: 900;
-                       margin-bottom: 40px;
-                       text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);">
-                פסק בוררות מנומק
+                       margin-bottom: 40px;">
+                <span class="gold-highlight">פסק בוררות מנומק</span>
             </h1>
 
             <div style="background: rgba(255, 255, 255, 0.03);
                         border-radius: 15px;
-                        padding: 30px;
+                        padding: 22px;
                         margin-bottom: 30px;">
-                <h2 style="color: #D4AF37; font-size: 1.8rem; margin-bottom: 20px;">מבוא</h2>
+                <h2 style="font-size: 1.8rem; margin-bottom: 20px;"><span class="gold-highlight">מבוא</span></h2>
                 <p style="color: #FFFFFF; font-size: 1.2rem; line-height: 1.8;">
-                    מספר תיק: <strong style="color: #D4AF37;">{case_id}</strong><br>
+                    מספר תיק: <strong style="color: #C29B40;">{case_id}</strong><br>
                     תאריך: <strong>{date}</strong><br><br>
 
                     <strong>התובע:</strong> {claimant_name}<br>
@@ -524,9 +554,9 @@ def render_arbitration_ruling(ruling):
 
             <div style="background: rgba(255, 255, 255, 0.03);
                         border-radius: 15px;
-                        padding: 30px;
+                        padding: 22px;
                         margin-bottom: 30px;">
-                <h2 style="color: #D4AF37; font-size: 1.8rem; margin-bottom: 20px;">עיקרי הטענות</h2>
+                <h2 style="font-size: 1.8rem; margin-bottom: 20px;"><span class="gold-highlight">עיקרי הטענות</span></h2>
                 <p style="color: #FFFFFF; font-size: 1.2rem; line-height: 1.8;">
                     <strong>תביעת התובע:</strong><br>
                     {claim_summary}
@@ -539,9 +569,9 @@ def render_arbitration_ruling(ruling):
 
             <div style="background: rgba(255, 255, 255, 0.03);
                         border-radius: 15px;
-                        padding: 30px;
+                        padding: 22px;
                         margin-bottom: 30px;">
-                <h2 style="color: #D4AF37; font-size: 1.8rem; margin-bottom: 20px;">ניתוח והכרעה</h2>
+                <h2 style="font-size: 1.8rem; margin-bottom: 20px;"><span class="gold-highlight">ניתוח והכרעה</span></h2>
 
                 <h3 style="color: #FFFFFF; font-size: 1.4rem; margin-top: 20px; margin-bottom: 15px;">
                     עובדות מוסכמות:
@@ -572,23 +602,24 @@ def render_arbitration_ruling(ruling):
                 </ul>
             </div>
 
-            <div style="background: rgba(212, 175, 55, 0.1);
-                        border: 2px solid #D4AF37;
+            <div style="background: rgba(194, 155, 64, 0.1);
+                        border: 2px solid transparent;
+                        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1;
                         border-radius: 15px;
-                        padding: 30px;
+                        padding: 22px;
                         margin-bottom: 20px;">
-                <h2 style="color: #D4AF37; font-size: 1.8rem; margin-bottom: 20px;">סעד ופסיקה</h2>
+                <h2 style="font-size: 1.8rem; margin-bottom: 20px;"><span class="gold-highlight">סעד ופסיקה</span></h2>
                 <p style="color: #FFFFFF; font-size: 1.3rem; line-height: 1.8; font-weight: 600;">
                     לאחר בחינה מעמיקה של כלל הראיות, הטיעונים וכתבי הטענות של שני הצדדים,
                     ועל בסיס ניתוח משפטי מקיף, מערכת Resolve AI קובעת כדלקמן:
                 </p>
-                <p style="color: #D4AF37; font-size: 1.4rem; line-height: 1.8; font-weight: 700; margin-top: 20px;">
+                <p style="color: #C29B40; font-size: 1.4rem; line-height: 1.8; font-weight: 700; margin-top: 20px;">
                     פסק הבוררות הסופי ייקבע לאחר השלמת הליך הניתוח המעמיק.
                 </p>
             </div>
 
-            <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 2px solid rgba(212, 175, 55, 0.3);">
-                <p style="color: #D4AF37; font-size: 1.1rem;">
+            <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 2px solid rgba(194, 155, 64, 0.3);">
+                <p style="color: #C29B40; font-size: 1.1rem;">
                     Resolve AI - מערכת בוררות דיגיטלית<br>
                     פסק בוררות זה ניתן בהתאם לחוק הבוררות, התשכ"ח-1968
                 </p>
@@ -783,9 +814,12 @@ def render_claimant_portal():
     if st.session_state.case_stage in ['rebuttal_submitted', 'locked']:
         # סטטוס הודעה
         st.markdown("""
-            <div class="instruction-box" style="background: rgba(212, 175, 55, 0.15); border: 2px solid #D4AF37;">
-                <p style="font-size: 1.4rem; font-weight: 700; color: #D4AF37; text-align: center;">
-                    ⚖️ התיק נעול - פסק הדין הראשוני הוכן
+            <div class="instruction-box" style="background: rgba(194, 155, 64, 0.15);
+                 border: 2px solid transparent;
+                 border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1;
+                 padding: 22px;">
+                <p style="font-size: 1.4rem; font-weight: 700; color: #C29B40; text-align: center;">
+                    התיק נעול - פסק הדין הראשוני הוכן
                 </p>
                 <p style="font-size: 1.1rem; color: #FFFFFF; text-align: center; margin-top: 15px;">
                     כל הטיעונים והראיות הועברו לניתוח מעמיק. להלן פסק הבוררות המנומק.
@@ -1028,16 +1062,17 @@ def render_defendant_portal():
     # Check if defense already submitted
     if st.session_state.case_stage in ['defense_submitted', 'rebuttal_submitted', 'locked']:
         if st.session_state.case_stage == 'defense_submitted':
-            # מסך אישור מעודכן עם מיתוג אחיד
+            # מסך אישור מעודכן עם גרדיאנט מטאלי
             st.markdown("""
-                <div style="background: linear-gradient(135deg, #0A2647 0%, #144272 100%);
-                            border: 3px solid #D4AF37;
+                <div style="background: #0E1117;
+                            border: 3px solid transparent;
+                            border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1;
                             border-radius: 20px;
                             padding: 50px;
                             margin: 40px auto;
                             max-width: 900px;">
 
-                    <h2 style="color: #D4AF37;
+                    <h2 style="color: #C29B40;
                                font-size: 2.5rem;
                                font-weight: 900;
                                text-align: center;
@@ -1049,7 +1084,7 @@ def render_defendant_portal():
                         <p style="color: #FFFFFF; font-size: 1.2rem; margin-bottom: 10px;">
                             מספר תיק למעקב:
                         </p>
-                        <p style="color: #D4AF37;
+                        <p style="color: #C29B40;
                                   font-size: 2.5rem;
                                   font-weight: 900;
                                   letter-spacing: 2px;
@@ -1060,7 +1095,7 @@ def render_defendant_portal():
 
                     <div style="background: rgba(255, 255, 255, 0.05);
                                 border-radius: 15px;
-                                padding: 30px;
+                                padding: 22px;
                                 margin: 30px 0;">
                         <p style="color: #FFFFFF;
                                   font-size: 1.3rem;
@@ -1097,9 +1132,12 @@ def render_defendant_portal():
         else:
             # התיק נעול - הצגת פסק דין
             st.markdown("""
-                <div class="instruction-box" style="background: rgba(212, 175, 55, 0.15); border: 2px solid #D4AF37;">
-                    <p style="font-size: 1.4rem; font-weight: 700; color: #D4AF37; text-align: center;">
-                        ⚖️ התיק נעול - פסק הדין הראשוני הוכן
+                <div class="instruction-box" style="background: rgba(194, 155, 64, 0.15);
+                     border: 2px solid transparent;
+                     border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1;
+                     padding: 22px;">
+                    <p style="font-size: 1.4rem; font-weight: 700; color: #C29B40; text-align: center;">
+                        התיק נעול - פסק הדין הראשוני הוכן
                     </p>
                     <p style="font-size: 1.1rem; color: #FFFFFF; text-align: center; margin-top: 15px;">
                         כל הטיעונים והראיות הועברו לניתוח מעמיק. להלן פסק הבוררות המנומק.
