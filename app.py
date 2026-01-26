@@ -52,7 +52,7 @@ def add_audit_log(case_id, stage, description):
     st.session_state.audit_log.append(log_entry)
 
 def render_logo():
-    """Display Resolve AI logo at the top of each page"""
+    """Display Resolve AI logo with tagline at the top of each page"""
     import base64
 
     # Read and encode logo
@@ -61,21 +61,38 @@ def render_logo():
             logo_data = base64.b64encode(f.read()).decode()
 
         st.markdown(f"""
-            <div style="display: flex; justify-content: center; align-items: center; padding: 20px 0 40px 0;">
+            <div style="display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        padding: 30px 0 50px 0;">
                 <img src="data:image/png;base64,{logo_data}"
                      alt="Resolve AI Logo"
-                     style="width: 250px;
+                     style="width: 200px;
                             height: auto;
                             max-width: 90vw;
                             mix-blend-mode: lighten;
-                            filter: brightness(1.1);">
+                            filter: brightness(1.1);
+                            margin-bottom: 25px;">
+                <p style="color: #FFFFFF;
+                          font-size: 1.2rem;
+                          font-weight: 400;
+                          text-align: center;
+                          margin: 0;
+                          letter-spacing: 0.5px;
+                          direction: rtl;">
+                    צדק אובייקטיבי. הכרעה מהירה. בוררות מבוססת AI.
+                </p>
             </div>
         """, unsafe_allow_html=True)
     except FileNotFoundError:
         # Fallback if logo not found
         st.markdown("""
-            <div style="text-align: center; padding: 20px 0 40px 0;">
-                <h1 style="color: #C29B40; font-size: 3rem; font-weight: 900;">Resolve AI</h1>
+            <div style="text-align: center; padding: 30px 0 50px 0;">
+                <h1 style="color: #C29B40; font-size: 3rem; font-weight: 900; margin-bottom: 25px;">Resolve AI</h1>
+                <p style="color: #FFFFFF; font-size: 1.2rem; font-weight: 400; letter-spacing: 0.5px;">
+                    צדק אובייקטיבי. הכרעה מהירה. בוררות מבוססת AI.
+                </p>
             </div>
         """, unsafe_allow_html=True)
 
@@ -312,13 +329,14 @@ st.markdown("""
     .success-box, .warning-box, .instruction-box, .readonly-box, .locked-box {
         background: #0E1117 !important;
         border-radius: 12px !important;
-        padding: 25px !important;
+        padding: 22px !important;
         margin: 20px 0 !important;
         color: white !important;
     }
 
     .success-box {
-        border: 2px solid #10b981 !important;
+        border: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
     }
 
     .warning-box {
@@ -326,15 +344,18 @@ st.markdown("""
     }
 
     .instruction-box {
-        border: 2px solid rgba(255, 193, 7, 0.5) !important;
+        border: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
     }
 
     .readonly-box {
-        border: 2px solid rgba(100, 116, 139, 0.5) !important;
+        border: 2px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
     }
 
     .locked-box {
-        border: 3px solid rgba(100, 116, 139, 0.6) !important;
+        border: 3px solid transparent !important;
+        border-image: linear-gradient(135deg, #8E6D28 0%, #C29B40 45%, #E0C58A 55%, #C29B40 100%) 1 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -741,15 +762,8 @@ def render_terms_with_scroll(portal_type):
 # Page: Home (Landing Page)
 # =====================================================
 def render_home_page():
-    # Logo
+    # Logo with tagline
     render_logo()
-
-    # Main Title
-    st.markdown("""
-        <div class="main-content">
-            <h1 class="main-title">ברוכים הבאים ל-Resolve AI</h1>
-        </div>
-    """, unsafe_allow_html=True)
 
     # Two Columns Layout
     col1, col2 = st.columns(2, gap="large")
