@@ -52,20 +52,25 @@ def add_audit_log(case_id, stage, description):
     st.session_state.audit_log.append(log_entry)
 
 def render_logo():
-    """Display Resolve AI logo with tagline at the top of each page"""
+    """Display Resolve AI logo with tagline - v2.1"""
     import base64
+    from datetime import datetime
 
-    # Read and encode logo
+    # Read and encode logo (with cache busting)
     try:
         with open("logo.png", "rb") as f:
             logo_data = base64.b64encode(f.read()).decode()
+
+        # Cache busting timestamp
+        cache_bust = datetime.now().strftime("%Y%m%d%H")
 
         st.markdown(f"""
             <div style="display: flex;
                         flex-direction: column;
                         justify-content: center;
                         align-items: center;
-                        padding: 30px 0 50px 0;">
+                        padding: 30px 0 50px 0;"
+                 data-version="2.1-{cache_bust}">
                 <img src="data:image/png;base64,{logo_data}"
                      alt="Resolve AI Logo"
                      style="width: 200px;
