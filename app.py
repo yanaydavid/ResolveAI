@@ -75,7 +75,7 @@ def render_logo():
                   font-size: 1.2rem;
                   font-weight: 400;
                   text-align: center;
-                  margin: 20px 0 40px 0;
+                  margin: 15px 0 40px 0;
                   letter-spacing: 0.5px;
                   direction: rtl;">
             צדק אובייקטיבי. הכרעה מהירה. בוררות מבוססת AI.
