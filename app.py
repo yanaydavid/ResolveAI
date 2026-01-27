@@ -51,6 +51,15 @@ def add_audit_log(case_id, stage, description):
 
     st.session_state.audit_log.append(log_entry)
 
+def is_valid_email(email):
+    """Validate email address format"""
+    import re
+    if not email:
+        return False
+    # Basic email validation pattern
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return bool(re.match(pattern, email))
+
 def render_logo():
     """Display Resolve AI logo with tagline - v2.1"""
     import base64
@@ -1081,6 +1090,8 @@ def render_claimant_portal():
                     st.error("נא להעלות צילום תעודת זהות / תעודת חברה")
                 elif not full_name or not id_number or not email or not phone:
                     st.error("נא למלא את כל הפרטים האישיים")
+                elif not is_valid_email(email):
+                    st.error("נא להזין כתובת אימייל תקינה")
                 elif not claim_text or len(claim_text) < 50:
                     st.error("נא לפרט את כתב התביעה בצורה מפורטת (לפחות 50 תווים)")
                 elif not evidence_files or len(evidence_files) == 0:
@@ -1455,6 +1466,8 @@ def render_defendant_portal():
                     st.error("נא להעלות צילום תעודת זהות / תעודת חברה")
                 elif not full_name or not id_number or not email or not phone:
                     st.error("נא למלא את כל הפרטים האישיים")
+                elif not is_valid_email(email):
+                    st.error("נא להזין כתובת אימייל תקינה")
                 elif not defense_text or len(defense_text) < 50:
                     st.error("נא לפרט את כתב ההגנה בצורה מפורטת (לפחות 50 תווים)")
                 elif not defense_evidence_files or len(defense_evidence_files) == 0:
