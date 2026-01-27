@@ -56,7 +56,7 @@ def render_logo():
     # Display logo using st.image
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.image('logo.jpg', use_container_width=True)
+        st.image('logo.png', use_container_width=True)
 
     # Slogan with white color and center alignment (RTL)
     st.markdown("""
