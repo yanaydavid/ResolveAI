@@ -53,10 +53,21 @@ def add_audit_log(case_id, stage, description):
 
 def render_logo():
     """Display Resolve AI logo with tagline"""
-    # Display logo using st.image
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.image('logo.jpg', use_container_width=True)
+    import base64
+
+    # Read and encode logo
+    try:
+        with open("logo.jpg", "rb") as f:
+            logo_data = base64.b64encode(f.read()).decode()
+
+        # Display logo centered with 200px width
+        st.markdown(f"""
+            <div style="display: flex; justify-content: center; padding-top: 20px;">
+                <img src="data:image/jpeg;base64,{logo_data}" width="200" alt="Resolve AI Logo">
+            </div>
+        """, unsafe_allow_html=True)
+    except FileNotFoundError:
+        st.error("Logo file not found")
 
     # Slogan with white color and center alignment (RTL)
     st.markdown("""
