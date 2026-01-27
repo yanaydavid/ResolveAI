@@ -52,54 +52,24 @@ def add_audit_log(case_id, stage, description):
     st.session_state.audit_log.append(log_entry)
 
 def render_logo():
-    """Display Resolve AI logo with tagline - v2.1"""
-    import base64
-    from datetime import datetime
+    """Display Resolve AI logo with tagline"""
+    # Display logo using st.image
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.image('logo.png', use_container_width=True)
 
-    # Read and encode logo (with cache busting)
-    try:
-        with open("logo.png", "rb") as f:
-            logo_data = base64.b64encode(f.read()).decode()
-
-        # Cache busting timestamp
-        cache_bust = datetime.now().strftime("%Y%m%d%H")
-
-        st.markdown(f"""
-            <div style="display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        padding: 30px 0 50px 0;"
-                 data-version="2.1-{cache_bust}">
-                <img src="data:image/png;base64,{logo_data}"
-                     alt="Resolve AI Logo"
-                     style="width: 200px;
-                            height: auto;
-                            max-width: 90vw;
-                            mix-blend-mode: lighten;
-                            filter: brightness(1.1);
-                            margin-bottom: 25px;">
-                <p style="color: #FFFFFF;
-                          font-size: 1.2rem;
-                          font-weight: 400;
-                          text-align: center;
-                          margin: 0;
-                          letter-spacing: 0.5px;
-                          direction: rtl;">
-                    צדק אובייקטיבי. הכרעה מהירה. בוררות מבוססת AI.
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-    except FileNotFoundError:
-        # Fallback if logo not found
-        st.markdown("""
-            <div style="text-align: center; padding: 30px 0 50px 0;">
-                <h1 style="color: #C29B40; font-size: 3rem; font-weight: 900; margin-bottom: 25px;">Resolve AI</h1>
-                <p style="color: #FFFFFF; font-size: 1.2rem; font-weight: 400; letter-spacing: 0.5px;">
-                    צדק אובייקטיבי. הכרעה מהירה. בוררות מבוססת AI.
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
+    # Slogan with white color and center alignment (RTL)
+    st.markdown("""
+        <p style="color: #FFFFFF;
+                  font-size: 1.2rem;
+                  font-weight: 400;
+                  text-align: center;
+                  margin: 20px 0 40px 0;
+                  letter-spacing: 0.5px;
+                  direction: rtl;">
+            צדק אובייקטיבי. הכרעה מהירה. בוררות מבוססת AI.
+        </p>
+    """, unsafe_allow_html=True)
 
 # =====================================================
 # Custom CSS - Luxury Design with RTL Support
